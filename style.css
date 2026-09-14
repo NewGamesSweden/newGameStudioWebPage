@@ -1,0 +1,789 @@
+/* ===================================================================
+   NewGameStudio stylesheet
+
+   Sections:
+   1.  Fonts and colours (change the look here)
+   2.  Base styles
+   3.  Header, navigation and the logo joke
+   4.  Hero
+   5.  Games section (carousel, Gallery text, upcoming projects)
+   6.  The fools (scope and team)
+   7.  Coffee box
+   8.  Footer
+   9.  Image preview dialog
+   10. Animated background canvas
+   11. Screen sizes: large desktop, tablet (1000px and below), phone (700px and below)
+   12. Reduced motion
+   =================================================================== */
+
+
+/* 1. FONTS AND COLOURS ============================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #0b1422;       /* page background */
+  --panel: #111e2e;    /* cards and boxes */
+  --ink: #f2f0e8;      /* main text */
+  --muted: #a2b1c3;    /* secondary text */
+  --cyan: #66e8de;     /* accent 1: links, highlights */
+  --orange: #ff9b65;   /* accent 2: coffee box, scope stamp */
+  --line: #2a3747;     /* borders */
+}
+
+
+/* 2. BASE =========================================================== */
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px; /* keeps section headings clear of the sticky header */
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  isolation: isolate; /* lets the background canvas sit behind everything */
+}
+
+main, footer { position: relative; z-index: 1; }
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+button, a { -webkit-tap-highlight-color: transparent; }
+
+a:focus-visible, button:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 6px;
+}
+
+/* Page width. Everything with class "wrap" is centred and limited to 1280px. */
+.wrap {
+  width: min(1280px, calc(100% - 100px));
+  margin: auto;
+}
+
+/* Small uppercase label above headings */
+.eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cyan);
+  margin: 0 0 25px;
+}
+
+h2 {
+  font: 600 clamp(36px, 4vw, 54px) / 1.1 'Space Grotesk', sans-serif;
+  letter-spacing: -2px;
+  margin: 0;
+}
+
+
+/* 3. HEADER, NAVIGATION AND LOGO JOKE =============================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: #0b1422ef;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 4px 22px #030a111f;
+}
+
+.nav {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+
+nav {
+  display: flex;
+  gap: 34px;
+  align-items: center;
+  font-size: 14px;
+}
+
+nav a:hover, .text-link:hover { color: var(--cyan); }
+
+.nav-coffee {
+  border: 1px solid #53606e;
+  padding: 9px 16px;
+  border-radius: 5px;
+}
+.nav-coffee span { margin-left: 18px; }
+
+/* The logo is a button so it can show the joke on tap as well as hover. */
+.logo-wrap { position: relative; flex-shrink: 0; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: 10px 0;
+  color: var(--ink);
+  font: 700 24px 'Space Grotesk', sans-serif;
+  letter-spacing: -1px;
+}
+.brand > span { color: var(--cyan); }
+
+.scope-joke {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 250px;
+  padding: 15px 18px;
+  background: var(--orange);
+  color: #23170e;
+  border: 2px solid #23170e;
+  box-shadow: 5px 5px 0 var(--cyan);
+  font: 700 17px / 1.2 'Space Grotesk', sans-serif;
+  letter-spacing: -0.4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-5px) rotate(-5deg);
+  transition: opacity 0.16s, transform 0.16s, visibility 0.16s;
+  pointer-events: none;
+}
+.scope-joke > span { font-size: 32px; }
+
+.logo-wrap:hover:not(.dismissed) .scope-joke,
+.logo-wrap:focus-within:not(.dismissed) .scope-joke,
+.logo-wrap.joke-open .scope-joke {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) rotate(-5deg);
+  pointer-events: auto;
+}
+
+footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
+
+
+/* 4. HERO =========================================================== */
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1.12fr;
+  padding-top: 72px;
+}
+
+.hero h1 {
+  font: 700 clamp(44px, 4.7vw, 70px) / 1.05 'Space Grotesk', sans-serif;
+  letter-spacing: -3px;
+  margin: 0 0 26px;
+  position: relative;
+  z-index: 1;
+}
+.hero h1 span { color: var(--cyan); }
+
+.intro {
+  color: var(--muted);
+  max-width: 440px;
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 27px;
+  margin-top: 30px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 30px;
+  background: var(--cyan);
+  color: #0b1422;
+  padding: 15px 21px;
+  border-radius: 5px;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+.button:hover { transform: translateY(-3px); }
+
+.text-link { font-size: 14px; }
+.text-link span { margin-left: 9px; }
+
+.micro {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 17px;
+}
+
+.hero-art {
+  align-self: center;
+  position: relative;
+  margin-right: -30px;
+  margin-left: -50px;
+}
+.hero-art img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1.5;
+  object-fit: contain;
+  mask-image: linear-gradient(to bottom, #000 88%, transparent);
+}
+
+.art-note {
+  position: absolute;
+  bottom: 8%;
+  right: 8%;
+  font: 500 11px 'Space Grotesk', sans-serif;
+  letter-spacing: 1.4px;
+  background: #111e2ed9;
+  padding: 12px 16px;
+  border: 1px solid #354956;
+  border-radius: 4px;
+}
+.art-note span { color: var(--cyan); margin: 0 8px; }
+
+.hero-bottom {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding: 48px 0 24px;
+  margin-top: 15px;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  color: var(--muted);
+}
+
+
+/* 5. GAMES SECTION ================================================== */
+
+.section { padding-top: 90px; padding-bottom: 90px; }
+
+.section-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 35px;
+}
+.section-top .eyebrow { margin-bottom: 17px; }
+.section-top > p { color: var(--muted); font-size: 16px; margin-bottom: 4px; }
+
+/* The big card: carousel on the left, text on the right */
+.featured {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* --- Carousel --- */
+.carousel {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: #08111e;
+  display: flex;
+  flex-direction: column;
+}
+.carousel:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+
+.carousel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  color: var(--cyan);
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.carousel-heading button {
+  background: none;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.slide-stage {
+  position: relative;
+  height: 330px;
+  isolation: isolate;
+  touch-action: pan-y; /* allows swipe left/right while still scrolling the page vertically */
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s, visibility 0.5s;
+}
+.slide.active { opacity: 1; visibility: visible; }
+.slide img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Round "enlarge" button in the corner of the image */
+.expand {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 23px;
+  box-shadow: 0 2px 10px #0004;
+}
+.expand:hover { color: var(--bg); background: var(--cyan); }
+
+.carousel-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 10px;
+}
+.carousel-controls > button {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border: 1px solid #455365;
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 50%;
+  font-size: 20px;
+}
+.carousel button:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.slide-caption {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.slide-caption > span:last-child {
+  font-size: 12px;
+  letter-spacing: 1.8px;
+  color: var(--muted);
+}
+
+.thumbnails {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 16px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #445567 transparent;
+}
+.thumb {
+  flex: 0 0 65px;
+  height: 45px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 0;
+  background: #1e2936;
+  opacity: 0.6;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumb[aria-current="true"] { border-color: var(--cyan); opacity: 1; }
+.thumb:hover { opacity: 1; }
+
+/* --- Gallery text --- */
+.game-copy { padding: 36px 38px; }
+
+.tag {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: var(--cyan);
+  margin: 0 0 12px;
+}
+.tag span { margin: 0 9px; color: var(--muted); }
+
+.game-copy h3 {
+  font: 600 53px 'Space Grotesk', sans-serif;
+  letter-spacing: -2px;
+  margin: 0 0 16px;
+  display: flex;
+  justify-content: space-between;
+}
+.game-copy h3 span { color: var(--cyan); font-size: 35px; }
+
+.game-tagline { font-size: 20px; line-height: 1.4; }
+.game-description { font-size: 15px; line-height: 1.7; color: var(--muted); }
+
+.game-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  margin-top: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.unlinked { font-weight: 600; color: var(--cyan); }
+.unlinked span { margin-left: 16px; }
+.game-footer small { font-size: 12px; color: var(--muted); }
+
+/* --- Upcoming projects --- */
+.upcoming {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 22px;
+}
+.upcoming article {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 27px 30px;
+  background: linear-gradient(120deg, #142030, #0d1827);
+}
+.project-number {
+  color: #7f91a7;
+  font-family: 'Space Grotesk', sans-serif;
+  display: flex;
+  justify-content: space-between;
+}
+.project-number span {
+  font: 500 10px 'DM Sans', sans-serif;
+  letter-spacing: 1px;
+  color: #c4cbd5;
+  padding: 6px 10px;
+  border: 1px solid #435061;
+  border-radius: 20px;
+}
+.upcoming h3 { font: 500 25px 'Space Grotesk', sans-serif; margin: 22px 0 7px; }
+.upcoming p { color: var(--muted); margin: 0 0 25px; font-size: 15px; }
+.project-foot { font-size: 10px; letter-spacing: 1.6px; color: #8291a5; }
+
+
+/* 6. THE FOOLS ====================================================== */
+
+.scope {
+  background: #101c2a80;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 85px 0;
+}
+
+.scope-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+}
+
+.scope-title h2 {
+  font-size: clamp(65px, 7.3vw, 108px);
+  line-height: 0.99;
+  letter-spacing: -5px;
+}
+.scope-title h2 em { color: var(--orange); font-style: normal; }
+
+.scope-stamp {
+  display: inline-block;
+  transform: rotate(-6deg);
+  border: 1px solid var(--orange);
+  color: var(--orange);
+  padding: 8px 15px;
+  font: 700 16px 'Space Grotesk', sans-serif;
+  letter-spacing: 1px;
+  margin-top: 28px;
+}
+
+.scope-copy { padding-top: 32px; }
+.scope-copy p { color: var(--muted); font-size: 17px; line-height: 1.8; }
+.scope-copy .large-copy {
+  color: var(--ink);
+  font: 500 30px / 1.35 'Space Grotesk', sans-serif;
+  margin-top: 0;
+}
+.scope-copy .signature { color: var(--cyan); font-size: 15px; }
+
+.team {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+  margin-top: 70px;
+}
+
+.team-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  max-height: 430px;
+}
+.team-photo img {
+  width: 100%;
+  height: 430px;
+  object-fit: cover;
+  object-position: 50% 64%;
+  display: block;
+}
+.team-photo > span {
+  position: absolute;
+  bottom: 17px;
+  left: 20px;
+  background: #0b1422e6;
+  padding: 7px 10px;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.team-names h3 {
+  font: 500 32px / 1.2 'Space Grotesk', sans-serif;
+  margin: 0 0 26px;
+  letter-spacing: -1px;
+}
+.team-names h3 span { color: var(--cyan); }
+
+.name-row {
+  padding: 13px 0;
+  border-bottom: 1px solid #334050;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.name-row > span { font-size: 12px; color: var(--cyan); }
+.name-row strong { font: 500 24px 'Space Grotesk', sans-serif; }
+.team-names > p { font-size: 13px; color: var(--muted); margin-top: 20px; }
+
+
+/* 7. COFFEE BOX ===================================================== */
+
+.coffee {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 70px;
+  margin-top: 85px;
+  margin-bottom: 85px;
+  padding: 44px 48px;
+  background: var(--orange);
+  color: #25180f;
+  border-radius: 8px;
+}
+.coffee .eyebrow { color: #573824; margin-bottom: 18px; }
+.coffee h2 { font-size: 44px; }
+.coffee p { max-width: 520px; font-size: 16px; }
+
+.coffee-action { align-self: center; text-align: center; }
+.coffee-label {
+  font: 700 20px 'Space Grotesk', sans-serif;
+  border-bottom: 2px solid #25180f;
+  display: inline-block;
+  padding: 0 0 9px;
+  letter-spacing: 0.5px;
+}
+.coffee-action > p { font-size: 14px; }
+.coffee-action small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 24px;
+  color: #573824;
+}
+
+
+/* 8. FOOTER ========================================================= */
+
+footer {
+  border-top: 1px solid var(--line);
+  padding: 29px 0 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+footer .brand { font-size: 15px; }
+footer p, footer > a:last-child { font-size: 12px; color: var(--muted); }
+.footer-year { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); }
+
+
+/* 9. IMAGE PREVIEW DIALOG =========================================== */
+
+dialog {
+  width: min(1200px, 92vw);
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+}
+dialog::backdrop { background: #020812dd; }
+dialog img {
+  width: 100%;
+  height: auto;
+  max-height: 75vh;
+  object-fit: contain;
+  display: block;
+  margin-top: 15px;
+}
+dialog button {
+  display: block;
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 7px 15px;
+}
+dialog p { font-size: 14px; margin-bottom: 0; }
+
+
+/* 10. ANIMATED BACKGROUND =========================================== */
+
+.origami-surface {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Hidden on touch devices and when the visitor prefers reduced motion */
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .origami-surface { display: none; }
+}
+
+
+/* 11. SCREEN SIZES ================================================== */
+
+/* Large desktop */
+@media (min-width: 1550px) {
+  .hero h1 { font-size: 76px; }
+}
+
+/* Tablet and small laptop */
+@media (max-width: 1000px) {
+  .wrap { width: calc(100% - 56px); }
+  .brand { font-size: 22px; }
+
+  .hero { padding-top: 50px; }
+  .hero h1 { font-size: 52px; }
+  .hero-art { margin-left: -20px; margin-right: -15px; }
+  .art-note { right: 0; font-size: 9px; padding: 9px; }
+  .hero-bottom { font-size: 9px; }
+  .actions { gap: 15px; }
+  .button { gap: 13px; }
+
+  .featured { grid-template-columns: 1.15fr 1fr; }
+  .slide-stage { height: 280px; }
+  .game-copy { padding: 27px; }
+
+  .scope-inner, .team { gap: 45px; }
+  .coffee { padding: 35px; gap: 25px; }
+}
+
+/* Phone */
+@media (max-width: 700px) {
+  html { scroll-padding-top: 100px; }
+  .wrap { width: calc(100% - 36px); }
+  .eyebrow { font-size: 10px; letter-spacing: 1.5px; margin-bottom: 20px; }
+
+  /* Header: logo and links can wrap onto two rows if needed */
+  .nav {
+    height: auto;
+    min-height: 78px;
+    flex-wrap: wrap;
+    gap: 4px 15px;
+    padding: 12px 0;
+  }
+  .brand { font-size: 20px; }
+  nav { gap: 16px; font-size: 13px; }
+  .nav-coffee { display: none; }
+  .scope-joke { width: 230px; font-size: 16px; }
+
+  /* Hero stacks: text first, picture below */
+  .hero { display: flex; flex-direction: column; padding-top: 38px; }
+  .hero h1 { font-size: clamp(42px, 10.8vw, 68px); letter-spacing: -2.3px; }
+  .desktop { display: none; }
+  .intro { font-size: 16px; }
+  .actions { gap: 23px; }
+  .text-link { font-size: 13px; }
+  .micro { font-size: 11px; }
+  .hero-art { margin: 0 -12px; width: calc(100% + 24px); }
+  .art-note { right: 15%; bottom: 5%; font-size: 10px; }
+  .hero-bottom { padding-top: 8px; margin-top: 0; }
+  .hero-bottom span:last-child { display: none; }
+
+  /* Games */
+  .section { padding-top: 55px; padding-bottom: 55px; }
+  .section-top { display: block; }
+  .section-top > p { margin-top: 20px; }
+  .featured { display: block; }
+  .featured .game-copy { border-top: 1px solid var(--line); }
+  .carousel-heading { font-size: 10px; padding: 12px; }
+  .slide-stage { height: clamp(220px, 60vw, 350px); }
+  .carousel-controls { padding: 12px; }
+  .thumbnails { padding-left: 12px; padding-right: 12px; }
+  .thumb { flex-basis: 60px; }
+  .game-copy { padding: 25px; }
+  .game-copy h3 { font-size: 45px; }
+  .upcoming { grid-template-columns: 1fr; }
+  .upcoming article { padding: 25px; }
+
+  /* The fools */
+  .scope { padding: 55px 0; }
+  .scope-inner, .team { grid-template-columns: 1fr; gap: 28px; }
+  .scope-title h2 { font-size: clamp(52px, 19vw, 76px); }
+  .scope-copy { padding-top: 15px; }
+  .scope-copy .large-copy { font-size: 27px; }
+  .team { margin-top: 40px; }
+  .team-photo { height: 360px; }
+  .team-photo img { height: 360px; }
+  .team-names h3 br:first-child { display: none; }
+
+  /* Coffee */
+  .coffee {
+    grid-template-columns: 1fr;
+    padding: 30px 26px;
+    margin-top: 55px;
+    margin-bottom: 55px;
+    gap: 25px;
+  }
+  .coffee h2 { font-size: 37px; }
+  .coffee-action { text-align: left; }
+  .coffee-action small { margin-top: 15px; }
+
+  /* Footer */
+  footer { flex-wrap: wrap; padding-bottom: 25px; }
+  footer p { order: 3; width: 100%; margin: 0; }
+}
+
+
+/* 12. REDUCED MOTION ================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}

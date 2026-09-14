@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NewGameStudio | One more late night.</title>
+  <meta name="description" content="We're Daniel, Ahmed and Micky. Three friends making games, chasing ideas, and occasionally remembering the word scope.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!--
+  HOW THIS FILE IS ORGANISED
+  1. Header (logo + navigation)
+  2. Hero (big headline and workshop picture)
+  3. Games (the image carousel, the Gallery game, two upcoming projects)
+  4. The fools (scope joke and team)
+  5. Coffee (support box)
+  6. Footer
+  7. Image preview dialog (opened by the enlarge button on the carousel)
+
+  To change text, just edit it here. To change colours, see the top of style.css.
+  To add a carousel image, copy one "slide" block in section 3 and point it at a file in assets/.
+-->
+
+<!-- Animated background. Only shows on desktop with a mouse. Drawn by surface.js. -->
+<canvas class="origami-surface" aria-hidden="true"></canvas>
+
+<!-- ===================================================================
+     1. HEADER
+     =================================================================== -->
+<header class="site-header">
+  <div class="nav wrap">
+    <div class="logo-wrap">
+      <button type="button" class="brand" aria-describedby="scope-joke-header">New<span>Game</span>Studio</button>
+      <span class="scope-joke" id="scope-joke-header" role="tooltip">Dont work because of scope<span aria-hidden="true">✳</span></span>
+    </div>
+    <nav aria-label="Main navigation">
+      <a href="#games">Games</a>
+      <a href="#fools">The fools</a>
+      <a href="#coffee" class="nav-coffee">Buy us coffee <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- =================================================================
+       2. HERO
+       ================================================================= -->
+  <section class="hero wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">A SMALL STUDIO WITH A LOT GOING ON</p>
+      <h1>Three fools.<br>Too many ideas.<br><span>One more<br class="desktop"> late night.</span></h1>
+      <p class="intro">We’re Daniel, Ahmed, and Micky. We make games, mess with new things, and ask “what if?” a little too often.</p>
+      <div class="actions">
+        <a class="button" href="#games">Explore Gallery <span>↗</span></a>
+        <a class="text-link" href="#fools">Meet the fools <span>↓</span></a>
+      </div>
+      <p class="micro">Our first game. Free to play. Made for your browser.</p>
+    </div>
+
+    <div class="hero-art">
+      <img src="assets/workshop.webp" alt="Three low-poly friends making games around a desk filled with laptops and coffee cups" width="1536" height="1024">
+      <div class="art-note"><span class="small-cross">+</span> IDEAS: PLENTY <span>/</span> SLEEP: OPTIONAL</div>
+    </div>
+
+    <div class="hero-bottom">
+      <span>INDEPENDENT GAMES. QUESTIONABLE BEDTIMES.</span>
+      <span>SCROLL TO SEE WHAT WE’RE MAKING ↓</span>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       3. GAMES
+       ================================================================= -->
+  <section class="games wrap section" id="games">
+    <div class="section-top">
+      <div>
+        <p class="eyebrow">01 / THE THINGS WE’RE MAKING</p>
+        <h2>It started with<br>“what if?”</h2>
+      </div>
+      <p>Some ideas become games.<br>Others become another late night.</p>
+    </div>
+
+    <article class="featured">
+
+      <!-- Carousel. Thumbnails, counters and the "1 of 12" labels are built by main.js,
+           so you only need to edit the list of slides below. The first slide is shown first. -->
+      <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Gallery, from development to game" tabindex="0">
+        <div class="carousel-heading">
+          <span>FROM THE WORKBENCH TO THE GAME</span>
+          <button id="autoplay" type="button" aria-label="Pause slideshow">Pause Ⅱ</button>
+        </div>
+
+        <div class="slide-stage">
+          <!-- SLIDES: one block per image. data-title is the caption shown under the image. -->
+          <div class="slide active" data-title="Main menu · Layout study">
+            <img src="assets/study-menu.jpg" alt="Concept artwork arranging an easel, scroll, and artist desk" loading="lazy">
+          </div>
+          <div class="slide" data-title="Lobby · Layout study">
+            <img src="assets/study-lobby.jpg" alt="Gallery lobby concept with an easel, parchment, and hanging player signs" loading="lazy">
+          </div>
+          <div class="slide" data-title="In game · Layout study">
+            <img src="assets/study-game.jpg" alt="Gallery in-game layout study with artist and information poles" loading="lazy">
+          </div>
+          <div class="slide" data-title="20 Jul · An early menu">
+            <img src="assets/menu-july.png" alt="Early Gallery menu with a stone wall, practice canvas, and how-to-play instructions" loading="lazy">
+          </div>
+          <div class="slide" data-title="13 Aug · Building the props">
+            <img src="assets/prop-august.png" alt="An early angular low-poly prop model" loading="lazy">
+          </div>
+          <div class="slide" data-title="20 Aug · A jar takes shape">
+            <img src="assets/jar-august.png" alt="A low-poly transparent jar model in development" loading="lazy">
+          </div>
+          <div class="slide" data-title="30 Aug · On the shared canvas">
+            <img src="assets/gallery.png" alt="Gallery gameplay with coloured drawings, artist list, and hidden-role information" loading="lazy">
+          </div>
+          <div class="slide" data-title="04 Sep · One more detail">
+            <img src="assets/frame-september.png" alt="A decorative picture-frame corner being modelled in 3D" loading="lazy">
+          </div>
+          <div class="slide" data-title="05 Sep · Back to the workbench">
+            <img src="assets/paint-september.png" alt="A coloured cylindrical prop being edited in the 3D modelling workspace" loading="lazy">
+          </div>
+          <div class="slide" data-title="06 Sep · A game in progress">
+            <img src="assets/playtest-september.jpg" alt="A photograph of Gallery running on a laptop with a shared drawing and innocent role" loading="lazy">
+          </div>
+          <div class="slide" data-title="10 Sep · Into the outdoors">
+            <img src="assets/game-september.png" alt="Gallery gameplay with an easel, mountain scenery, and the faker role" loading="lazy">
+          </div>
+          <div class="slide" data-title="11 Sep · Another browser iteration">
+            <img src="assets/browser-september.png" alt="Gallery in a browser window with a scroll menu and low-poly landscape" loading="lazy">
+          </div>
+          <!-- END OF SLIDES -->
+
+          <button class="expand" id="open-preview" type="button" aria-label="Enlarge current image">↗</button>
+        </div>
+
+        <div class="carousel-controls">
+          <button id="previous-slide" type="button" aria-label="Previous image">←</button>
+          <div class="slide-caption" aria-live="off">
+            <span id="slide-title"></span>
+            <span id="slide-count"></span>
+          </div>
+          <button id="next-slide" type="button" aria-label="Next image">→</button>
+        </div>
+
+        <!-- Filled in by main.js -->
+        <div class="thumbnails" aria-label="Choose an image"></div>
+      </div>
+
+      <!-- Text next to the carousel -->
+      <div class="game-copy">
+        <p class="tag">FREE TO PLAY <span> / </span> BROWSER GAME</p>
+        <h3>Gallery<span>↗</span></h3>
+        <p class="game-tagline">Bring your friends.<br>Make your mark.</p>
+        <p class="game-description">A shared canvas. Some questionable drawings. And someone who might be faking it.</p>
+        <div class="game-footer">
+          <!-- Not a link yet on purpose. When the game is live, replace this span with:
+               <a class="unlinked" href="https://your-game-url">Play Gallery <span>↗</span></a> -->
+          <span class="unlinked">Play Gallery <span>↗</span></span>
+          <small>Browser link coming soon.</small>
+        </div>
+      </div>
+    </article>
+
+    <!-- Upcoming projects -->
+    <div class="upcoming">
+      <article>
+        <div class="project-number">02 <span>IN DEVELOPMENT</span></div>
+        <h3>Multiplayer project</h3>
+        <p>More people. More potential for shenanigans.</p>
+        <span class="project-foot">CURRENTLY ON THE WORKBENCH</span>
+      </article>
+      <article>
+        <div class="project-number">03 <span>IN DEVELOPMENT</span></div>
+        <h3>Single-player adventure</h3>
+        <p>Something to get lost in. We’re still building the way.</p>
+        <span class="project-foot">CURRENTLY ON THE WORKBENCH</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       4. THE FOOLS
+       ================================================================= -->
+  <section class="scope" id="fools">
+    <div class="wrap scope-inner">
+      <div class="scope-title">
+        <p class="eyebrow">02 / THE THREE FOOLS</p>
+        <h2>Scope is<br><em>hard…</em></h2>
+        <div class="scope-stamp">SCOPE. SCOPE. SCOPE.</div>
+      </div>
+      <div class="scope-copy">
+        <p class="large-copy">Someone always says it.<br>And yet, here we are.</p>
+        <p>“SCOPE, SCOPE, SCOPE.” At least one of us says it every time. And then we add way too many features anyway. Because we can. And because it’s fun.</p>
+        <p>We’re three curious friends who like to build, play, and see what happens. NewGameStudio is our excuse to keep doing that together, usually later at night than planned.</p>
+        <p class="signature">One more feature. Then we sleep.</p>
+      </div>
+    </div>
+
+    <div class="wrap team">
+      <div class="team-photo">
+        <img src="assets/team.jpg" alt="The three friends working together around a table with laptops and coffee" width="1153" height="2048" loading="lazy">
+        <span>THE WORKSHOP, BEFORE THE POLYGONS.</span>
+      </div>
+      <div class="team-names">
+        <h3>Who thought this <br>was a good idea?<br><span>All three of us.</span></h3>
+        <div class="name-row"><span>01</span><strong>Daniel</strong></div>
+        <div class="name-row"><span>02</span><strong>Ahmed</strong></div>
+        <div class="name-row"><span>03</span><strong>Micky</strong></div>
+        <p>Three friends. Equal parts curiosity.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       5. COFFEE
+       ================================================================= -->
+  <section class="coffee wrap" id="coffee">
+    <div>
+      <p class="eyebrow">03 / FUEL THE NEXT “WHAT IF?”</p>
+      <h2>Great ideas.<br>Empty coffee cups.</h2>
+      <p>Gallery is free. Our questionable sleep schedules are self-inflicted. If you’re enjoying what we make, you can fuel the next late-night idea.</p>
+    </div>
+    <div class="coffee-action">
+      <!-- Not a link yet on purpose. When you have one, replace the span with:
+           <a class="coffee-label" href="https://your-coffee-url">REFILL THE DEVS ☕</a> -->
+      <span class="coffee-label">REFILL THE DEVS ☕</span>
+      <p>Our coffee link is coming soon.</p>
+      <small>Completely optional.<br>Playing our games already means a lot.</small>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================================================================
+     6. FOOTER
+     =================================================================== -->
+<footer class="wrap">
+  <div class="logo-wrap">
+    <button type="button" class="brand" aria-describedby="scope-joke-footer">New<span>Game</span>Studio</button>
+    <span class="scope-joke" id="scope-joke-footer" role="tooltip">Dont work because of scope<span aria-hidden="true">✳</span></span>
+  </div>
+  <p>Made after bedtime by Daniel, Ahmed &amp; Micky. <span class="footer-year">© 2026 NewGameStudio</span></p>
+  <a href="#">Back to top ↑</a>
+</footer>
+
+<!-- ===================================================================
+     7. IMAGE PREVIEW DIALOG (contents are filled in by main.js)
+     =================================================================== -->
+<dialog id="preview">
+  <button id="close-preview" type="button" aria-label="Close image preview">Close ×</button>
+  <img src="assets/gallery.png" alt="Full Gallery gameplay screenshot">
+  <p id="preview-caption">Gallery, from development to game</p>
+</dialog>
+
+<script src="main.js"></script>
+<script src="surface.js"></script>
+</body>
+</html>
