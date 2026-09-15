@@ -11,6 +11,7 @@ A one-page static website. Plain HTML, CSS and JavaScript. No build step, no pac
 | `main.js` | The image carousel, the enlarge dialog and the logo joke. Timing settings are at the top. |
 | `surface.js` | The decorative folding background. Desktop only. Safe to remove. |
 | `assets/` | All images. |
+| `coffee/` | Files for the upcoming interactive 3D coffee mug. The GLB model goes in here. See `coffee/README.md`. |
 | `NewGameStudio.code-workspace` | Shortcut for opening the folder in VS Code. Optional. |
 
 ## View it locally
