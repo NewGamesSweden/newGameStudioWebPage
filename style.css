@@ -612,6 +612,61 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   color: #573824;
 }
 
+/* Interactive 3D mug (markup in index.html, behaviour in coffee/coffee-mug.js) */
+.coffee-mug { width: min(300px, 100%); margin: 0 auto 18px; }
+.coffee-mug-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  touch-action: pan-y; /* horizontal drag spins the mug, vertical swipe still scrolls the page */
+  cursor: grab;
+}
+.coffee-mug-canvas.is-grabbing { cursor: grabbing; }
+.coffee-mug-fallback {
+  display: none;
+  width: 100%;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  font-size: 110px;
+  line-height: 1;
+}
+.coffee-mug.is-fallback .coffee-mug-fallback { display: flex; }
+.coffee-mug.is-fallback .coffee-mug-canvas,
+.coffee-mug.is-fallback .coffee-mug-hint,
+.coffee-mug.is-fallback .coffee-mug-controls { display: none; }
+.coffee-mug-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #573824;
+}
+.coffee-mug-status {
+  margin: 4px 0 12px;
+  min-height: 1.4em;
+  font: 600 15px / 1.4 'Space Grotesk', sans-serif;
+}
+.coffee-mug-controls { display: flex; justify-content: center; gap: 8px; }
+.coffee-mug-controls button {
+  min-width: 40px;
+  padding: 7px 12px;
+  background: transparent;
+  color: #25180f;
+  border: 1.5px solid #25180f;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.coffee-mug-controls button:hover:not(:disabled) { background: #25180f; color: var(--orange); }
+.coffee-mug-controls button:disabled { opacity: 0.45; cursor: default; }
+
+/* The site-wide orange focus ring would vanish on the orange panel, so use dark here. */
+.coffee a:focus-visible,
+.coffee button:focus-visible,
+.coffee-mug-canvas:focus-visible { outline: 3px solid #25180f; outline-offset: 4px; }
+
 
 /* 8. FOOTER ========================================================= */
 
@@ -774,6 +829,8 @@ dialog p { font-size: 14px; margin-bottom: 0; }
   .coffee h2 { font-size: 37px; }
   .coffee-action { text-align: left; }
   .coffee-action small { margin-top: 15px; }
+  .coffee-mug { margin-left: 0; }
+  .coffee-mug-controls { justify-content: flex-start; }
 
   /* Footer */
   footer { flex-wrap: wrap; padding-bottom: 25px; }

@@ -16,7 +16,7 @@
   2. Hero (big headline and workshop picture)
   3. Games (the image carousel, the Gallery game, two upcoming projects)
   4. The fools (scope joke and team)
-  5. Coffee (support box)
+  5. Coffee (support box with the interactive 3D mug, see coffee/)
   6. Footer
   7. Image preview dialog (opened by the enlarge button on the carousel)
 
@@ -225,10 +225,26 @@
       <p>Gallery is free. Our questionable sleep schedules are self-inflicted. If you’re enjoying what we make, you can fuel the next late-night idea.</p>
     </div>
     <div class="coffee-action">
-      <!-- Not a link yet on purpose. When you have one, replace the span with:
-           <a class="coffee-label" href="https://your-coffee-url">REFILL THE DEVS ☕</a> -->
-      <span class="coffee-label">REFILL THE DEVS ☕</span>
-      <p>Our coffee link is coming soon.</p>
+
+      <!-- Interactive 3D mug. Behaviour lives in coffee/coffee-mug.js.
+           Click to sip (three sips), drag to spin. Only the donation button refills it. -->
+      <div class="coffee-mug" id="coffee-mug">
+        <canvas class="coffee-mug-canvas" tabindex="0" aria-label="Low-poly coffee mug. Click to take a sip, drag or use the arrow keys to spin it."></canvas>
+        <div class="coffee-mug-fallback" aria-hidden="true">☕</div>
+        <p class="coffee-mug-hint" hidden>Drag to spin · Click to sip</p>
+        <p class="coffee-mug-status" role="status">Pouring the coffee…</p>
+        <div class="coffee-mug-controls">
+          <button type="button" data-action="rotate-left" aria-label="Rotate mug left">←</button>
+          <button type="button" data-action="sip" disabled>Take a sip</button>
+          <button type="button" data-action="rotate-right" aria-label="Rotate mug right">→</button>
+        </div>
+      </div>
+
+      <!-- Donation button. Not a link yet on purpose. To make it live, paste the URL into
+           DONATION_URL at the top of coffee/coffee-mug.js. The script turns this label into a
+           link that opens in a new tab and refills the mug. -->
+      <span class="coffee-label" id="donation-button">REFILL THE DEVS ☕</span>
+      <p id="donation-note">Our coffee link is coming soon.</p>
       <small>Completely optional.<br>Playing our games already means a lot.</small>
     </div>
   </section>
@@ -256,7 +272,23 @@
   <p id="preview-caption">Gallery, from development to game</p>
 </dialog>
 
+<!-- Tells the browser where "three" is when coffee/coffee-mug.js imports it. Must come before the module below. -->
+<script type="importmap">{ "imports": { "three": "./coffee/vendor/three.module.min.js" } }</script>
+
 <script src="main.js"></script>
 <script src="surface.js"></script>
+
+<!-- The coffee mug is an ES module. If it cannot load (for example when index.html is opened
+     straight from disk without a web server), show the plain ☕ instead of a stuck "loading". -->
+<script type="module">
+  import('./coffee/coffee-mug.js')
+    .then(module => { window.coffeeMug = module.mountCoffeeMug(document.querySelector('#coffee-mug')); })
+    .catch(error => {
+      console.warn('Coffee mug not loaded:', error);
+      const mug = document.querySelector('#coffee-mug');
+      mug.classList.add('is-fallback');
+      mug.querySelector('.coffee-mug-status').textContent = 'The 3D mug needs a web server to load. Have an imaginary coffee instead.';
+    });
+</script>
 </body>
 </html>

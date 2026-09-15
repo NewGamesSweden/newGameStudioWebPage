@@ -11,18 +11,19 @@ A one-page static website. Plain HTML, CSS and JavaScript. No build step, no pac
 | `main.js` | The image carousel, the enlarge dialog and the logo joke. Timing settings are at the top. |
 | `surface.js` | The decorative folding background. Desktop only. Safe to remove. |
 | `assets/` | All images. |
-| `coffee/` | Files for the upcoming interactive 3D coffee mug. The GLB model goes in here. See `coffee/README.md`. |
+| `coffee/` | The interactive 3D coffee mug: model, Three.js, behaviour code and tests. See `coffee/README.md`. |
 | `NewGameStudio.code-workspace` | Shortcut for opening the folder in VS Code. Optional. |
 
 ## View it locally
 
-Double-click `index.html` to open it in a browser. That is enough.
-
-If you want a local web server instead, run this in the folder and open http://127.0.0.1:8080:
+Run a small web server in the folder and open http://127.0.0.1:8080:
 
 ```powershell
 py -m http.server 8080 --bind 127.0.0.1
 ```
+
+Double-clicking `index.html` also works, except the 3D coffee mug, which browsers refuse to load
+straight from disk. In that case the coffee section shows a plain ☕ instead. Everything else is the same.
 
 ## Host it on GitHub Pages
 
@@ -44,6 +45,10 @@ Every push to that branch updates the live site.
 **Change carousel speed.** Open `main.js` and change `AUTOPLAY_INTERVAL_MS` at the top. The value is in milliseconds.
 
 **Turn on the two dead links.** The "Play Gallery" and "Refill the devs" labels are intentionally not links yet. Each one has a comment right above it in `index.html` showing the line to swap in once you have a URL.
+
+**Add the donation link.** Open `coffee/coffee-mug.js` and paste the URL into `DONATION_URL` at the top. The "Refill the devs" label becomes a link that opens in a new tab and refills the mug.
+
+**Test the coffee mug rules.** Run `node --test "coffee/tests/*.test.mjs"` in the folder.
 
 **Remove the background effect.** Delete the `<canvas class="origami-surface">` line and the `surface.js` script tag from `index.html`. You can then delete `surface.js`.
 
