@@ -5,12 +5,15 @@
    1.  Fonts and colours (change the look here)
    2.  Base styles
    3.  Header, navigation and the logo joke
-   4.  Hero (with the workshop hotspots)
-   4b. Scope moment (the animated SCOPE word)
-   5.  Gallery section (practice easel, Gallery text, development carousel)
+   4.  Hero (headline and copy on the left, the transparent workshop picture on the right)
+   4b. The SCOPE thought (appears over the workshop now and then)
+   5.  Gallery section (practice easel with the game text beside it, development carousel)
    5b. Also on the workbench (the two other games)
    6.  The fools (team)
-   7.  Coffee box
+   7.  Coffee band
+
+   Spacing scale: 8, 16, 24, 32, 40, 56, 64. Inside a section things sit 8 to 32
+   apart; 56 and 64 are for the gaps between sections.
    8.  Footer
    9.  Image preview dialog
    10. Animated background canvas
@@ -174,41 +177,48 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 
 
 /* 4. HERO =========================================================== */
+/* Two columns that share a floor. Everything the studio has to say sits in
+   the left column; the transparent workshop stands in the right one, its
+   feet level with the last line of copy, so it rises alongside the lower
+   part of the headline without ever touching the text. */
 
 .hero {
-  position: relative;
   display: grid;
-  grid-template-columns: 1fr 1.12fr;
-  padding-top: 72px;
+  grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
+  column-gap: 32px;
+  align-items: end;
+  padding: 40px 0 0;
 }
+.hero-copy { padding-bottom: 8px; }
+.hero-copy > .eyebrow { margin-bottom: 16px; }
 
 .hero h1 {
-  font: 700 clamp(44px, 4.7vw, 70px) / 1.05 'Space Grotesk', sans-serif;
-  letter-spacing: -3px;
-  margin: 0 0 26px;
-  position: relative;
-  z-index: 1;
+  margin: 0;
+  font: 700 clamp(40px, 4.8vw, 70px) / 0.98 'Space Grotesk', sans-serif;
+  letter-spacing: -0.065em;
 }
 .hero h1 span { color: var(--cyan); }
 
 .intro {
+  max-width: 420px;
+  margin: 24px 0 0;
   color: var(--muted);
-  max-width: 440px;
   font-size: 17px;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
 .actions {
   display: flex;
   align-items: center;
-  gap: 27px;
-  margin-top: 30px;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-top: 24px;
 }
 
 .button {
   display: inline-flex;
   align-items: center;
-  gap: 30px;
+  gap: 24px;
   background: var(--cyan);
   color: #0b1422;
   padding: 15px 21px;
@@ -222,257 +232,124 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 .text-link span { margin-left: 9px; }
 
 .micro {
+  margin: 16px 0 0;
   font-size: 12px;
   color: var(--muted);
-  margin-top: 17px;
 }
-
-.hero-art {
-  align-self: center;
-  position: relative;
-  margin-right: -30px;
-  margin-left: -50px;
-}
-.workshop { position: relative; }
-.workshop img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1.5;
-  object-fit: contain;
-  mask-image: linear-gradient(to bottom, #000 88%, transparent);
-}
-
-/* Hotspots: ordinary links placed by percentage (--x, --y set in index.html).
-   The dot's centre lands exactly on the coordinate; the label opens to the right. */
-.hotspot {
-  position: absolute;
-  left: var(--x);
-  top: var(--y);
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px;                       /* comfortable touch target around the small dot */
-  transform: translate(-21px, -50%);   /* padding + dot radius, so the dot sits on the point */
-  color: var(--ink);
-}
-.hotspot-dot {
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--cyan);
-  border: 3px solid var(--bg);
-  box-shadow: 0 0 0 2px var(--cyan), 0 2px 12px #0008;
-  transition: transform 0.2s;
-}
-.hotspot-label {
-  font: 600 12px 'Space Grotesk', sans-serif;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  white-space: nowrap;
-  background: #0b1422e6;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 6px 10px;
-  opacity: 0;
-  transform: translateX(-6px);
-  transition: opacity 0.2s, transform 0.2s;
-}
-.hotspot:hover .hotspot-dot, .hotspot:focus-visible .hotspot-dot { transform: scale(1.2); background: var(--ink); }
-.hotspot:hover .hotspot-label, .hotspot:focus-visible .hotspot-label { opacity: 1; transform: none; }
-.hotspot:focus-visible { outline: none; }
-.hotspot:focus-visible .hotspot-label { outline: 3px solid var(--orange); outline-offset: 3px; }
-/* Without a mouse there is no hover, so the labels stay visible. */
-@media (hover: none) {
-  .hotspot-label { opacity: 1; transform: none; }
-}
-
-.art-note {
-  position: absolute;
-  bottom: 8%;
-  right: 8%;
-  font: 500 11px 'Space Grotesk', sans-serif;
-  letter-spacing: 1.4px;
-  background: #111e2ed9;
-  padding: 12px 16px;
-  border: 1px solid #354956;
-  border-radius: 4px;
-}
-.art-note span { color: var(--cyan); margin: 0 8px; }
-
 .hero-bottom {
-  grid-column: 1 / -1;
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-  padding: 48px 0 24px;
-  margin-top: 15px;
+  margin: 32px 0 0;
   font-size: 10px;
   letter-spacing: 1.8px;
   color: var(--muted);
 }
 
-
-/* 4b. SCOPE MOMENT ================================================== */
-/* The markup is the final pose. main.js adds "run" once when the section
-   scrolls into view; the keyframes then play through in about 3.7 seconds. */
-
-.scope-moment {
+/* The picture has a transparent background, so it sits straight on the page. */
+.hero-art {
   position: relative;
-  padding: 70px 0 30px;
+  min-width: 0;
+  margin-right: -24px; /* lets the desk run a little past the column edge */
 }
-.scope-moment .eyebrow { margin-bottom: 18px; }
-
-.scope-stage {
-  position: relative;
-  container-type: inline-size; /* lets the word size follow the stage width, see .scope-word */
-  height: clamp(220px, 30vw, 390px);
-  display: grid;
-  place-items: center;
-  overflow: hidden; /* the biggest pose never spills into the page */
-  margin: 10px 0 8px;
+.workshop { position: relative; isolation: isolate; }
+.workshop img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 25px #02091635);
 }
 
-.scope-plan {
+
+/* 4b. THE SCOPE THOUGHT ============================================= */
+/* Three words stacked on one spot over the workshop. workshop-scope.js sets
+   --thought-x and --thought-y to one of its curated spots and adds
+   "is-playing" (sometimes also "has-echo") for one four-second run:
+   SCOPE inflates far past its size, vanishes, a sheepish "scope." takes its
+   place, and now and then "just one more feature" follows. */
+
+.scope-cloud {
+  --thought-x: 23%; /* where the still "scope." sits under reduced motion; the script picks its own spots */
+  --thought-y: 8%;
   position: absolute;
-  width: 64%;
-  height: 44%;
-  border: 2px dashed #92a4ba88;
-  transform: rotate(-2deg);
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
 }
-.scope-plan span {
+.scope-thought,
+.scope-small {
   position: absolute;
-  left: 9px;
-  top: -12px;
-  padding: 0 9px;
-  background: var(--bg);
-  color: var(--muted);
-  font: 600 12px 'Space Grotesk', sans-serif;
-  letter-spacing: 0.08em;
+  left: var(--thought-x);
+  top: var(--thought-y);
+  font: 700 clamp(22px, 2.7vw, 40px) / 1 'Space Grotesk', sans-serif;
+  letter-spacing: -0.07em;
+  color: var(--ink);
+  text-shadow: 0 3px 18px #0b1422;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-6deg) scale(0.6);
 }
-
-.scope-word {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  font: 700 clamp(56px, 15vw, 190px) / 1 'Space Grotesk', sans-serif;
-  font-size: clamp(56px, 17cqw, 190px); /* five letters come to about 3.2em, so the word ends inside the 64% plan box */
-  letter-spacing: -0.065em;
+.scope-small { font-weight: 500; font-size: clamp(16px, 1.6vw, 24px); letter-spacing: -0.02em; color: var(--muted); }
+.scope-echo {
+  position: absolute;
+  left: calc(var(--thought-x) + 8%);
+  top: calc(var(--thought-y) + 9%);
+  font: 500 clamp(12px, 1.1vw, 15px) 'Space Grotesk', sans-serif;
   color: var(--orange);
-  transform: rotate(-3deg);
+  white-space: nowrap;
+  opacity: 0;
+  transform: rotate(4deg);
 }
-.scope-word span { display: inline-block; transform-origin: 50% 85%; }
-.scope-word span:nth-child(3) { color: var(--cyan); }
+.scope-cloud.is-playing .scope-thought { animation: scope-inflate 4s both; pointer-events: auto; cursor: default; }
+.scope-cloud.is-playing .scope-small { animation: scope-sheepish 4s both; }
+.scope-cloud.is-playing.has-echo .scope-echo { animation: scope-afterthought 4s both; }
+.scope-cloud.is-echoing .scope-echo { animation: scope-afterthought-once 1.6s both; } /* pointing at the word */
 
-.scope-sticker {
-  position: absolute;
-  right: 7%;
-  bottom: 5%;
-  padding: 9px 13px;
-  background: var(--cyan);
-  color: var(--bg);
-  font: 700 clamp(14px, 2vw, 18px) 'Space Grotesk', sans-serif;
-  transform: rotate(5deg);
-  box-shadow: 4px 4px 0 #0005;
+/* Small thought, two comical growth spurts, then it pops. */
+@keyframes scope-inflate {
+  0%   { opacity: 0; transform: translate(-50%, -40%) rotate(-8deg) scale(0.45); }
+  10%  { opacity: 1; transform: translate(-50%, -50%) rotate(-6deg) scale(0.6); }
+  30%  { opacity: 1; transform: translate(-50%, -52%) rotate(-5deg) scale(0.7); }
+  38%  { opacity: 1; transform: translate(-50%, -54%) rotate(-3deg) scale(1.15); }
+  46%  { opacity: 1; transform: translate(-50%, -54%) rotate(-4deg) scale(1.05); }
+  62%  { opacity: 1; transform: translate(-50%, -60%) rotate(3deg) scale(1.9); }
+  63%, 100% { opacity: 0; transform: translate(-50%, -60%) rotate(3deg) scale(1.9); }
 }
-
-.scope-body {
-  max-width: 620px;
-  margin: 8px 0 0;
-  font-size: clamp(16px, 2vw, 20px);
-  line-height: 1.65;
-  color: var(--muted);
+/* The sheepish version takes over exactly when the big one pops. */
+@keyframes scope-sheepish {
+  0%, 62% { opacity: 0; transform: translate(-50%, -50%) rotate(-6deg) scale(0.6); }
+  64%     { opacity: 1; transform: translate(-50%, -50%) rotate(-6deg) scale(1); }
+  88%     { opacity: 1; transform: translate(-50%, -48%) rotate(-6deg) scale(1); }
+  100%    { opacity: 0; transform: translate(-50%, -40%) rotate(-6deg) scale(1); }
 }
-
-.scope-moment.run .scope-plan { animation: scope-boundary 3.7s both; }
-.scope-moment.run .scope-word { animation: scope-word 3.7s both; }
-.scope-moment.run .scope-sticker { animation: scope-note 3.7s both; }
-.scope-moment.run .scope-word span:nth-child(1) { animation: scope-first 3.7s both; }
-.scope-moment.run .scope-word span:nth-child(2) { animation: scope-second 3.7s both; }
-.scope-moment.run .scope-word span:nth-child(3) { animation: scope-third 3.7s both; }
-.scope-moment.run .scope-word span:nth-child(4) { animation: scope-fourth 3.7s both; }
-.scope-moment.run .scope-word span:nth-child(5) { animation: scope-fifth 3.7s both; }
-
-/* Neat plan, two awkward growth surges, bursting out, then settling crooked. */
-@keyframes scope-word {
-  0%, 12% { transform: scale(0.66) rotate(0); }
-  24% { transform: scale(0.9) rotate(-2deg); }
-  36% { transform: scale(0.86) rotate(1deg); }
-  50% { transform: scale(1.06) rotate(-3deg); }
-  64% { transform: scale(1.18) rotate(2deg); }
-  76% { transform: scale(0.98) rotate(-4deg); }
-  88%, 100% { transform: scale(1) rotate(-3deg); }
+@keyframes scope-afterthought {
+  0%, 74%  { opacity: 0; transform: rotate(4deg) translateY(6px); }
+  80%, 94% { opacity: 0.9; transform: rotate(4deg); }
+  100%     { opacity: 0; transform: rotate(4deg); }
 }
-@keyframes scope-boundary {
-  0%, 15% { transform: rotate(0) scale(1); border-style: solid; }
-  35% { transform: rotate(1deg) scale(1.04, 0.97); }
-  52% { transform: rotate(-2deg) scale(1.12, 0.94); }
-  64% { transform: rotate(4deg) scale(1.3, 1.15); opacity: 0.3; }
-  80%, 100% { transform: rotate(-2deg); opacity: 1; border-style: dashed; }
-}
-@keyframes scope-first {
-  0%, 46%, 100% { transform: none; }
-  63% { transform: translate(-0.07em, -0.03em) rotate(-10deg); }
-  76% { transform: rotate(3deg); }
-}
-@keyframes scope-second {
-  0%, 46%, 100% { transform: none; }
-  63% { transform: translateY(0.055em) rotate(8deg); }
-  76% { transform: rotate(-4deg); }
-}
-@keyframes scope-third {
-  0%, 46%, 100% { transform: none; }
-  61% { transform: translateY(-0.12em) rotate(-13deg) scale(1.12); }
-  74% { transform: translateY(0.04em) rotate(8deg); }
-}
-@keyframes scope-fourth {
-  0%, 46%, 100% { transform: none; }
-  65% { transform: translateY(-0.04em) rotate(8deg); }
-  78% { transform: rotate(-4deg); }
-}
-@keyframes scope-fifth {
-  0%, 46%, 100% { transform: none; }
-  64% { transform: translate(0.07em, 0.03em) rotate(15deg); }
-  80% { transform: rotate(-5deg); }
-}
-@keyframes scope-note {
-  0%, 74% { opacity: 0; transform: translateY(18px) rotate(12deg) scale(0.85); }
-  85% { opacity: 1; transform: translateY(-5px) rotate(3deg) scale(1.04); }
-  100% { opacity: 1; transform: rotate(5deg); }
+@keyframes scope-afterthought-once {
+  0%       { opacity: 0;   transform: rotate(4deg) translateY(6px); }
+  20%, 70% { opacity: 0.9; transform: rotate(4deg); }
+  100%     { opacity: 0;   transform: rotate(4deg); }
 }
 
 
 /* 5. GALLERY SECTION ================================================ */
 
-.section { padding-top: 90px; padding-bottom: 90px; }
+.section { padding: 64px 0; }
 
-.section-top {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 35px;
-}
-.section-top .eyebrow { margin-bottom: 17px; }
-.section-top > p { color: var(--muted); font-size: 16px; margin-bottom: 4px; }
-
-/* Practice easel on the left, Gallery text on the right */
+/* One composition: the easel on the left, the game introduced once on the right. */
 .gallery-feature {
   display: grid;
-  grid-template-columns: 1.45fr 1fr;
-  gap: 50px;
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+  gap: 40px;
   align-items: center;
 }
 
 /* --- Practice easel (markup in index.html, behaviour in gallery/practice-easel.js) --- */
+.practice-easel { min-width: 0; }
 .easel-stage {
   position: relative;
-  aspect-ratio: 6 / 5;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: radial-gradient(ellipse at 50% 35%, #1b2a3c 0%, #101c2a 55%, #0b1422 100%);
+  aspect-ratio: 1.2; /* landscape, tall enough for the tray, lower beam and legs; the page shows through */
   overflow: hidden;
 }
 .easel-canvas, .easel-flat {
@@ -505,6 +382,7 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   text-align: center;
   color: var(--muted);
   font-size: 15px;
+  border: 1px solid var(--line);
 }
 .easel-flat,                          /* the buffer stays hidden until the flat fallback needs it */
 .practice-easel.is-flat .easel-canvas,
@@ -513,71 +391,74 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 .practice-easel.is-static .easel-static { display: flex; }
 .practice-easel.is-static .easel-reset { display: none; }
 
+/* The hint and Reset sit right under the easel's feet */
 .easel-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-top: 14px;
+  margin: 8px 12% 0;
 }
-.easel-hint { margin: 0; font: 500 18px 'Space Grotesk', sans-serif; }
+.easel-hint { margin: 0; font: 500 16px 'Space Grotesk', sans-serif; }
 .easel-reset {
   background: transparent;
   color: var(--ink);
-  border: 1px solid #53606e;
-  border-radius: 5px;
-  padding: 9px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--muted);
+  padding: 8px 0;
   font-size: 14px;
 }
 .easel-reset:hover { border-color: var(--cyan); color: var(--cyan); }
 
-/* --- Development carousel, full width under the easel --- */
+/* --- The game, introduced once --- */
+.game-copy { max-width: 480px; }
+.tag {
+  margin: 0 0 16px;
+  font-size: 11px;
+  letter-spacing: 1.6px;
+  color: var(--cyan);
+}
+.tag span { margin: 0 8px; color: var(--muted); }
+.game-copy h2 {
+  margin: 0 0 20px;
+  font-size: clamp(36px, 4vw, 56px);
+  letter-spacing: -0.05em;
+}
+.game-tagline { margin: 0 0 12px; font: 500 20px / 1.4 'Space Grotesk', sans-serif; }
+.game-description { margin: 0 0 12px; font-size: 15px; line-height: 1.7; color: var(--muted); }
+.play-gallery { margin-top: 16px; font-size: 16px; }
+
+/* --- Development carousel: heading, image, controls under it, thumbnail strip --- */
+.development-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 56px 0 16px;
+}
+.development-heading h3 {
+  margin: 0;
+  font: 500 clamp(24px, 2.6vw, 32px) 'Space Grotesk', sans-serif;
+  letter-spacing: -0.04em;
+}
+.development-heading p { margin: 0; font-size: 14px; color: var(--muted); }
+
 .carousel {
   position: relative;
   min-width: 0;
-  overflow: hidden;
-  margin-top: 60px;
-  background: #08111e;
-  border: 1px solid var(--line);
-  border-radius: 10px;
   display: flex;
   flex-direction: column;
-}
-.carousel-body {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-}
-.carousel-side {
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid var(--line);
+  gap: 12px;
 }
 .carousel:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
 
-.carousel-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 16px;
-  color: var(--cyan);
-  font-size: 11px;
-  letter-spacing: 1px;
-}
-.carousel-heading button {
-  background: none;
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
 .slide-stage {
   position: relative;
-  height: 400px;
+  height: clamp(280px, 34vw, 480px);
   isolation: isolate;
+  overflow: hidden;
+  background: #101c2a;
+  transform: rotate(-0.6deg); /* a print pinned up slightly askew */
   touch-action: pan-y; /* allows swipe left/right while still scrolling the page vertically */
 }
 
@@ -618,31 +499,41 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 }
 .expand:hover { color: var(--bg); background: var(--cyan); }
 
+/* Arrows, caption and the auto-play switch in one row */
 .carousel-controls {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
-  padding: 14px 16px 10px;
 }
 .carousel-controls > button {
-  width: 38px;
-  height: 38px;
   flex-shrink: 0;
   border: 1px solid #455365;
   background: var(--panel);
   color: var(--ink);
+}
+#previous-slide, #next-slide {
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   font-size: 20px;
 }
+.autoplay {
+  margin-left: 12px; /* part of the same group as the arrows, not off at the far side */
+  padding: 9px 14px;
+  border-radius: 5px;
+  font-size: 13px;
+}
+.autoplay[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); }
 .carousel button:hover { border-color: var(--cyan); color: var(--cyan); }
 
 .slide-caption {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  font-size: 14px;
+  gap: 2px;
+  font-size: 15px;
   line-height: 1.4;
 }
 .slide-caption > span:last-child {
@@ -653,120 +544,97 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 
 .thumbnails {
   display: flex;
-  flex-wrap: wrap;   /* a grid of thumbnails beside the image */
-  gap: 8px;
+  flex-wrap: nowrap;   /* one strip; it scrolls sideways when it runs out of room */
+  gap: 10px;
   overflow-x: auto;
-  padding: 8px 16px 16px;
+  padding: 4px 0 10px;
   scrollbar-width: thin;
   scrollbar-color: #445567 transparent;
 }
 .thumb {
-  flex: 0 0 65px;
-  height: 45px;
+  flex: 0 0 84px;
+  height: 56px;
   border: 2px solid transparent;
-  border-radius: 4px;
   overflow: hidden;
   padding: 0;
   background: #1e2936;
-  opacity: 0.6;
+  opacity: 0.55;
   transition: opacity 0.2s, border-color 0.2s;
 }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb[aria-current="true"] { border-color: var(--cyan); opacity: 1; }
 .thumb:hover { opacity: 1; }
 
-/* --- Gallery text --- */
-.game-copy { padding: 0; }
-
-.tag {
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  color: var(--cyan);
-  margin: 0 0 12px;
-}
-.tag span { margin: 0 9px; color: var(--muted); }
-
-.game-copy h3 {
-  font: 600 53px 'Space Grotesk', sans-serif;
-  letter-spacing: -2px;
-  margin: 0 0 16px;
-  display: flex;
-  justify-content: space-between;
-}
-.game-copy h3 span { color: var(--cyan); font-size: 35px; }
-
-.game-tagline { font-size: 20px; line-height: 1.4; }
-.game-description { font-size: 15px; line-height: 1.7; color: var(--muted); }
-
-.game-footer {
-  border-top: 1px solid var(--line);
-  padding-top: 18px;
-  margin-top: 25px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.unlinked { font-weight: 600; color: var(--cyan); }
-.unlinked span { margin-left: 16px; }
-.game-footer small { font-size: 12px; color: var(--muted); }
-
-
 
 /* 5b. ALSO ON THE WORKBENCH ========================================= */
-/* A plain numbered list, deliberately not another row of cards. */
+/* The heading and its intro on the left, two plain entries on the right:
+   the first wider, the second a little narrower and a step lower. */
 
-.workbench { padding: 10px 0 90px; }
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 32px 64px;
+  align-items: start;
+  padding: 56px 0;
+  border-top: 1px solid var(--line);
+}
+.workbench-head { padding-top: 22px; } /* the heading's cap height lines up with the first entry's title */
+.workbench-head .eyebrow { margin-bottom: 16px; }
+.workbench h2 { font-size: clamp(34px, 3.6vw, 50px); letter-spacing: -0.05em; }
+.workbench-intro {
+  max-width: 380px;
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+}
 .workbench-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-top: 1px solid var(--line);
 }
 .workbench-list li {
-  display: grid;
-  grid-template-columns: 70px 1fr auto;
-  gap: 30px;
-  align-items: center;
-  padding: 30px 0;
-  border-bottom: 1px solid var(--line);
+  max-width: 460px;
+  padding-top: 20px;
+  border-top: 2px solid var(--cyan);
 }
-.workbench-number { font: 500 15px 'Space Grotesk', sans-serif; color: var(--cyan); }
-.workbench-list h3 { font: 500 27px 'Space Grotesk', sans-serif; letter-spacing: -0.5px; margin: 0 0 6px; }
-.workbench-list p { margin: 0; color: var(--muted); font-size: 15px; }
-.workbench-status {
+.workbench-list li + li {
+  max-width: 400px;
+  margin: 40px 0 0 18%; /* the step */
+  border-top-color: var(--orange);
+}
+.workbench-list h3 { margin: 0 0 6px; font: 500 26px 'Space Grotesk', sans-serif; letter-spacing: -0.5px; }
+.workbench-list p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+.workbench-list .workbench-status {
+  margin-top: 12px;
   font-size: 11px;
   letter-spacing: 1.6px;
   text-transform: uppercase;
   color: var(--orange);
-  white-space: nowrap;
 }
 
 
 /* 6. THE FOOLS ====================================================== */
 
-.fools {
-  background: #101c2a80;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding: 85px 0;
-}
+.fools { padding: 48px 0 56px; }
 
 .team {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 90px;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 6%;
   align-items: center;
 }
 
+/* A large photo, pinned up slightly askew like the carousel print */
 .team-photo {
   position: relative;
   overflow: hidden;
-  border-radius: 8px;
-  max-height: 430px;
+  max-height: 530px;
+  transform: rotate(-2deg);
 }
 .team-photo img {
   width: 100%;
-  height: 430px;
+  height: 530px;
   object-fit: cover;
   object-position: 50% 64%;
   display: block;
@@ -781,50 +649,56 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   letter-spacing: 1px;
 }
 
+.team-names .eyebrow { margin-bottom: 16px; }
 .team-names h3 {
-  font: 500 32px / 1.2 'Space Grotesk', sans-serif;
-  margin: 0 0 18px;
-  letter-spacing: -1px;
+  font: 500 clamp(30px, 3.4vw, 46px) / 1.2 'Space Grotesk', sans-serif;
+  margin: 0 0 16px;
+  letter-spacing: -0.05em;
 }
 .team-intro {
+  max-width: 380px;
   color: var(--muted);
   font-size: 16px;
-  line-height: 1.8;
-  margin: 0 0 24px;
+  line-height: 1.7;
+  margin: 0 0 20px;
 }
 .team-names h3 span { color: var(--cyan); }
 
 .name-row {
-  padding: 13px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #334050;
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 24px;
 }
 .name-row > span { font-size: 12px; color: var(--cyan); }
 .name-row strong { font: 500 24px 'Space Grotesk', sans-serif; }
-.team-names > p { font-size: 13px; color: var(--muted); margin-top: 20px; }
+.team-names > p { font-size: 13px; color: var(--muted); margin-top: 16px; }
 
 
-/* 7. COFFEE BOX ===================================================== */
+/* 7. COFFEE BAND ==================================================== */
+/* A full-width orange band. ".coffee.wrap" outranks the ".wrap" width rule;
+   the side padding then lines the content up with the 1280px page column.
+   The mug stands mostly inside the band; only its rim and steam cross the
+   top edge, and the refill label sits right beside it. */
 
-.coffee {
+.coffee.wrap {
+  width: 100%;
   display: grid;
-  grid-template-columns: 1.4fr auto 1fr; /* copy | mug | donation label */
+  grid-template-columns: minmax(0, 1.2fr) auto minmax(0, 1fr); /* copy | mug | refill */
   align-items: center;
-  gap: 50px;
-  margin-top: 85px;
-  margin-bottom: 85px;
-  padding: 44px 48px;
+  gap: 24px 40px;
+  margin-top: 64px;
+  margin-bottom: 40px;
+  padding: 56px max(50px, calc((100% - 1280px) / 2));
   background: var(--orange);
   color: #25180f;
-  border-radius: 8px;
 }
-.coffee .eyebrow { color: #573824; margin-bottom: 18px; }
-.coffee h2 { font-size: 44px; }
-.coffee p { max-width: 520px; font-size: 16px; }
+.coffee .eyebrow { color: #573824; margin-bottom: 16px; }
+.coffee h2 { font-size: clamp(34px, 3.6vw, 50px); letter-spacing: -0.05em; }
+.coffee p { max-width: 480px; font-size: 16px; }
 
-.coffee-action { text-align: center; }
+.coffee-action { text-align: left; }
 .coffee-label {
   font: 700 20px 'Space Grotesk', sans-serif;
   border-bottom: 2px solid #25180f;
@@ -835,14 +709,22 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 .coffee-action > p { font-size: 14px; }
 .coffee-action small {
   display: block;
+  max-width: 230px;
   font-size: 12px;
   line-height: 1.7;
-  margin-top: 24px;
+  margin-top: 16px;
   color: #573824;
 }
 
-/* Interactive 3D mug (markup in index.html, behaviour in coffee/coffee-mug.js) */
-.coffee-mug { width: min(300px, 100%); margin: 0 auto; }
+/* Interactive 3D mug (markup in index.html, behaviour in coffee/coffee-mug.js).
+   The negative top margin cancels the band's padding and lifts the mug so its
+   rim and steam show above the edge; the body stays on the orange. */
+.coffee-mug {
+  position: relative;
+  width: 300px;
+  margin: -130px 0 0;
+  align-self: start;
+}
 .coffee-mug-canvas {
   display: block;
   width: 100%;
@@ -852,6 +734,14 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   cursor: grab;
 }
 .coffee-mug-canvas.is-grabbing { cursor: grabbing; }
+.coffee-mug-hint {
+  margin: 0;
+  text-align: center;
+  font: 500 11px 'Space Grotesk', sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #573824;
+}
 .coffee-mug-fallback {
   display: none;
   width: 100%;
@@ -862,15 +752,12 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   line-height: 1;
 }
 .coffee-mug.is-fallback .coffee-mug-fallback { display: flex; }
-.coffee-mug.is-fallback .coffee-mug-canvas { display: none; }
-/* Status text is visible only while loading or in the fallback. Once the mug
-   is ready it stays in the page for screen readers but is hidden from view. */
+.coffee-mug.is-fallback .coffee-mug-canvas,
+.coffee-mug.is-fallback .coffee-mug-hint { display: none; }
+/* The status line is for screen readers: it announces sips left but is never
+   shown on screen, not even while loading. The one exception is the fallback,
+   where it explains why there is no 3D mug. */
 .coffee-mug-status {
-  margin: 4px 0 0;
-  text-align: center;
-  font: 600 15px / 1.4 'Space Grotesk', sans-serif;
-}
-.coffee-mug.is-ready .coffee-mug-status {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -878,6 +765,17 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+.coffee-mug.is-fallback .coffee-mug-status {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 4px 0 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  text-align: center;
+  font: 600 15px / 1.4 'Space Grotesk', sans-serif;
 }
 
 /* The site-wide orange focus ring would vanish on the orange panel, so use dark here. */
@@ -951,40 +849,40 @@ dialog p { font-size: 14px; margin-bottom: 0; }
 
 /* 11. SCREEN SIZES ================================================== */
 
-/* Large desktop */
-@media (min-width: 1550px) {
-  .hero h1 { font-size: 76px; }
-}
-
 /* Tablet and small laptop */
 @media (max-width: 1000px) {
   .wrap { width: calc(100% - 56px); }
   .brand { font-size: 22px; }
 
-  .hero { padding-top: 50px; }
-  .hero h1 { font-size: 52px; }
-  .hero-art { margin-left: -20px; margin-right: -15px; }
-  .art-note { right: 0; font-size: 9px; padding: 9px; }
-  .hero-bottom { font-size: 9px; }
-  .actions { gap: 15px; }
+  .hero { grid-template-columns: 1fr 1fr; column-gap: 24px; padding-top: 32px; }
+  .hero h1 { font-size: clamp(38px, 6vw, 56px); }
+  .intro { font-size: 16px; }
   .button { gap: 13px; }
+  .hero-art { margin-right: -12px; }
 
-  .gallery-feature { grid-template-columns: 1.2fr 1fr; gap: 30px; }
+  .gallery-feature { gap: 28px; }
   .slide-stage { height: 320px; }
-  .carousel-body { grid-template-columns: 1.4fr 1fr; }
-  .scope-moment { padding-top: 50px; }
 
-  .team { gap: 45px; }
-  .coffee { padding: 35px; gap: 30px; }
-  .coffee h2 { font-size: 36px; }
-  .coffee-mug { width: min(240px, 100%); }
+  .workbench { grid-template-columns: 1fr; gap: 32px; }
+  .workbench-list li + li { margin-left: 12%; }
+
+  .coffee.wrap { padding: 48px 28px; gap: 20px 28px; }
+  .coffee-mug { width: 240px; margin-top: -100px; }
+}
+
+/* Tablet held upright: three coffee columns no longer fit, so the copy takes the
+   full width and the mug and refill label share the row beneath it. */
+@media (max-width: 820px) {
+  .coffee.wrap { grid-template-columns: auto minmax(0, 1fr); row-gap: 24px; }
+  .coffee.wrap > div:first-child { grid-column: 1 / -1; }
+  .coffee-mug { margin-top: 0; align-self: center; }
 }
 
 /* Phone */
 @media (max-width: 700px) {
   html { scroll-padding-top: 100px; }
   .wrap { width: calc(100% - 36px); }
-  .eyebrow { font-size: 10px; letter-spacing: 1.5px; margin-bottom: 20px; }
+  .eyebrow { font-size: 10px; letter-spacing: 1.5px; margin-bottom: 16px; }
 
   /* Header: logo and links can wrap onto two rows if needed */
   .nav {
@@ -999,68 +897,60 @@ dialog p { font-size: 14px; margin-bottom: 0; }
   .nav-coffee { display: none; }
   .scope-joke { width: 230px; font-size: 16px; }
 
-  /* Hero stacks: text first, picture below */
-  .hero { display: flex; flex-direction: column; padding-top: 38px; }
-  .hero h1 { font-size: clamp(42px, 10.8vw, 68px); letter-spacing: -2.3px; }
-  .desktop { display: none; }
-  .intro { font-size: 16px; }
-  .actions { gap: 23px; }
+  /* Hero stacks: eyebrow, headline, picture, then the intro and buttons */
+  .hero { display: flex; flex-direction: column; padding-top: 28px; }
+  .hero-copy { display: contents; }
+  .hero-copy > .eyebrow { order: 0; font-size: 11px; }
+  .hero h1 { order: 1; font-size: clamp(40px, 9.6vw, 62px); line-height: 1.02; }
+  .hero-art { order: 2; width: 100%; margin: 24px 0 0; }
+  .intro { order: 3; max-width: 100%; margin: 20px 0 0; font-size: 16px; }
+  .actions { order: 4; margin-top: 20px; }
   .text-link { font-size: 13px; }
-  .micro { font-size: 11px; }
-  .hero-art { margin: 0 -12px; width: calc(100% + 24px); }
-  .art-note { right: 15%; bottom: 5%; font-size: 10px; }
-  .hero-bottom { padding-top: 8px; margin-top: 0; }
-  .hero-bottom span:last-child { display: none; }
+  .micro { order: 5; margin-top: 14px; font-size: 11px; }
+  .hero-bottom { order: 6; margin-top: 20px; }
+  .scope-thought { font-size: 26px; }
+  .scope-small { font-size: 15px; }
+  .scope-echo { font-size: 12px; }
 
-  /* Games */
-  .section { padding-top: 55px; padding-bottom: 55px; }
-  .section-top { display: block; }
-  .section-top > p { margin-top: 20px; }
-  /* Gallery text first, then the easel, as the brief asks for on phones */
-  .gallery-feature { grid-template-columns: 1fr; gap: 28px; }
-  .game-copy { order: -1; }
-  .game-copy h3 { font-size: 45px; }
-  .easel-stage { aspect-ratio: 4 / 5; }
-  .carousel { margin-top: 40px; }
-  .carousel-body { grid-template-columns: 1fr; }
-  .carousel-side { border-left: 0; border-top: 1px solid var(--line); }
-  .carousel-heading { font-size: 10px; padding: 12px; }
-  .slide-stage { height: clamp(220px, 60vw, 350px); }
-  .carousel-controls { padding: 12px; }
-  .thumbnails { flex-wrap: nowrap; padding-left: 12px; padding-right: 12px; }
-  .thumb { flex-basis: 60px; }
-
-  /* Scope */
-  .scope-moment { padding: 40px 0 10px; }
-  .scope-stage { height: 230px; }
-  .scope-plan { width: 76%; height: 42%; }
-  .scope-sticker { right: 5%; bottom: 8%; }
+  /* Games: text first, then the easel, then the development images */
+  .section { padding: 48px 0; }
+  .gallery-feature { display: flex; flex-direction: column; gap: 20px; }
+  .game-copy { order: 0; max-width: none; }
+  .practice-easel { order: 1; width: 100%; }
+  .easel-stage { aspect-ratio: 1.05; }
+  .easel-bar { margin: 8px 0 0; }
+  .game-copy h2 { font-size: 40px; }
+  .development-heading { display: block; margin-top: 44px; }
+  .development-heading p { margin-top: 6px; }
+  .slide-stage { height: clamp(220px, 60vw, 300px); transform: none; }
+  .autoplay { margin-left: 0; }
+  .thumb { flex-basis: 64px; height: 44px; }
 
   /* Workbench */
-  .workbench { padding-bottom: 55px; }
-  .workbench-list li { grid-template-columns: 40px 1fr; gap: 14px; padding: 22px 0; }
-  .workbench-status { grid-column: 2; }
-  .workbench-list h3 { font-size: 23px; }
+  .workbench { grid-template-columns: 1fr; gap: 28px; padding: 40px 0 48px; }
+  .workbench h2 { font-size: 36px; }
+  .workbench-list li { max-width: none; }
+  .workbench-list li + li { max-width: none; margin: 28px 0 0; }
 
   /* The fools */
-  .fools { padding: 55px 0; }
-  .team { grid-template-columns: 1fr; gap: 28px; }
-  .team-photo { height: 360px; }
-  .team-photo img { height: 360px; }
+  .fools { padding: 24px 0 44px; }
+  .team { grid-template-columns: 1fr; gap: 32px; }
+  .team-photo { margin: 0 5px; }
+  .team-photo img { height: 390px; }
+  .team-names h3 { font-size: 36px; }
   .team-names h3 br:first-child { display: none; }
 
-  /* Coffee */
-  .coffee {
+  /* Coffee: copy, mug, refill, stacked */
+  .coffee.wrap {
     grid-template-columns: 1fr;
-    padding: 30px 26px;
-    margin-top: 55px;
-    margin-bottom: 55px;
-    gap: 25px;
+    gap: 16px;
+    margin-top: 48px;
+    padding: 40px 24px;
   }
-  .coffee h2 { font-size: 37px; }
-  .coffee-action { text-align: left; }
-  .coffee-action small { margin-top: 15px; }
-  .coffee-mug { margin-left: 0; }
+  .coffee.wrap > div:first-child { grid-column: auto; }
+  .coffee h2 { font-size: 38px; }
+  .coffee-mug { width: min(240px, 100%); margin: 0 auto; align-self: center; }
+  .coffee-action small { max-width: none; margin-top: 12px; }
 
   /* Footer */
   footer { flex-wrap: wrap; padding-bottom: 25px; }
@@ -1073,4 +963,7 @@ dialog p { font-size: 14px; margin-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; animation: none !important; }
+  /* The SCOPE thought becomes one small, faint, still "scope." */
+  .scope-thought, .scope-echo { display: none; }
+  .scope-small { opacity: 0.45; transform: translate(-50%, -50%) rotate(-6deg) scale(1); }
 }

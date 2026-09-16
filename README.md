@@ -8,9 +8,10 @@ A one-page static website. Plain HTML, CSS and JavaScript. No build step, no pac
 | --- | --- |
 | `index.html` | All the text and page structure. Edit this to change what the site says. |
 | `style.css` | All the styling. Colours are at the top. Phone and tablet rules are at the bottom. |
-| `main.js` | The image carousel, the enlarge dialog, the logo joke and the one-shot SCOPE animation trigger. Timing settings are at the top. |
+| `main.js` | The image carousel, the enlarge dialog and the logo joke. Timing settings are at the top. |
+| `workshop-scope.js` | The word SCOPE that drifts up over the workshop picture now and then. Timing and positions are at the top. |
 | `surface.js` | The decorative folding background. Desktop only. Safe to remove. |
-| `assets/` | All images. |
+| `assets/` | All images. The hero uses the transparent `workshop-cutout.webp`; the original `workshop.png` is kept alongside it. |
 | `gallery/` | The drawable 3D practice easel in the Gallery section: model and behaviour code. |
 | `coffee/` | The interactive 3D coffee mug: model, Three.js, behaviour code and tests. See `coffee/README.md`. |
 | `SITE-GUIDE.md` | The long guide: every section, how it works, how to change it. |
@@ -39,23 +40,21 @@ Every push to that branch updates the live site.
 
 ## Common edits
 
-**Change text.** Open `index.html`. The file is split into numbered sections with comments (Header, Hero, Scope, Gallery, Also on the workbench, The fools, Coffee, Footer). Edit the words in place.
+**Change text.** Open `index.html`. The file is split into numbered sections with comments (Header, Hero, Gallery, Also on the workbench, The fools, Coffee, Footer). Edit the words in place.
 
-**Move a workshop hotspot.** In the Hero section of `index.html`, each hotspot link has `--x` and `--y` percentages. Measure the object's position in `assets/workshop.png` as a percentage of its width and height and update the numbers.
-
-**Change the SCOPE animation.** The choreography is a set of keyframes in section 4b of `style.css`. The trigger, which plays it once when scrolled into view, is part 4 of `main.js`.
+**Move or retime the SCOPE thought.** Open `workshop-scope.js`. `POSITIONS` are percentages of the workshop picture's width and height; keep them in the air above the desk, away from faces and screens. The quiet time between appearances and the chance of the small "scope…" echo are settings right above it. The movement itself is a set of keyframes in section 4b of `style.css`.
 
 **Change colours.** Open `style.css`. The colours are variables in the `:root` block at the top.
 
 **Add or remove a carousel image.** Put the image in `assets/`. In `index.html`, find the block marked `SLIDES` and copy one `<div class="slide">` block. Change the `src`, the `alt` text and the `data-title` caption. Thumbnails and the "01 / 12" counter update automatically. The first slide in the list is shown first.
 
-**Change carousel speed.** Open `main.js` and change `AUTOPLAY_INTERVAL_MS` at the top. The value is in milliseconds. The slideshow starts paused; to autoplay on load, set `playing` to `true` near the top of the carousel code.
+**Change carousel speed.** Open `main.js` and change `AUTOPLAY_INTERVAL_MS` at the top. The value is in milliseconds. Browsing is manual by default; the "Auto-play screenshots" button under the image runs it. To autoplay on load, set `playing` to `true` near the top of the carousel code.
 
 **Replace the easel model.** Overwrite `gallery/easel-with-canvas.glb`. Keep a node named `easelCanvas` for the stretched canvas; the drawing surface is placed on its front face. Brush size and colours are settings at the top of `gallery/practice-easel.js`.
 
-**Turn on the two dead links.** The "Play Gallery" and "Refill the devs" labels are intentionally not links yet. Each one has a comment right above it in `index.html` showing the line to swap in once you have a URL.
+**Change the Play Gallery link.** It points at https://gallery.newgamestudio.com/ in the Gallery section of `index.html`.
 
-**Add the donation link.** Open `coffee/coffee-mug.js` and paste the URL into `DONATION_URL` at the top. The "Refill the devs" label becomes a link that opens in a new tab and refills the mug.
+**Add the donation link.** The "Refill the devs" label is intentionally not a link yet. Open `coffee/coffee-mug.js` and paste the URL into `DONATION_URL` at the top. The "Refill the devs" label becomes a link that opens in a new tab and refills the mug.
 
 **Test the coffee mug rules.** Run `node --test "coffee/tests/*.test.mjs"` in the folder.
 
@@ -65,4 +64,4 @@ Every push to that branch updates the live site.
 
 - Fonts load from Google Fonts. Offline, the browser falls back to a system font.
 - The layout adapts to phones (700px and below) and tablets (1000px and below). Those rules are in section 11 of `style.css`.
-- Visitors who have "reduce motion" turned on get no autoplay, no animations and no background effect.
+- Visitors who have "reduce motion" turned on get no autoplay, no animations and no background effect. The SCOPE thought shows as one small, still "scope." instead.

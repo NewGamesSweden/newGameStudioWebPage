@@ -2,10 +2,12 @@
    NewGameStudio main script
 
    1. Carousel: builds thumbnails from the slides in index.html,
-      autoplay, previous/next buttons, keyboard arrows, swipe.
+      the "Auto-play screenshots" switch, previous/next buttons, keyboard arrows, swipe.
    2. Image preview dialog (the enlarge button).
    3. Logo joke tooltip.
-   4. The SCOPE moment: plays its animation once when scrolled into view.
+
+   The occasional SCOPE thought over the workshop picture lives in its own
+   file, workshop-scope.js.
 
    Settings you might want to change are at the top.
    =================================================================== */
@@ -60,8 +62,8 @@ const thumbs = slides.map((slide, index) => {
 // Start or stop the autoplay timer depending on the current situation.
 function schedule() {
   clearInterval(timer);
-  autoplayButton.textContent = playing ? 'Pause Ⅱ' : 'Play ▷';
-  autoplayButton.setAttribute('aria-label', playing ? 'Pause slideshow' : 'Play slideshow');
+  autoplayButton.textContent = playing ? 'Pause auto-play' : 'Auto-play screenshots';
+  autoplayButton.setAttribute('aria-pressed', String(playing));
   caption.setAttribute('aria-live', playing && !focused ? 'off' : 'polite');
 
   const shouldRun = playing && !hovering && !focused && visible && !document.hidden && !preview.open;
@@ -202,20 +204,6 @@ document.addEventListener('keydown', event => { if (event.key === 'Escape') dism
 document.addEventListener('pointerdown', event => {
   if (!logos.some(logo => logo.contains(event.target))) dismissJokes();
 });
-
-
-/* 4. SCOPE MOMENT =================================================== */
-// The section's markup is already the final pose. Adding "run" once plays the
-// keyframes in style.css. Reduced motion keeps the still version.
-
-const scopeMoment = document.querySelector('.scope-moment');
-if (scopeMoment && !reducedMotion.matches) {
-  new IntersectionObserver((entries, observer) => {
-    if (!entries.some(entry => entry.isIntersecting)) return;
-    scopeMoment.classList.add('run');
-    observer.disconnect();
-  }, { threshold: 0.45 }).observe(scopeMoment);
-}
 
 
 /* START ============================================================= */

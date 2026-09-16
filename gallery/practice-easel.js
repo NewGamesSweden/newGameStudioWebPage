@@ -4,7 +4,9 @@
    What it does
    - Loads easel-with-canvas.glb with Three.js into the canvas inside
      #practice-easel and frames the stretched canvas from a fixed,
-     slightly angled camera. The easel never rotates.
+     slightly angled camera on the page-centre side, so the canvas faces
+     inward toward the Gallery text, framed loosely enough that the tray,
+     lower beam and legs show. The easel never rotates.
    - Press and drag on the canvas to draw with one dark brush. A stroke
      stops at the canvas edge and starts fresh when the pointer comes back.
    - Reset clears the drawing. Nothing is saved anywhere; the drawing
@@ -38,10 +40,10 @@ const INK_COLOR = '#1f1a17';
 const BRUSH_PX = 14;                 // brush width in buffer pixels
 const PLANE_INSET = 0.95;            // plane width as a fraction of the canvas box, leaving the edge visible
 const PLANE_LIFT = 0.06;             // how far in front of the canvas face the plane sits, in box units (about 1mm)
-const CAMERA_FOV = 28;
-const CAMERA_DIRECTION = [0.26, 0.12, 1]; // from the canvas centre toward the camera: a little right and above
-const FRAME_MARGIN = 1.32;           // the canvas fills 1/1.32 of the shorter view axis
-const LOOK_DROP = 0.02;              // aim slightly below the canvas centre so the tray shows
+const CAMERA_FOV = 20;               // a longer lens: gentler perspective, so the tray and legs do not splay
+const CAMERA_DIRECTION = [-0.22, 0.10, 1]; // from the canvas centre toward the camera: a little left and above, so the canvas faces inward toward the page centre
+const FRAME_MARGIN = 1.5;            // the canvas fills 2/3 of the shorter view axis, leaving room for the easel around it
+const LOOK_DROP = 0.12;              // aim below the canvas centre so the tray, lower beam and legs show under it
 const MAX_PIXEL_RATIO = 1.75;
 
 
