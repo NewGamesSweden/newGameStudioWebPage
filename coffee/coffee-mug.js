@@ -4,10 +4,13 @@
    What it does
    - Loads workshop-mug-with-steam.glb with Three.js into the canvas
      inside #coffee-mug.
-   - Click the mug to sip (3 sips, then empty). Drag to spin. Fast spins
-     splash a few drops. Only the donation button refills it.
-   - Keyboard: "Take a sip" button, rotate buttons, and arrow keys on
-     the canvas. A status line announces sip changes.
+   - Spins slowly on its own. Drag it and it takes the throw, then settles
+     back into its slow spin in whichever direction it was thrown.
+   - Click the mug to sip (3 sips, then empty). Nothing on the page explains
+     this; it is a small detail to discover. Fast spins splash a few drops.
+     Only the donation button refills it.
+   - Keyboard: Enter or Space on the canvas sips, arrow keys spin. A
+     visually hidden status line announces sip changes to screen readers.
    - Falls back to a plain ☕ if WebGL or the model is unavailable.
 
    The rules (sips, click vs drag, easing) live in coffee-state.js.
@@ -30,7 +33,9 @@ const MODEL_URL = new URL('./workshop-mug-with-steam.glb', import.meta.url);
 const LEVEL_ANIMATION_MS = 380;      // how long the liquid takes to settle after a sip
 const DRAG_THRESHOLD_PX = 7;         // move further than this and it is a drag, not a click
 const DRAG_SENSITIVITY = 0.012;      // radians of spin per CSS pixel dragged
-const KEY_ROTATE_STEP = Math.PI / 6; // 30 degrees per arrow key / button press
+const KEY_ROTATE_STEP = Math.PI / 6; // 30 degrees per arrow key press
+const IDLE_SPIN_SPEED = 0.45;        // radians per second when nobody is touching the mug
+const SPIN_SETTLE_RATE = 2.5;        // how quickly a throw eases back to the idle speed (higher = sooner)
 const SPLASH_SPEED = 3;              // radians per second of spin before coffee spills
 const SPLASH_COOLDOWN_MS = 600;
 const DROPLET_LIFE_MS = 400;
@@ -58,11 +63,6 @@ export function mountCoffeeMug(container) {
 
   const canvas = container.querySelector('.coffee-mug-canvas');
   const status = container.querySelector('.coffee-mug-status');
-  const hint = container.querySelector('.coffee-mug-hint');
-  const controls = container.querySelector('.coffee-mug-controls');
-  const sipButton = container.querySelector('[data-action="sip"]');
-  const leftButton = container.querySelector('[data-action="rotate-left"]');
-  const rightButton = container.querySelector('[data-action="rotate-right"]');
   const donation = document.querySelector('#donation-button');
   const donationNote = document.querySelector('#donation-note');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -77,7 +77,7 @@ export function mountCoffeeMug(container) {
 
   let renderer = null, scene, camera, raycaster;
   let root = null, coffee, steam = [], solids = [], droplets = [];
-  let velocity = 0, lastMoveTime = 0, splashReadyAt = 0;
+  let velocity = 0, idleDirection = 1, lastMoveTime = 0, splashReadyAt = 0;
   let frame = 0, lastFrameTime = 0, onScreen = true;
   let resizeObserver = null, visibilityObserver = null;
 
@@ -85,7 +85,6 @@ export function mountCoffeeMug(container) {
 
   function announce() {
     status.textContent = sips.label();
-    sipButton.disabled = sips.isEmpty || !root;
   }
 
   function showFallback(message) {
@@ -113,19 +112,19 @@ export function mountCoffeeMug(container) {
     wake();
   }
 
+  // Keyboard nudge. The idle spin then carries on the way the key pointed.
   function rotateBy(radians) {
     if (!root) return;
     root.rotation.y += radians;
+    idleDirection = Math.sign(radians) || idleDirection;
     velocity = 0;
     wake();
   }
 
-  sipButton.addEventListener('click', takeSip, { signal });
-  leftButton.addEventListener('click', () => rotateBy(-KEY_ROTATE_STEP), { signal });
-  rightButton.addEventListener('click', () => rotateBy(KEY_ROTATE_STEP), { signal });
   canvas.addEventListener('keydown', event => {
     if (event.key === 'ArrowLeft') { event.preventDefault(); rotateBy(-KEY_ROTATE_STEP); }
     if (event.key === 'ArrowRight') { event.preventDefault(); rotateBy(KEY_ROTATE_STEP); }
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); takeSip(); }
   }, { signal });
 
   /* Donation link ------------------------------------------------------- */
@@ -223,7 +222,6 @@ export function mountCoffeeMug(container) {
     root.rotation.y = START_ROTATION;
     scene.add(gltf.scene);
     container.classList.add('is-ready');
-    hint.hidden = false;
     announce();
     wake();
   }
@@ -265,7 +263,9 @@ export function mountCoffeeMug(container) {
     if (result === null) return;
     canvas.classList.remove('is-grabbing');
     if (result === 'sip') takeSip();
-    // After a drag the current velocity carries on as a little inertia.
+    // After a drag the throw carries on, then eases back to the idle spin
+    // in the direction the mug was thrown.
+    if (result === 'drag' && velocity !== 0) idleDirection = Math.sign(velocity);
     wake();
   }, { signal });
 
@@ -346,14 +346,13 @@ export function mountCoffeeMug(container) {
     coffee.visible = shown > 0.008;
     coffee.scale.set(0.94 + 0.06 * shown, Math.max(0.001, shown), 0.94 + 0.06 * shown);
 
-    // Inertia after a drag. None with reduced motion.
-    if (!gesture.dragging && velocity !== 0) {
-      if (reducedMotion.matches) velocity = 0;
-      else {
-        root.rotation.y += velocity * dt;
-        velocity *= Math.exp(-dt * 5);
-        if (Math.abs(velocity) < 0.01) velocity = 0;
-      }
+    // Left alone, the mug turns slowly. A throw eases back to that speed.
+    // With reduced motion it stands still.
+    if (!gesture.dragging) {
+      const idle = reducedMotion.matches ? 0 : idleDirection * IDLE_SPIN_SPEED;
+      velocity += (idle - velocity) * (1 - Math.exp(-dt * SPIN_SETTLE_RATE));
+      if (Math.abs(velocity - idle) < 0.01) velocity = idle;
+      root.rotation.y += velocity * dt;
     }
 
     // Steam: drifts and flickers while there is coffee, fades with the last sip.

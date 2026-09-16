@@ -582,8 +582,9 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 
 .coffee {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 70px;
+  grid-template-columns: 1.4fr auto 1fr; /* copy | mug | donation label */
+  align-items: center;
+  gap: 50px;
   margin-top: 85px;
   margin-bottom: 85px;
   padding: 44px 48px;
@@ -595,7 +596,7 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 .coffee h2 { font-size: 44px; }
 .coffee p { max-width: 520px; font-size: 16px; }
 
-.coffee-action { align-self: center; text-align: center; }
+.coffee-action { text-align: center; }
 .coffee-label {
   font: 700 20px 'Space Grotesk', sans-serif;
   border-bottom: 2px solid #25180f;
@@ -613,7 +614,7 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 }
 
 /* Interactive 3D mug (markup in index.html, behaviour in coffee/coffee-mug.js) */
-.coffee-mug { width: min(300px, 100%); margin: 0 auto 18px; }
+.coffee-mug { width: min(300px, 100%); margin: 0 auto; }
 .coffee-mug-canvas {
   display: block;
   width: 100%;
@@ -633,34 +634,23 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   line-height: 1;
 }
 .coffee-mug.is-fallback .coffee-mug-fallback { display: flex; }
-.coffee-mug.is-fallback .coffee-mug-canvas,
-.coffee-mug.is-fallback .coffee-mug-hint,
-.coffee-mug.is-fallback .coffee-mug-controls { display: none; }
-.coffee-mug-hint {
-  margin: 6px 0 0;
-  font-size: 11px;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: #573824;
-}
+.coffee-mug.is-fallback .coffee-mug-canvas { display: none; }
+/* Status text is visible only while loading or in the fallback. Once the mug
+   is ready it stays in the page for screen readers but is hidden from view. */
 .coffee-mug-status {
-  margin: 4px 0 12px;
-  min-height: 1.4em;
+  margin: 4px 0 0;
+  text-align: center;
   font: 600 15px / 1.4 'Space Grotesk', sans-serif;
 }
-.coffee-mug-controls { display: flex; justify-content: center; gap: 8px; }
-.coffee-mug-controls button {
-  min-width: 40px;
-  padding: 7px 12px;
-  background: transparent;
-  color: #25180f;
-  border: 1.5px solid #25180f;
-  border-radius: 5px;
-  font-size: 13px;
-  font-weight: 600;
+.coffee-mug.is-ready .coffee-mug-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
-.coffee-mug-controls button:hover:not(:disabled) { background: #25180f; color: var(--orange); }
-.coffee-mug-controls button:disabled { opacity: 0.45; cursor: default; }
 
 /* The site-wide orange focus ring would vanish on the orange panel, so use dark here. */
 .coffee a:focus-visible,
@@ -756,7 +746,9 @@ dialog p { font-size: 14px; margin-bottom: 0; }
   .game-copy { padding: 27px; }
 
   .scope-inner, .team { gap: 45px; }
-  .coffee { padding: 35px; gap: 25px; }
+  .coffee { padding: 35px; gap: 30px; }
+  .coffee h2 { font-size: 36px; }
+  .coffee-mug { width: min(240px, 100%); }
 }
 
 /* Phone */
@@ -830,7 +822,6 @@ dialog p { font-size: 14px; margin-bottom: 0; }
   .coffee-action { text-align: left; }
   .coffee-action small { margin-top: 15px; }
   .coffee-mug { margin-left: 0; }
-  .coffee-mug-controls { justify-content: flex-start; }
 
   /* Footer */
   footer { flex-wrap: wrap; padding-bottom: 25px; }

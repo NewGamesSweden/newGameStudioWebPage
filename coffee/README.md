@@ -1,8 +1,11 @@
 # Coffee mug (interactive 3D, in progress)
 
 This folder holds everything for the clickable coffee mug in the orange coffee section.
-Click the mug to sip (three sips, then empty), drag to spin it, spin fast to spill a few drops.
-Only the donation button refills it. A page refresh also starts it full again.
+The mug sits in the middle of the section and turns slowly on its own. Drag it and it takes
+the throw, then settles back into its slow spin in that direction. Spin fast to spill a few drops.
+Click it to sip (three sips, then empty). Nothing on the page explains the sipping on purpose;
+it is a small detail for visitors to find. Only the donation button refills it. A page refresh
+also starts it full again.
 
 ## Where to put the mug model
 
@@ -31,7 +34,7 @@ Export from Blender with the default glTF settings (Y up, include materials).
 | File | What it is |
 | --- | --- |
 | `workshop-mug-with-steam.glb` | The mug model the website will load. Exported from Blender with the handle normals and accent band fixed. |
-| `coffee-mug.js` | The mug itself: loads the model, renders it, handles clicks, drags, steam, splashes, keyboard and fallback. Settings at the top, including `DONATION_URL`. |
+| `coffee-mug.js` | The mug itself: loads the model, renders it, handles the idle spin, clicks, drags, steam, splashes, keyboard and fallback. Settings at the top, including `DONATION_URL` and `IDLE_SPIN_SPEED`. |
 | `coffee-state.js` | The rules with no graphics: sips left, click versus drag, liquid easing. Tested by Node. |
 | `tests/` | Node tests for the rules. Run `node --test "coffee/tests/*.test.mjs"`. |
 | `vendor/` | Three.js r170 and its GLTF loader, copied into the repo so nothing loads from a CDN. |

@@ -174,8 +174,7 @@ Check the reference controller's material ownership and object transforms before
 
 ## Accessibility and fallback
 
-- Provide a keyboard-accessible “Take a sip” control wired to the same sip action. Disable it at empty; keep the empty status readable.
-- Provide labelled rotate-left and rotate-right controls or an equivalent keyboard interaction with instructions.
+- Keyboard: Enter or Space on the focused canvas sips, arrow keys spin. (Updated 15 Sep 2026: the visible “Take a sip” and rotate buttons, the hint line and the visible sips counter were removed on request; the mug now spins slowly on its own and the status line is kept only for screen readers.)
 - Use visible focus styles and a concise polite status announcement for sip changes. Do not announce every animation frame.
 - Keep donation navigation usable without WebGL.
 - Respect reduced motion: preserve the three-sip state changes, but remove inertia, drifting steam and splashes; immediate level changes are acceptable.
