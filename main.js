@@ -5,6 +5,7 @@
       autoplay, previous/next buttons, keyboard arrows, swipe.
    2. Image preview dialog (the enlarge button).
    3. Logo joke tooltip.
+   4. The SCOPE moment: plays its animation once when scrolled into view.
 
    Settings you might want to change are at the top.
    =================================================================== */
@@ -28,7 +29,7 @@ const preview = document.querySelector('#preview');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 let current = 0;
-let playing = !reducedMotion.matches;
+let playing = false; // the slideshow starts paused; the Play button runs it
 let hovering = false;
 let focused = false;
 let visible = true;
@@ -201,6 +202,20 @@ document.addEventListener('keydown', event => { if (event.key === 'Escape') dism
 document.addEventListener('pointerdown', event => {
   if (!logos.some(logo => logo.contains(event.target))) dismissJokes();
 });
+
+
+/* 4. SCOPE MOMENT =================================================== */
+// The section's markup is already the final pose. Adding "run" once plays the
+// keyframes in style.css. Reduced motion keeps the still version.
+
+const scopeMoment = document.querySelector('.scope-moment');
+if (scopeMoment && !reducedMotion.matches) {
+  new IntersectionObserver((entries, observer) => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    scopeMoment.classList.add('run');
+    observer.disconnect();
+  }, { threshold: 0.45 }).observe(scopeMoment);
+}
 
 
 /* START ============================================================= */

@@ -13,15 +13,17 @@
 <!--
   HOW THIS FILE IS ORGANISED
   1. Header (logo + navigation)
-  2. Hero (big headline and workshop picture)
-  3. Games (the image carousel, the Gallery game, two upcoming projects)
-  4. The fools (scope joke and team)
-  5. Coffee (support box with the interactive 3D mug, see coffee/)
-  6. Footer
-  7. Image preview dialog (opened by the enlarge button on the carousel)
+  2. Hero (big headline and the workshop picture with three hotspots)
+  3. Scope (the animated SCOPE moment)
+  4. Gallery (the drawable practice easel, the game text, the development carousel)
+  5. Also on the workbench (the two other games in production)
+  6. The fools (team)
+  7. Coffee (support box with the interactive 3D mug, see coffee/)
+  8. Footer
+  9. Image preview dialog (opened by the enlarge button on the carousel)
 
   To change text, just edit it here. To change colours, see the top of style.css.
-  To add a carousel image, copy one "slide" block in section 3 and point it at a file in assets/.
+  To add a carousel image, copy one "slide" block in section 4 and point it at a file in assets/.
 -->
 
 <!-- Animated background. Only shows on desktop with a mouse. Drawn by surface.js. -->
@@ -62,7 +64,14 @@
     </div>
 
     <div class="hero-art">
-      <img src="assets/workshop.png" alt="Three low-poly friends making games around a desk filled with laptops and coffee cups" width="1536" height="1024">
+      <!-- The workshop picture with three hotspots. Each hotspot is an ordinary link positioned
+           by percentage over the image (--x, --y), so it stays on its object at any size. -->
+      <div class="workshop">
+        <img src="assets/workshop.png" alt="Three low-poly friends making games around a desk filled with laptops and coffee cups" width="1536" height="1024">
+        <a class="hotspot" href="#games" style="--x: 55.7%; --y: 32%"><span class="hotspot-dot" aria-hidden="true"></span><span class="hotspot-label">Gallery</span></a>
+        <a class="hotspot" href="#coffee" style="--x: 70.3%; --y: 58.5%"><span class="hotspot-dot" aria-hidden="true"></span><span class="hotspot-label">Coffee</span></a>
+        <a class="hotspot" href="#fools" style="--x: 39%; --y: 23.5%"><span class="hotspot-dot" aria-hidden="true"></span><span class="hotspot-label">The fools</span></a>
+      </div>
       <div class="art-note"><span class="small-cross">+</span> IDEAS: PLENTY <span>/</span> SLEEP: OPTIONAL</div>
     </div>
 
@@ -73,7 +82,27 @@
   </section>
 
   <!-- =================================================================
-       3. GAMES
+       3. SCOPE
+       The word SCOPE sits inside its original plan, grows, bursts out of it
+       and settles crooked. main.js adds the "run" class once, when the section
+       scrolls into view. Without JavaScript or with reduced motion this markup
+       already shows the final pose, so nothing is lost.
+       ================================================================= -->
+  <section class="scope-moment wrap" id="scope" aria-labelledby="scope-heading">
+    <p class="eyebrow">THE PLAN WAS SIMPLE.</p>
+    <h2 id="scope-heading">Scope is hard.</h2>
+
+    <div class="scope-stage" aria-hidden="true">
+      <div class="scope-plan"><span>THE ORIGINAL PLAN</span></div>
+      <div class="scope-word"><span>S</span><span>C</span><span>O</span><span>P</span><span>E</span></div>
+      <span class="scope-sticker">One more feature.</span>
+    </div>
+
+    <p class="scope-body">Someone always says “SCOPE, SCOPE, SCOPE.”<br>Then we add another feature. Because it’s fun.</p>
+  </section>
+
+  <!-- =================================================================
+       4. GALLERY
        ================================================================= -->
   <section class="games wrap section" id="games">
     <div class="section-top">
@@ -84,16 +113,48 @@
       <p>Some ideas become games.<br>Others become another late night.</p>
     </div>
 
-    <article class="featured">
+    <article class="gallery-feature">
 
-      <!-- Carousel. Thumbnails, counters and the "1 of 12" labels are built by main.js,
-           so you only need to edit the list of slides below. The first slide is shown first. -->
-      <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Gallery, from development to game" tabindex="0">
-        <div class="carousel-heading">
-          <span>FROM THE WORKBENCH TO THE GAME</span>
-          <button id="autoplay" type="button" aria-label="Pause slideshow">Pause Ⅱ</button>
+      <!-- The practice easel. Behaviour lives in gallery/practice-easel.js.
+           Draw on the canvas with a pointer or finger. Reset clears it. Nothing is saved. -->
+      <div class="practice-easel" id="practice-easel">
+        <div class="easel-stage">
+          <canvas class="easel-canvas" role="img" aria-label="A practice easel with a blank canvas. Press and drag to draw on it."></canvas>
+          <canvas class="easel-flat" role="img" aria-label="A blank canvas. Press and drag to draw on it." hidden></canvas>
+          <p class="easel-static">The practice easel needs a web server and WebGL. Imagine a very good drawing here.</p>
         </div>
+        <div class="easel-bar">
+          <p class="easel-hint">Go on. Draw something.</p>
+          <button type="button" class="easel-reset" data-action="reset">Reset</button>
+        </div>
+      </div>
 
+      <!-- Text next to the easel -->
+      <div class="game-copy">
+        <p class="tag">FREE TO PLAY <span> / </span> BROWSER GAME</p>
+        <h3>Gallery<span>↗</span></h3>
+        <p class="game-tagline">Bring your friends.<br>Make your mark.</p>
+        <p class="game-description">A shared canvas. Some questionable drawings. And someone who might be faking it.</p>
+        <p class="game-description">The easel here is for practice. The real game has your friends on it, and one of them is lying.</p>
+        <div class="game-footer">
+          <!-- Not a link yet on purpose. When the game is live, replace this span with:
+               <a class="unlinked" href="https://your-game-url">Play Gallery <span>↗</span></a> -->
+          <span class="unlinked">Play Gallery <span>↗</span></span>
+          <small>Browser link coming soon.</small>
+        </div>
+      </div>
+    </article>
+
+    <!-- Development images. Thumbnails, counters and the "1 of 12" labels are built by main.js,
+         so you only need to edit the list of slides below. The first slide is shown first.
+         The slideshow starts paused; the Play button runs it. -->
+    <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Gallery, from development to game" tabindex="0">
+      <div class="carousel-heading">
+        <span>FROM THE WORKBENCH TO THE GAME</span>
+        <button id="autoplay" type="button" aria-label="Play slideshow">Play ▷</button>
+      </div>
+
+      <div class="carousel-body">
         <div class="slide-stage">
           <!-- SLIDES: one block per image. data-title is the caption shown under the image. -->
           <div class="slide active" data-title="Main menu · Layout study">
@@ -137,76 +198,69 @@
           <button class="expand" id="open-preview" type="button" aria-label="Enlarge current image">↗</button>
         </div>
 
-        <div class="carousel-controls">
-          <button id="previous-slide" type="button" aria-label="Previous image">←</button>
-          <div class="slide-caption" aria-live="off">
-            <span id="slide-title"></span>
-            <span id="slide-count"></span>
+        <div class="carousel-side">
+          <div class="carousel-controls">
+            <button id="previous-slide" type="button" aria-label="Previous image">←</button>
+            <div class="slide-caption" aria-live="off">
+              <span id="slide-title"></span>
+              <span id="slide-count"></span>
+            </div>
+            <button id="next-slide" type="button" aria-label="Next image">→</button>
           </div>
-          <button id="next-slide" type="button" aria-label="Next image">→</button>
-        </div>
 
-        <!-- Filled in by main.js -->
-        <div class="thumbnails" aria-label="Choose an image"></div>
-      </div>
-
-      <!-- Text next to the carousel -->
-      <div class="game-copy">
-        <p class="tag">FREE TO PLAY <span> / </span> BROWSER GAME</p>
-        <h3>Gallery<span>↗</span></h3>
-        <p class="game-tagline">Bring your friends.<br>Make your mark.</p>
-        <p class="game-description">A shared canvas. Some questionable drawings. And someone who might be faking it.</p>
-        <div class="game-footer">
-          <!-- Not a link yet on purpose. When the game is live, replace this span with:
-               <a class="unlinked" href="https://your-game-url">Play Gallery <span>↗</span></a> -->
-          <span class="unlinked">Play Gallery <span>↗</span></span>
-          <small>Browser link coming soon.</small>
+          <!-- Filled in by main.js -->
+          <div class="thumbnails" aria-label="Choose an image"></div>
         </div>
       </div>
-    </article>
-
-    <!-- Upcoming projects -->
-    <div class="upcoming">
-      <article>
-        <div class="project-number">02 <span>IN DEVELOPMENT</span></div>
-        <h3>Multiplayer project</h3>
-        <p>More people. More potential for shenanigans.</p>
-        <span class="project-foot">CURRENTLY ON THE WORKBENCH</span>
-      </article>
-      <article>
-        <div class="project-number">03 <span>IN DEVELOPMENT</span></div>
-        <h3>Single-player adventure</h3>
-        <p>Something to get lost in. We’re still building the way.</p>
-        <span class="project-foot">CURRENTLY ON THE WORKBENCH</span>
-      </article>
     </div>
   </section>
 
   <!-- =================================================================
-       4. THE FOOLS
+       5. ALSO ON THE WORKBENCH
+       Two more games, both in production. Add an image to each when a real
+       one exists; until then they stay as text.
        ================================================================= -->
-  <section class="scope" id="fools">
-    <div class="wrap scope-inner">
-      <div class="scope-title">
-        <p class="eyebrow">02 / THE THREE FOOLS</p>
-        <h2>Scope is<br><em>hard…</em></h2>
-        <div class="scope-stamp">SCOPE. SCOPE. SCOPE.</div>
+  <section class="workbench wrap" id="workbench" aria-labelledby="workbench-heading">
+    <div class="section-top">
+      <div>
+        <p class="eyebrow">02 / ALSO ON THE WORKBENCH</p>
+        <h2 id="workbench-heading">Two more, because<br>of course there are.</h2>
       </div>
-      <div class="scope-copy">
-        <p class="large-copy">Someone always says it.<br>And yet, here we are.</p>
-        <p>“SCOPE, SCOPE, SCOPE.” At least one of us says it every time. And then we add way too many features anyway. Because we can. And because it’s fun.</p>
-        <p>We’re three curious friends who like to build, play, and see what happens. NewGameStudio is our excuse to keep doing that together, usually later at night than planned.</p>
-        <p class="signature">One more feature. Then we sleep.</p>
-      </div>
+      <p>Both in production.<br>Neither finished. Yet.</p>
     </div>
+    <ol class="workbench-list">
+      <li>
+        <span class="workbench-number">02</span>
+        <div>
+          <h3>Multiplayer project</h3>
+          <p>More people. More potential for shenanigans.</p>
+        </div>
+        <span class="workbench-status">In development</span>
+      </li>
+      <li>
+        <span class="workbench-number">03</span>
+        <div>
+          <h3>Single-player adventure</h3>
+          <p>Something to get lost in. We’re still building the way.</p>
+        </div>
+        <span class="workbench-status">In development</span>
+      </li>
+    </ol>
+  </section>
 
+  <!-- =================================================================
+       6. THE FOOLS
+       ================================================================= -->
+  <section class="fools" id="fools">
     <div class="wrap team">
       <div class="team-photo">
         <img src="assets/team.jpg" alt="The three friends working together around a table with laptops and coffee" width="1153" height="2048" loading="lazy">
         <span>THE WORKSHOP, BEFORE THE POLYGONS.</span>
       </div>
       <div class="team-names">
+        <p class="eyebrow">03 / THE THREE FOOLS</p>
         <h3>Who thought this <br>was a good idea?<br><span>All three of us.</span></h3>
+        <p class="team-intro">We’re three curious friends who like to build, play, and see what happens. NewGameStudio is our excuse to keep doing that together, usually later at night than planned.</p>
         <div class="name-row"><span>01</span><strong>Daniel</strong></div>
         <div class="name-row"><span>02</span><strong>Ahmed</strong></div>
         <div class="name-row"><span>03</span><strong>Micky</strong></div>
@@ -216,7 +270,7 @@
   </section>
 
   <!-- =================================================================
-       5. COFFEE
+       7. COFFEE
        ================================================================= -->
   <section class="coffee wrap" id="coffee">
     <div>
@@ -243,10 +297,8 @@
     </div>
   </section>
 
-</main>
-
 <!-- ===================================================================
-     6. FOOTER
+     8. FOOTER
      =================================================================== -->
 <footer class="wrap">
   <div class="logo-wrap">
@@ -258,7 +310,7 @@
 </footer>
 
 <!-- ===================================================================
-     7. IMAGE PREVIEW DIALOG (contents are filled in by main.js)
+     9. IMAGE PREVIEW DIALOG (contents are filled in by main.js)
      =================================================================== -->
 <dialog id="preview">
   <button id="close-preview" type="button" aria-label="Close image preview">Close ×</button>
@@ -275,6 +327,14 @@
 <!-- The coffee mug is an ES module. If it cannot load (for example when index.html is opened
      straight from disk without a web server), show the plain ☕ instead of a stuck "loading". -->
 <script type="module">
+  import('./gallery/practice-easel.js')
+    .then(module => { window.practiceEasel = module.mountPracticeEasel(document.querySelector('#practice-easel')); })
+    .catch(error => {
+      console.warn('Practice easel not loaded:', error);
+      // Without the module there is no drawing at all. Show the plain fallback line.
+      document.querySelector('#practice-easel').classList.add('is-static');
+    });
+
   import('./coffee/coffee-mug.js')
     .then(module => { window.coffeeMug = module.mountCoffeeMug(document.querySelector('#coffee-mug')); })
     .catch(error => {

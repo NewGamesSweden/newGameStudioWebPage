@@ -8,10 +8,12 @@ A one-page static website. Plain HTML, CSS and JavaScript. No build step, no pac
 | --- | --- |
 | `index.html` | All the text and page structure. Edit this to change what the site says. |
 | `style.css` | All the styling. Colours are at the top. Phone and tablet rules are at the bottom. |
-| `main.js` | The image carousel, the enlarge dialog and the logo joke. Timing settings are at the top. |
+| `main.js` | The image carousel, the enlarge dialog, the logo joke and the one-shot SCOPE animation trigger. Timing settings are at the top. |
 | `surface.js` | The decorative folding background. Desktop only. Safe to remove. |
 | `assets/` | All images. |
+| `gallery/` | The drawable 3D practice easel in the Gallery section: model and behaviour code. |
 | `coffee/` | The interactive 3D coffee mug: model, Three.js, behaviour code and tests. See `coffee/README.md`. |
+| `SITE-GUIDE.md` | The long guide: every section, how it works, how to change it. |
 | `NewGameStudio.code-workspace` | Shortcut for opening the folder in VS Code. Optional. |
 
 ## View it locally
@@ -22,8 +24,9 @@ Run a small web server in the folder and open http://127.0.0.1:8080:
 py -m http.server 8080 --bind 127.0.0.1
 ```
 
-Double-clicking `index.html` also works, except the 3D coffee mug, which browsers refuse to load
-straight from disk. In that case the coffee section shows a plain ☕ instead. Everything else is the same.
+Double-clicking `index.html` also works, except the 3D easel and the 3D coffee mug, which browsers
+refuse to load straight from disk. The easel shows a short note and the coffee section a plain ☕
+instead. Everything else is the same.
 
 ## Host it on GitHub Pages
 
@@ -36,13 +39,19 @@ Every push to that branch updates the live site.
 
 ## Common edits
 
-**Change text.** Open `index.html`. The file is split into numbered sections with comments (Header, Hero, Games, The fools, Coffee, Footer). Edit the words in place.
+**Change text.** Open `index.html`. The file is split into numbered sections with comments (Header, Hero, Scope, Gallery, Also on the workbench, The fools, Coffee, Footer). Edit the words in place.
+
+**Move a workshop hotspot.** In the Hero section of `index.html`, each hotspot link has `--x` and `--y` percentages. Measure the object's position in `assets/workshop.png` as a percentage of its width and height and update the numbers.
+
+**Change the SCOPE animation.** The choreography is a set of keyframes in section 4b of `style.css`. The trigger, which plays it once when scrolled into view, is part 4 of `main.js`.
 
 **Change colours.** Open `style.css`. The colours are variables in the `:root` block at the top.
 
 **Add or remove a carousel image.** Put the image in `assets/`. In `index.html`, find the block marked `SLIDES` and copy one `<div class="slide">` block. Change the `src`, the `alt` text and the `data-title` caption. Thumbnails and the "01 / 12" counter update automatically. The first slide in the list is shown first.
 
-**Change carousel speed.** Open `main.js` and change `AUTOPLAY_INTERVAL_MS` at the top. The value is in milliseconds.
+**Change carousel speed.** Open `main.js` and change `AUTOPLAY_INTERVAL_MS` at the top. The value is in milliseconds. The slideshow starts paused; to autoplay on load, set `playing` to `true` near the top of the carousel code.
+
+**Replace the easel model.** Overwrite `gallery/easel-with-canvas.glb`. Keep a node named `easelCanvas` for the stretched canvas; the drawing surface is placed on its front face. Brush size and colours are settings at the top of `gallery/practice-easel.js`.
 
 **Turn on the two dead links.** The "Play Gallery" and "Refill the devs" labels are intentionally not links yet. Each one has a comment right above it in `index.html` showing the line to swap in once you have a URL.
 
