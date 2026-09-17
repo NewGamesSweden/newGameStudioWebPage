@@ -1,4 +1,4 @@
-# NewGameStudio — interactive coffee proposal
+# NewGameStudio: interactive coffee proposal
 
 ## Included asset
 `workshop-mug.glb` is a real, self-contained glTF 2.0 model: a 12-sided ivory mug, angular handle, cyan band, separate dark coffee volume, and three translucent steam ribbons. It has no external textures. Import it in Blender using File > Import > glTF 2.0.
@@ -18,7 +18,7 @@ A drag over 7px rotates the mug and must not count as a sip. Horizontal drag rot
 
 Steam: the supplied ribbons are cheap transparent meshes, individually named Steam_1 through Steam_3. Animate their position and opacity in the browser while coffee exists. No smoke simulation is necessary. Pause rendering offscreen; remove drifting/inertia/splash motion when reduced motion is enabled, keeping sip state accessible.
 
-Spills: on a fast spin emit 3–5 small brown droplet meshes from the rim, throw them outward, then shrink/fade them over 400ms. Pool and reuse droplets. The controller invokes onSplash for the host renderer to implement this effect. These are cosmetic: do not subtract coffee, preserving the exact three-click rule. No spills from an empty mug. A slight liquid tilt may accompany the splash, but should stay inside the mug.
+Spills: on a fast spin emit 3 to 5 small brown droplet meshes from the rim, throw them outward, then shrink/fade them over 400ms. Pool and reuse droplets. The controller invokes onSplash for the host renderer to implement this effect. These are cosmetic: do not subtract coffee, preserving the exact three-click rule. No spills from an empty mug. A slight liquid tilt may accompany the splash, but should stay inside the mug.
 
 Refill: the donation link's click handler calls controller.refill() and opens the real donation destination. The visual refill acknowledges the click, not a verified payment. If payment verification is desired later, refill after a payment-provider confirmation instead. Do not attach refill to the mug, use timers to refill, or store the sip state in localStorage: refreshing the page must restore full coffee. A donation URL has not been supplied, so no live donation integration is included.
 

@@ -1,28 +1,16 @@
 /* ===================================================================
    Practice easel for the Gallery section
 
-   What it does
-   - Loads easel-with-canvas.glb with Three.js into the canvas inside
-     #practice-easel and frames the stretched canvas from a fixed,
-     slightly angled camera on the page-centre side, so the canvas faces
-     inward toward the Gallery text, framed loosely enough that the tray,
-     lower beam and legs show. The easel never rotates.
-   - Press and drag on the canvas to draw with one dark brush. A stroke
-     stops at the canvas edge and starts fresh when the pointer comes back.
-   - Reset clears the drawing. Nothing is saved anywhere; the drawing
-     lives for this page visit only, including scrolling away and back.
-   - If WebGL or the model is unavailable, the same drawing surface is
-     shown flat as an ordinary 2D canvas with the same Reset button.
+   Loads easel-with-canvas.glb with Three.js and frames its canvas from a
+   fixed camera. Press and drag on the canvas to draw; Reset clears it.
+   Nothing is saved.
 
-   How the painting works
-   - A hidden 2D canvas (the .easel-flat element) is the paint buffer.
-   - In 3D it is wrapped in a CanvasTexture on a thin plane parented to
-     the model's "easelCanvas" node, sitting just in front of its face.
-     The model's own canvas box shares one primitive with its edges and
-     uses default cube UVs, so painting straight onto it would smear.
-   - Only that plane is raycast. Hit UVs map straight to buffer pixels.
+   Painting: a hidden 2D canvas (.easel-flat) is the paint buffer. In 3D it
+   becomes a texture on a thin plane just in front of the model's canvas
+   node, and only that plane is raycast. Without WebGL or the model, the
+   buffer itself is shown flat with the same Reset button.
 
-   Settings you might want to change are just below.
+   Settings are just below.
    =================================================================== */
 
 import * as THREE from 'three';
@@ -51,7 +39,7 @@ const MAX_PIXEL_RATIO = 1.75;
 
 /**
  * Wires up the easel inside `container` (the #practice-easel element).
- * Returns { reset, drawPath, mode, dispose }. Safe to call once per element.
+ * Returns { reset, mode, dispose }. Safe to call once per element.
  */
 export function mountPracticeEasel(container) {
   if (!container || container.dataset.mounted) return null;
@@ -294,22 +282,8 @@ export function mountPracticeEasel(container) {
     delete container.dataset.mounted;
   }
 
-  /**
-   * Draws a path given as [[u, v], ...] with u and v from 0 to 1 across the
-   * canvas (0,0 top left). Handy for testing and for a future replay of a
-   * real recorded drawing. Not used by the page itself.
-   */
-  function drawPath(points) {
-    let last = null;
-    for (const [u, v] of points) {
-      const point = { x: u * PAINT_WIDTH, y: v * PAINT_HEIGHT };
-      strokeTo(point, last);
-      last = point;
-    }
-  }
-
   function api() {
-    return { reset: clearPaint, drawPath, get mode() { return mode; }, dispose };
+    return { reset: clearPaint, get mode() { return mode; }, dispose };
   }
 
   return api();

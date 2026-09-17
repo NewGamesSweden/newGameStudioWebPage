@@ -10,8 +10,9 @@ A one-page static website. Plain HTML, CSS and JavaScript. No build step, no pac
 | `style.css` | All the styling. Colours are at the top. Phone and tablet rules are at the bottom. |
 | `main.js` | The image carousel, the enlarge dialog and the logo joke. Timing settings are at the top. |
 | `workshop-scope.js` | The word SCOPE that drifts up over the workshop picture now and then. Timing and positions are at the top. |
+| `rocket.js` | The rocket that leaves the workshop as you scroll and comes back in the workbench section to push SCOPE away. Settings at the top. |
 | `surface.js` | The decorative folding background. Desktop only. Safe to remove. |
-| `assets/` | All images. The hero uses the transparent `workshop-cutout.webp`; the original `workshop.png` is kept alongside it. |
+| `assets/` | All images. |
 | `gallery/` | The drawable 3D practice easel in the Gallery section: model and behaviour code. |
 | `coffee/` | The interactive 3D coffee mug: model, Three.js, behaviour code and tests. See `coffee/README.md`. |
 | `SITE-GUIDE.md` | The long guide: every section, how it works, how to change it. |
@@ -51,6 +52,8 @@ Every push to that branch updates the live site.
 **Change carousel speed.** Open `main.js` and change `AUTOPLAY_INTERVAL_MS` at the top. The value is in milliseconds. Browsing is manual by default; the "Auto-play screenshots" button under the image runs it. To autoplay on load, set `playing` to `true` near the top of the carousel code.
 
 **Replace the easel model.** Overwrite `gallery/easel-with-canvas.glb`. Keep a node named `easelCanvas` for the stretched canvas; the drawing surface is placed on its front face. Brush size and colours are settings at the top of `gallery/practice-easel.js`.
+
+**Replace the rocket art.** `workshop.webp` (the workshop with an empty shelf), `rocket.webp` (the rocket alone, parked on that shelf by CSS) and `rocket-side.webp` (long, left-pointing, cream hull) live in `assets/`. If you change them, re-measure the hull and shelf positions as described in the guide, section 9.
 
 **Change the Play Gallery link.** It points at https://gallery.newgamestudio.com/ in the Gallery section of `index.html`.
 

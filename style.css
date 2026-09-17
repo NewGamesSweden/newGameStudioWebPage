@@ -8,7 +8,7 @@
    4.  Hero (headline and copy on the left, the transparent workshop picture on the right)
    4b. The SCOPE thought (appears over the workshop now and then)
    5.  Gallery section (practice easel with the game text beside it, development carousel)
-   5b. Also on the workbench (the two other games)
+   5b. Also on the workbench (the two other games, and the rocket scene)
    6.  The fools (team)
    7.  Coffee band
 
@@ -28,11 +28,11 @@
 
 :root {
   --bg: #0b1422;       /* page background */
-  --panel: #111e2e;    /* cards and boxes */
+  --panel: #111e2e;    /* buttons and the preview dialog */
   --ink: #f2f0e8;      /* main text */
   --muted: #a2b1c3;    /* secondary text */
   --cyan: #66e8de;     /* accent 1: links, highlights */
-  --orange: #ff9b65;   /* accent 2: coffee box, scope stamp */
+  --orange: #ff9b65;   /* accent 2: coffee band, status labels, SCOPE afterthought */
   --line: #2a3747;     /* borders */
 }
 
@@ -258,6 +258,52 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   object-fit: contain;
   filter: drop-shadow(0 18px 25px #02091635);
 }
+
+
+/* The shelf rocket. At rest it is parked on the shelf by these percentages of the picture
+   (the picture itself has no rocket painted in). In flight rocket.js switches it to a fixed
+   position and drives the transform; --flame goes from 0 on the shelf to 1 in flight. */
+.rocket-flyer {
+  --flame: 0;
+  position: absolute;
+  left: 18.9%;
+  top: 5.5%;
+  width: 4.2%;
+  height: 12.6%;
+  z-index: 2;
+  pointer-events: none;
+}
+.rocket-flyer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%; /* stands on the shelf */
+}
+.rocket-flyer.is-flying {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 30; /* under the sticky header */
+  will-change: transform;
+}
+
+/* Engine exhaust: a soft teardrop of light that flickers under the launched rocket. */
+.rocket-flame {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: 70%;
+  height: 60%;
+  transform: translate(-50%, -12%);
+  transform-origin: 50% 0;
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+  background: radial-gradient(ellipse at 50% 15%, #fff7d6 0%, #ffcf5a 30%, #ff8a3d 60%, transparent 100%);
+  opacity: var(--flame, 0);
+  animation: flame-flicker 0.16s infinite alternate;
+  pointer-events: none;
+}
+@keyframes flame-flicker { from { transform: translate(-50%, -12%) scale(0.92, 0.85); } to { transform: translate(-50%, -12%) scale(1.05, 1.1); } }
 
 
 /* 4b. THE SCOPE THOUGHT ============================================= */
@@ -567,19 +613,40 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 
 
 /* 5b. ALSO ON THE WORKBENCH ========================================= */
-/* The heading and its intro on the left, two plain entries on the right:
-   the first wider, the second a little narrower and a step lower. */
+/* Plain layout first: label, a small rocket picture, then the copy. This is
+   what phones, reduced motion, no JavaScript and a missing rocket picture
+   get. On desktop rocket.js adds "is-scene": the section becomes a tall
+   scroll track with a sticky stage where SCOPE grows and the rocket pushes
+   it away, carrying the copy on its hull. */
 
 .workbench {
+  padding: 56px 0;
+  border-top: 1px solid var(--line);
+}
+.workbench-stage { position: relative; }
+.workbench-label { margin-bottom: 24px; }
+.workbench-scope { display: none; }
+
+.workbench-rocket {
+  /* Where the cream hull is on rocket-side.webp, as percentages of the picture.
+     Measure them again if the picture changes. */
+  --hull-left: 27.5%;   /* measured on rocket-side.webp: cream runs from 26.6% to 75.4% across */
+  --hull-right: 74.5%;
+  --hull-middle: 42.6%; /* vertical centre of the cream panel (rows 196 to 502 of 819) */
+  position: relative;
+}
+.workbench-rocket-art {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  margin: 0 0 24px;
+}
+.workbench-copy {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
   gap: 32px 64px;
   align-items: start;
-  padding: 56px 0;
-  border-top: 1px solid var(--line);
 }
-.workbench-head { padding-top: 22px; } /* the heading's cap height lines up with the first entry's title */
-.workbench-head .eyebrow { margin-bottom: 16px; }
 .workbench h2 { font-size: clamp(34px, 3.6vw, 50px); letter-spacing: -0.05em; }
 .workbench-intro {
   max-width: 380px;
@@ -600,7 +667,7 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 }
 .workbench-list li + li {
   max-width: 400px;
-  margin: 40px 0 0 18%; /* the step */
+  margin: 40px 0 0 18%;
   border-top-color: var(--orange);
 }
 .workbench-list h3 { margin: 0 0 6px; font: 500 26px 'Space Grotesk', sans-serif; letter-spacing: -0.5px; }
@@ -612,6 +679,65 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
   text-transform: uppercase;
   color: var(--orange);
 }
+
+/* --- The scene: desktop, motion allowed, rocket picture loaded --- */
+.workbench.is-scene {
+  width: 100%;      /* the stage spans the whole viewport so the rocket enters from its true right edge */
+  max-width: none;
+  height: calc((100svh - var(--header-h, 90px)) * 2.1); /* the stage plus a scroll track a little longer than it */
+  padding: 0;
+}
+.is-scene .workbench-stage {
+  position: sticky;
+  top: var(--header-h, 90px);
+  height: calc(100svh - var(--header-h, 90px));
+  overflow: hidden; /* the moving parts never leave the stage */
+}
+.is-scene .workbench-label { position: absolute; top: 24px; left: max(50px, calc((100% - 1280px) / 2)); margin: 0; } /* on the page column */
+.is-scene .workbench-scope {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font: 700 100px / 1 'Space Grotesk', sans-serif; /* rocket.js sets the real size: full width, scaled down from there */
+  letter-spacing: -0.06em;
+  color: var(--ink);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.06);
+  will-change: transform, opacity;
+}
+.is-scene .workbench-rocket {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: min(1200px, 90%); /* most of the page column, not the whole viewport */
+  transform: translate(100vw, -50%); /* off the right edge until rocket.js moves it */
+  will-change: transform;
+}
+.is-scene .workbench-rocket-art { width: 100%; margin: 0; }
+.is-scene .workbench-copy {
+  position: absolute;
+  left: var(--hull-left);
+  top: var(--hull-middle);
+  width: calc(var(--hull-right) - var(--hull-left));
+  transform: translateY(-50%); /* centred on the hull, whatever its height */
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr; /* title near the nose, one project per hull panel */
+  gap: 0 28px;
+  align-items: center;
+  color: #25180f;
+  opacity: 0; /* fades in once the rocket has settled */
+}
+.is-scene .workbench-list { display: contents; }
+.workbench.is-scene h2 { font-size: clamp(19px, 1.6vw, 24px); line-height: 1.1; }
+.workbench.is-scene h2 br { display: none; } /* let the heading wrap to the panel instead */
+.is-scene .workbench-intro { max-width: none; margin-top: 10px; color: #4a3a2c; font-size: 13.5px; line-height: 1.5; }
+.is-scene .workbench-list li { max-width: none; padding-top: 12px; border-top: 2px solid #25180f; }
+.is-scene .workbench-list li + li { margin: 0; border-top-color: #b04a1a; }
+.is-scene .workbench-list h3 { font-size: 19px; margin-bottom: 4px; }
+.is-scene .workbench-list p { color: #4a3a2c; font-size: 13.5px; line-height: 1.45; }
+.is-scene .workbench-list .workbench-status { margin-top: 8px; color: #b04a1a; }
 
 
 /* 6. THE FOOLS ====================================================== */
@@ -863,8 +989,9 @@ dialog p { font-size: 14px; margin-bottom: 0; }
   .gallery-feature { gap: 28px; }
   .slide-stage { height: 320px; }
 
-  .workbench { grid-template-columns: 1fr; gap: 32px; }
+  .workbench-copy { grid-template-columns: 1fr; gap: 32px; }
   .workbench-list li + li { margin-left: 12%; }
+  .is-scene .workbench-label { left: 28px; }
 
   .coffee.wrap { padding: 48px 28px; gap: 20px 28px; }
   .coffee-mug { width: 240px; margin-top: -100px; }
@@ -926,8 +1053,10 @@ dialog p { font-size: 14px; margin-bottom: 0; }
   .autoplay { margin-left: 0; }
   .thumb { flex-basis: 64px; height: 44px; }
 
-  /* Workbench */
-  .workbench { grid-template-columns: 1fr; gap: 28px; padding: 40px 0 48px; }
+  /* Workbench: a small rocket, then the copy */
+  .workbench { padding: 40px 0 48px; }
+  .workbench-rocket-art { width: min(100%, 360px); }
+  .workbench-copy { grid-template-columns: 1fr; gap: 28px; }
   .workbench h2 { font-size: 36px; }
   .workbench-list li { max-width: none; }
   .workbench-list li + li { max-width: none; margin: 28px 0 0; }

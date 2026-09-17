@@ -31,7 +31,7 @@ const preview = document.querySelector('#preview');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 let current = 0;
-let playing = false; // the slideshow starts paused; the Play button runs it
+let playing = false; // browsing is manual until the auto-play switch is pressed
 let hovering = false;
 let focused = false;
 let visible = true;
@@ -91,7 +91,7 @@ function showSlide(index) {
   thumbRail.scrollTo({ left, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
 }
 
-// Any manual navigation stops autoplay. The visitor can press Play to resume.
+// Any manual navigation stops autoplay until the switch is pressed again.
 function manualSlide(index) {
   playing = false;
   showSlide(index);

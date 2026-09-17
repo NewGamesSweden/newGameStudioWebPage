@@ -12,17 +12,12 @@
 
 <!--
   HOW THIS FILE IS ORGANISED
-  1. Header (logo + navigation)
-  2. Hero (big headline, the transparent workshop picture and the occasional SCOPE thought)
-  3. Gallery (the drawable practice easel, the game text, the development carousel)
-  4. Also on the workbench (the two other games in production)
-  5. The fools (team)
-  6. Coffee (support band with the interactive 3D mug, see coffee/)
-  7. Footer
-  8. Image preview dialog (opened by the enlarge button on the carousel)
+  1. Header   2. Hero   3. Gallery (easel, game text, development carousel)
+  4. Also on the workbench (the rocket scene)   5. The fools   6. Coffee   7. Footer
+  8. Image preview dialog
 
-  To change text, just edit it here. To change colours, see the top of style.css.
-  To add a carousel image, copy one "slide" block in section 3 and point it at a file in assets/.
+  All text lives here. Colours are at the top of style.css.
+  To add a carousel image, copy one "slide" block in section 3.
 -->
 
 <!-- Animated background. Only shows on desktop with a mouse. Drawn by surface.js. -->
@@ -64,17 +59,21 @@
     </div>
 
     <div class="hero-art">
-      <!-- The transparent workshop illustration. Every so often a small SCOPE thought appears
-           above the developers, inflates far past its size, snaps down to a sheepish "scope."
-           and, sometimes, adds "just one more feature". workshop-scope.js picks the moment and
-           the spot, style.css section 4b draws it. Purely decorative, nothing to click. -->
+      <!-- Transparent workshop picture. workshop-scope.js floats the SCOPE thought over it
+           (drawn by style.css section 4b). Decorative, nothing to click. -->
       <div class="workshop">
-        <img src="assets/workshop-cutout.webp" alt="Three low-poly friends making games around a desk filled with laptops and coffee cups" width="1536" height="1024">
+        <img src="assets/workshop.webp" alt="Three low-poly friends making games around a desk filled with laptops and coffee cups" width="1536" height="1024">
         <div class="scope-cloud" aria-hidden="true">
           <span class="scope-thought">SCOPE</span>
           <span class="scope-small">scope.</span>
           <span class="scope-echo">just one more feature</span>
         </div>
+      </div>
+      <!-- The shelf rocket. style.css parks it on the shelf; rocket.js flies it off as you scroll
+           and brings it back in the workbench section. -->
+      <div class="rocket-flyer" aria-hidden="true">
+        <img src="assets/rocket.webp" alt="" width="813" height="1935">
+        <span class="rocket-flame"></span>
       </div>
     </div>
   </section>
@@ -82,11 +81,10 @@
   <!-- =================================================================
        3. GALLERY
        ================================================================= -->
-  <section class="games wrap section" id="games" aria-labelledby="games-heading">
+  <section class="wrap section" id="games" aria-labelledby="games-heading">
     <article class="gallery-feature">
 
-      <!-- The practice easel. Behaviour lives in gallery/practice-easel.js.
-           Draw on the canvas with a pointer or finger. Reset clears it. Nothing is saved. -->
+      <!-- The practice easel (gallery/practice-easel.js). Draw on the canvas; Reset clears it. -->
       <div class="practice-easel" id="practice-easel">
         <div class="easel-stage">
           <canvas class="easel-canvas" role="img" aria-label="A practice easel with a blank canvas. Press and drag to draw on it."></canvas>
@@ -99,7 +97,7 @@
         </div>
       </div>
 
-      <!-- The game, introduced once, next to the easel -->
+      <!-- The game, next to the easel -->
       <div class="game-copy">
         <p class="tag">GALLERY <span>/</span> FREE BROWSER GAME</p>
         <h2 id="games-heading">Less talking.<br>More drawing.</h2>
@@ -110,9 +108,8 @@
       </div>
     </article>
 
-    <!-- Development images. Thumbnails, counters and the "1 of 12" labels are built by main.js,
-         so you only need to edit the list of slides below. The first slide is shown first.
-         Browsing is manual; the "Auto-play screenshots" button in the control row runs it. -->
+    <!-- Development images. main.js builds the thumbnails, counter and labels from the slides
+         below, so only edit that list. The first slide shows first. -->
     <div class="development-heading">
       <h3>It didn’t start like this.</h3>
       <p>From the first props to the game.</p>
@@ -161,7 +158,7 @@
           <button class="expand" id="open-preview" type="button" aria-label="Enlarge current image">↗</button>
       </div>
 
-      <!-- Caption, count, arrows and the auto-play switch, directly under the image -->
+      <!-- Arrows, caption, count and the auto-play switch -->
       <div class="carousel-controls">
         <button id="previous-slide" type="button" aria-label="Previous image">←</button>
         <div class="slide-caption" aria-live="off">
@@ -172,34 +169,44 @@
         <button id="autoplay" class="autoplay" type="button" aria-pressed="false">Auto-play screenshots</button>
       </div>
 
-      <!-- One scrolling strip of thumbnails. Filled in by main.js -->
+      <!-- Thumbnail strip, filled in by main.js -->
       <div class="thumbnails" aria-label="Choose an image"></div>
     </div>
   </section>
 
   <!-- =================================================================
        4. ALSO ON THE WORKBENCH
-       Two more games, both in production, as two plain entries: title, one
-       line, status. No pictures until each game has art of its own.
+       Two more games, both in production. On desktop rocket.js turns this
+       into a scroll scene: SCOPE grows, the rocket comes back from the right,
+       pushes it off and carries the two games in on its hull. Everywhere
+       else the copy simply sits below a small rocket picture.
        ================================================================= -->
   <section class="workbench wrap" id="workbench" aria-labelledby="workbench-heading">
-    <div class="workbench-head">
-      <p class="eyebrow">02 / ALSO ON THE WORKBENCH</p>
-      <h2 id="workbench-heading">Two more, because<br>of course there are.</h2>
-      <p class="workbench-intro">Someone said “scope”.<br>We started two more games.</p>
+    <div class="workbench-stage">
+      <p class="eyebrow workbench-label">02 / ALSO ON THE WORKBENCH</p>
+      <div class="workbench-scope" aria-hidden="true">SCOPE</div>
+      <div class="workbench-rocket">
+        <img class="workbench-rocket-art" src="assets/rocket-side.webp" alt="" aria-hidden="true" width="1921" height="819">
+        <div class="workbench-copy">
+          <div class="workbench-head">
+            <h2 id="workbench-heading">Two more, because<br> of course there are.</h2>
+            <p class="workbench-intro">Someone said “scope”.<br>We started two more games.</p>
+          </div>
+          <ol class="workbench-list">
+            <li>
+              <h3>Multiplayer project</h3>
+              <p>More people. More potential for shenanigans.</p>
+              <p class="workbench-status">In development</p>
+            </li>
+            <li>
+              <h3>Single-player adventure</h3>
+              <p>Something to get lost in. We’re still building the way.</p>
+              <p class="workbench-status">In development</p>
+            </li>
+          </ol>
+        </div>
+      </div>
     </div>
-    <ol class="workbench-list">
-      <li>
-        <h3>Multiplayer project</h3>
-        <p>More people. More potential for shenanigans.</p>
-        <p class="workbench-status">In development</p>
-      </li>
-      <li>
-        <h3>Single-player adventure</h3>
-        <p>Something to get lost in. We’re still building the way.</p>
-        <p class="workbench-status">In development</p>
-      </li>
-    </ol>
   </section>
 
   <!-- =================================================================
@@ -232,9 +239,8 @@
       <h2>Great ideas.<br>Empty coffee cups.</h2>
       <p>Gallery is free. Our questionable sleep schedules are self-inflicted. If you’re enjoying what we make, you can fuel the next late-night idea.</p>
     </div>
-    <!-- Interactive 3D mug. Behaviour lives in coffee/coffee-mug.js.
-         It spins slowly on its own; drag it to throw it the other way. Click to sip (three sips),
-         an unexplained little detail for visitors to discover. Only the donation button refills it. -->
+    <!-- Interactive 3D mug (coffee/coffee-mug.js). Spins on its own, drag to throw, click to sip.
+         Three sips empty it; only the donation button refills it. -->
     <div class="coffee-mug" id="coffee-mug">
       <canvas class="coffee-mug-canvas" tabindex="0" aria-label="Low-poly coffee mug. Press Enter to take a sip, drag or use the arrow keys to spin it."></canvas>
       <div class="coffee-mug-fallback" aria-hidden="true">☕</div>
@@ -281,6 +287,7 @@
 <script src="main.js"></script>
 <script src="surface.js"></script>
 <script src="workshop-scope.js"></script>
+<script src="rocket.js"></script>
 
 <!-- The coffee mug is an ES module. If it cannot load (for example when index.html is opened
      straight from disk without a web server), show the plain ☕ instead of a stuck "loading". -->

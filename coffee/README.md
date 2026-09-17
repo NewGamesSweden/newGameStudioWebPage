@@ -3,9 +3,8 @@
 This folder holds everything for the clickable coffee mug in the orange coffee section.
 The mug sits in the middle of the section and turns slowly on its own. Drag it and it takes
 the throw, then settles back into its slow spin in that direction. Spin fast to spill a few drops.
-Click it to sip (three sips, then empty). Nothing on the page explains the sipping on purpose;
-it is a small detail for visitors to find. Only the donation button refills it. A page refresh
-also starts it full again.
+Click it to sip (three sips, then empty); a small hint under the mug says so. Only the donation
+button refills it. A page refresh also starts it full again.
 
 ## Where to put the mug model
 

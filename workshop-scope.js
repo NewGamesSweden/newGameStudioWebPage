@@ -1,22 +1,15 @@
 /* ===================================================================
    The SCOPE thought over the workshop picture
 
-   Every so often a small SCOPE appears in the air above the developers,
-   inflates far past its size, then snaps down to a sheepish "scope." and
-   fades, all in about four seconds. Sometimes a small "just one more
-   feature" afterthought follows. Then the workshop is quiet for a good
-   while before the thought comes back.
+   Now and then a small SCOPE appears above the developers, inflates far
+   past its size, pops, and a sheepish "scope." takes its place. Sometimes
+   "just one more feature" follows. Decorative only: nothing to click, no
+   sound, no layout shift, hidden from screen readers. It runs only while
+   the picture is on screen in a visible tab; under reduced motion
+   style.css shows a still "scope." instead.
 
-   Purely decorative: nothing to click (pointing at the word only makes it
-   mutter), no sound, no layout change and nothing announced to screen
-   readers. It only runs while the picture is
-   on screen and the tab is visible. With "reduce motion" on, style.css
-   shows a small still thought instead and this file does nothing.
-
-   The animation itself is in style.css, section 4b. This file only picks
-   the moment and the spot, then adds the classes that start it.
-
-   Settings you might want to change are at the top.
+   The animation is in style.css, section 4b. This file picks the moment
+   and the spot. Settings are at the top.
    =================================================================== */
 
 (() => {
@@ -27,10 +20,8 @@
   const ECHO_CHANCE = 0.35;          // how often the "just one more feature" afterthought follows
   const HOVER_ECHO_MS = 1600;        // pointing at the word while it plays shows the afterthought once, this long
 
-  // Where the thought may appear, as percentages of the picture's width and
-  // height. Chosen to sit in the air above the desk, away from faces and
-  // screens, and low enough that the biggest pose stays clear of the headline
-  // that ends just above the picture on wide screens.
+  // Spots as percentages of the picture: in the air above the desk, clear of
+  // faces and screens.
   const POSITIONS = [
     { x: 23, y: 8 },
     { x: 60, y: 6 },
@@ -59,8 +50,7 @@
     cloud.classList.remove('is-playing', 'has-echo', 'is-echoing');
   }
 
-  // Pointing at the word while it is up brings out the afterthought once, the
-  // same way the logo mutters about scope when you hover it.
+  // Pointing at the word while it is up shows the afterthought once.
   thought.addEventListener('pointerenter', () => {
     if (!cloud.classList.contains('is-playing')) return;
     if (cloud.classList.contains('has-echo') || cloud.classList.contains('is-echoing')) return;
@@ -93,7 +83,7 @@
     }, SEQUENCE_MS);
   }
 
-  // Start over whenever the situation changes: scrolled into view, tab shown, motion setting changed.
+  // Start over whenever the situation changes (scrolled into view, tab shown, motion setting).
   function sync() {
     stop();
     if (allowed()) schedule(FIRST_DELAY_MS);

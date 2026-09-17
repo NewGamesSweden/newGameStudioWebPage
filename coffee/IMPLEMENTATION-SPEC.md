@@ -65,7 +65,7 @@ Use one authoritative integer `sipsRemaining`, initially `3`, and a separate ani
 Rules:
 
 1. Each valid click consumes exactly one sip. Update the logical state immediately, even while the previous level transition is animating.
-2. Animate toward the latest target level over approximately 300–450 ms. Rapid clicks must never create negative state or stale animation results.
+2. Animate toward the latest target level over approximately 300 to 450 ms. Rapid clicks must never create negative state or stale animation results.
 3. Only donation-button activation or page refresh refills the mug. Do not add automatic refill, empty-mug refill, double-click refill, or a separate refill control.
 4. Keep state in memory. Do not use localStorage, sessionStorage, cookies or backend persistence for coffee level.
 5. Dragging, spinning, scrolling, preview resizing, tab changes, visibility changes and WebGL restoration must not reset or consume coffee.
@@ -109,7 +109,7 @@ Use the three supplied translucent steam ribbons, or improve them with a similar
 Implement the reference controller's `onSplash` hook; the kit only exposes the hook, not a droplet renderer.
 
 - Trigger only above a deliberate angular-velocity threshold and only with coffee remaining.
-- Emit 3–5 small faceted brown droplets from the rim in the direction of motion.
+- Emit 3 to 5 small faceted brown droplets from the rim in the direction of motion.
 - Fade/shrink them over roughly 400 ms, then recycle them.
 - Rate-limit emission so a long drag does not allocate unlimited particles.
 - Keep the splash restrained and cosmetic. Do not wet the page, cover text, play audio, or alter `sipsRemaining`.
@@ -148,7 +148,7 @@ Suggested renderer setup:
 - Orthographic framing or restrained perspective.
 - Warm key light with subtle cyan fill to match the workshop illustration.
 - Ivory faceted ceramic and a chunky handle; retain low-poly shading rather than smoothing the entire mug.
-- Modest device-pixel-ratio cap, around 1.5–2.
+- Modest device-pixel-ratio cap, around 1.5 to 2.
 - ResizeObserver or equivalent sizing against the component's actual bounds.
 - Raycast coordinates derived from the canvas bounding rectangle, not the whole window.
 

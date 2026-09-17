@@ -6,9 +6,9 @@
      inside #coffee-mug.
    - Spins slowly on its own. Drag it and it takes the throw, then settles
      back into its slow spin in whichever direction it was thrown.
-   - Click the mug to sip (3 sips, then empty). Nothing on the page explains
-     this; it is a small detail to discover. Fast spins splash a few drops.
-     Only the donation button refills it.
+   - Click the mug to sip (3 sips, then empty). A small hint under the mug
+     says so. Fast spins splash a few drops. Only the donation button
+     refills it.
    - Keyboard: Enter or Space on the canvas sips, arrow keys spin. A
      visually hidden status line announces sip changes to screen readers.
    - Falls back to a plain ☕ if WebGL or the model is unavailable.

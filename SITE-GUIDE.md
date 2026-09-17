@@ -4,9 +4,9 @@ This is the long version of `README.md`. It explains what the site is made of, h
 section works, where each piece lives and how to change it. Read `README.md` first if you only
 want to get it running.
 
-Everything here was checked against the code on 17 September 2026, after the layout
-refinement: one connected hero, the Gallery built around the easel, grouped carousel controls,
-plain workbench entries, the anchored coffee mug and the inflating SCOPE thought.
+Everything here was checked against the code on 17 September 2026, after the rocket
+sequence was added: the shelf rocket leaves the workshop as you scroll and comes back in the
+workbench section to push SCOPE off the page and carry the two other games in.
 
 ---
 
@@ -20,7 +20,7 @@ production, the team, and a full-width "buy us coffee" band with an interactive 
 Technical shape:
 
 - Plain HTML, CSS and JavaScript. No framework, no bundler, no package manager, no build step.
-- One HTML file, one stylesheet, three ordinary scripts and two ES module folders (easel, mug).
+- One HTML file, one stylesheet, four ordinary scripts and two ES module folders (easel, mug).
 - The only third-party code is Three.js, copied into the repository once under `coffee/vendor/`
   and shared by the easel and the mug. Fonts come from Google Fonts and fall back to system
   fonts offline.
@@ -68,8 +68,9 @@ receive.
 | `style.css` | All styling, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
 | `main.js` | Carousel, image preview dialog and the logo tooltip joke. Timing settings at the top. |
 | `workshop-scope.js` | The SCOPE thought over the workshop picture: when it appears and where. Settings at the top. |
+| `rocket.js` | The rocket: the hero launch and the workbench scroll scene. One controller, settings at the top. |
 | `surface.js` | The decorative folding-triangle background. Desktop with a mouse only. Safe to delete. |
-| `assets/` | Every image on the page: the transparent workshop cutout (`workshop-cutout.webp`, with the original `workshop.png` kept for reference), team photo, twelve carousel images. |
+| `assets/` | Every image on the page: the transparent workshop (`workshop.webp`, no rocket on its shelf), the rocket pictures (`rocket.webp` upright, `rocket-side.webp` side-on), team photo, twelve carousel images. |
 | `gallery/practice-easel.js` | The drawable 3D easel: loads the model, paints, handles pointer input and fallbacks. Settings at the top. |
 | `gallery/easel-with-canvas.glb` | The easel model, exported from Blender. |
 | `coffee/` | The interactive 3D coffee mug. Model, behaviour, rules, tests, vendored Three.js. |
@@ -93,7 +94,10 @@ receive.
 3. `main.js` runs (carousel, dialog, logo joke).
 4. `surface.js` runs (background effect, if the device qualifies).
 5. `workshop-scope.js` runs (the SCOPE thought, once the workshop picture is on screen).
-6. A small inline module imports `gallery/practice-easel.js` and mounts the easel into
+6. `rocket.js` runs. Once the shelf rocket picture has loaded it takes over the sprite for the
+   scroll flight, and once `assets/rocket-side.webp` has loaded it turns the workbench section
+   into the scroll scene, on wide screens without reduced motion.
+7. A small inline module imports `gallery/practice-easel.js` and mounts the easel into
    `#practice-easel`, then imports `coffee/coffee-mug.js` and mounts the mug into `#coffee-mug`.
    If either import fails, the same inline code switches that piece to its fallback so the page
    never shows a stuck "loading" state.
@@ -129,14 +133,23 @@ holds the workshop illustration, its feet level with that last line, so it rises
 lower part of the headline without touching the text. At 1440 by 900 the whole group and the
 whole picture fit on the first screen.
 
-The picture is `assets/workshop-cutout.webp`: the same scene with its background removed, so it
-sits straight on the page with a soft drop shadow and no box or fade. It is an AI-edited cutout
-of the original `assets/workshop.png`, which is kept in `assets/` for reference and is not used
-by the page. There is nothing to click on the picture.
+The picture is `assets/workshop.webp`, the workshop scene with its background removed, so it
+sits straight on the page with a soft drop shadow. Its shelf is empty in the file: the small
+rocket standing there is a separate picture (`assets/rocket.webp`) parked by the `.rocket-flyer`
+rule in `style.css` section 4, so it is there without JavaScript too. There is nothing to click
+on the picture.
+
+**The launch.** As you scroll, `rocket.js` lifts that shelf rocket off with its engine lit,
+leans it well over to the right and dips it out past the right edge before the Gallery section
+reaches the header, so it never covers the headline, the navigation or the easel. The motion
+eases toward the scroll position over about a tenth of a second, so wheel notches glide. With
+reduced motion, or if the rocket picture fails to load, it simply stays on the shelf. The flight is a pure function of the scroll position: scrolling back brings it
+back, and a page opened further down never shows it. If either file is missing, the picture
+stays as it is and nothing flies. The rocket returns in the workbench section (5.5).
 
 On phones the order is eyebrow, headline, picture, then the intro and buttons.
 
-Where: `index.html` section 2, `style.css` section 4.
+Where: `index.html` section 2, `style.css` section 4 (`.rocket-flyer`), `rocket.js` part 1.
 
 ### 5.3 The SCOPE thought
 
@@ -208,14 +221,41 @@ Where: `index.html` section 3, `style.css` section 5, `main.js` part 1, `gallery
 
 ### 5.5 Also on the workbench
 
-A hairline separates it from the carousel above. The heading and its short intro sit on the
-left; the two entries sit on the right, each just a title, one sentence and "In development".
-The first is wider under a cyan rule; the second is a little narrower, indented and a step
-lower under an orange rule. No pictures: neither game has art of its own yet, and nothing is
-borrowed from Gallery to stand in. On phones the heading comes first and the two entries stack
-at full width.
+The rocket's return. On desktop, with motion allowed and `assets/rocket-side.webp` loaded,
+`rocket.js` turns the section into a scroll scene: the section becomes about twice the height
+of the viewport and a stage the height of the viewport (minus the header) sticks while you
+scroll through it. Progress through that scroll drives everything:
 
-Where: `index.html` section 4, `style.css` section 5b.
+| Progress | What happens |
+| --- | --- |
+| 0 to 12% | The stage with the small "Also on the workbench" label and a small SCOPE already sitting in the middle. |
+| 12 to 45% | SCOPE grows to 80% of the page column, expanding equally to both sides. |
+| 45 to 62% | SCOPE holds. The rocket's nose peeks in from the right edge of the viewport, pointing left. |
+| 62 to 82% | The rocket travels left. The moment its nose reaches the word's right edge, SCOPE is shoved along with it, tilting and squashing a little, and leaves past the left edge. |
+| 82 to 100% | The rocket settles centred and the copy fades in on its cream hull. Then the stage releases and the page scrolls on. |
+
+The stage spans the whole viewport during the scene so the rocket really comes in from the edge;
+SCOPE and the rocket themselves are sized to the 1280px page column. SCOPE is laid out at its
+full size and only ever scaled down, which keeps it crisp and cheap to animate. Like the
+launch, the scene eases toward the scroll position over about a tenth of a second.
+
+The copy is ordinary HTML text laid over the hull: the heading and intro near the nose, one
+project per panel behind it. It stays horizontal while the rocket moves and remains readable
+once the section has scrolled on. The hull's position on the picture is set by the
+`--hull-left`, `--hull-right` and `--hull-middle` variables in `style.css` section 5b; measure
+them again if the rocket picture changes.
+
+Everywhere else (phones, reduced motion, no JavaScript, or a rocket picture that failed to
+load) the section is plain: the label, a small rocket picture, then the heading, intro and the
+two entries, each a title, one sentence and "In development". Nothing decorative is in the
+accessibility tree; the heading and entries always are. The hero's own small SCOPE thought
+only ever plays while the workshop picture is on screen, so the two jokes never overlap.
+
+Reverse scrolling, fast scrolling, resizing, reloading mid-scene and arriving by the
+`#workbench` anchor all land in the right state because the scene is computed from the scroll
+position alone.
+
+Where: `index.html` section 4, `style.css` section 5b, `rocket.js` part 2.
 
 ### 5.6 The fools
 
@@ -327,13 +367,9 @@ All at the top of `gallery/practice-easel.js`:
 With the site served locally, open the console:
 
 ```js
-practiceEasel.mode                          // '3d', 'flat' or 'static'
-practiceEasel.drawPath([[0.1, 0.1], [0.9, 0.9]])  // draws a diagonal, coordinates 0 to 1
+practiceEasel.mode    // '3d', 'flat' or 'static'
 practiceEasel.reset()
 ```
-
-`drawPath` also exists so a real recorded drawing could be replayed one day. Nothing on the
-page uses it.
 
 ---
 
@@ -353,7 +389,7 @@ Unchanged by the redesign.
 | Click the donation link (once live) | Refills the mug and opens the link. |
 | Refresh the page | Mug starts full again. Sip state is never stored. |
 
-Nothing on the page explains the sipping. It is meant to be discovered.
+A small "Click to sip · Drag to spin" hint sits under the mug.
 
 ### Keyboard and screen readers
 
@@ -383,7 +419,7 @@ Defined once as variables in the `:root` block at the top of `style.css`:
 | Variable | Use |
 | --- | --- |
 | `--bg` | Page background, deep navy |
-| `--panel` | Cards and boxes |
+| `--panel` | Carousel buttons and the preview dialog |
 | `--ink` | Main text, warm off-white |
 | `--muted` | Secondary text |
 | `--cyan` | Accent 1: links, highlights, buttons, the first workbench rule |
@@ -408,15 +444,16 @@ from odd margins.
 | Breakpoint | Behaviour |
 | --- | --- |
 | Desktop | The hero headline scales with the window up to 70px. Content is limited to a 1280px column; the coffee band runs edge to edge with its content on that column. |
-| 1000px and below (tablet) | Hero columns go 50/50, tighter gaps, shorter carousel image, workbench heading stacks above its entries, smaller mug |
+| 1000px and below (tablet) | Hero columns go 50/50, tighter gaps, shorter carousel image, workbench copy stacks under the rocket picture, smaller mug |
 | 820px and below (tablet held upright) | The coffee copy takes the full width of the band, with the mug and refill label side by side beneath it |
-| 700px and below (phone) | Everything stacks. Hero picture comes right after the headline. Game text comes before the easel. Workbench entries stack at full width. "Buy us coffee" nav link hidden. |
+| 700px and below (phone) | Everything stacks. Hero picture comes right after the headline. Game text comes before the easel. No rocket scene: a small rocket picture, then the workbench copy. "Buy us coffee" nav link hidden. |
 
 ### Reduced motion
 
 When the visitor's system asks for reduced motion: no smooth scrolling, no CSS transitions or
 animations (the SCOPE thought shows as one small still "scope."), no carousel autoplay, no
-background effect, no mug spin, splash or steam drift. Drawing on the easel still works; it is input, not animation.
+background effect, no mug spin, splash or steam drift, and no rocket: the hero picture keeps its
+shelf rocket and the workbench shows its plain layout. Drawing on the easel still works; it is input, not animation.
 
 ---
 
@@ -455,8 +492,21 @@ names listed in section 7.
 **Add a picture to a workbench game.** Only once the game has art of its own. Add an `<img>`
 inside that list item and give it a rule in `style.css` section 5b.
 
-**Replace the workshop picture.** Overwrite `assets/workshop-cutout.webp` with another 3:2
-image with a transparent background, then check the SCOPE spots still sit in clear air.
+**Replace the rocket art.** Three files in `assets/`: `workshop.webp` (the workshop with an
+empty shelf, 1536 by 1024), `rocket.webp` (the upright rocket alone, transparent) and
+`rocket-side.webp` (a long left-pointing rocket with a broad cream hull, currently 1921 by 819).
+After swapping `rocket-side.webp`, measure the cream hull and update `--hull-left`,
+`--hull-right` and `--hull-middle` in `style.css` section 5b; after swapping the workshop
+picture, re-measure the shelf position in the `.rocket-flyer` rule in section 4.
+
+**Move the shelf rocket.** The `.rocket-flyer` rule in `style.css` section 4 places it by
+percentages of the workshop picture. In `rocket.js`, `FLIGHT_LIFT`, `MAX_BANK` and `BANK_BIAS`
+shape the flight, `PHASE` holds the workbench timings and `SMOOTH_TIME` sets how quickly both
+scenes catch up with the scroll (0 makes them instant).
+
+**Replace the workshop picture.** Overwrite `assets/workshop.webp` with another 3:2 image with
+a transparent background and an empty shelf, then check the SCOPE spots still sit in clear air
+and the shelf rocket still stands on the shelf.
 
 **Remove the background effect.** Delete the canvas line and the `surface.js` script tag from
 `index.html`, then delete `surface.js`.
@@ -470,8 +520,10 @@ new version, all on one version, and re-apply the one import path change noted i
 ## 10. Checklist before pushing
 
 1. Serve the site locally and load it once. Wait a few seconds on the hero: SCOPE inflates
-   over the workshop and shrinks to "scope.". Scroll down: the easel renders and takes a
-   stroke, Reset clears it, the carousel arrows and auto-play switch work, the mug spins and
+   over the workshop and shrinks to "scope.". Scroll: the rocket lifts off the shelf and leaves
+   right. Further down: the easel renders and takes a
+   stroke, Reset clears it, the carousel arrows and auto-play switch work, SCOPE grows in the
+   workbench and the rocket pushes it away, the copy reads on the hull, the mug spins and
    empties after three clicks.
 2. Resize the window down to phone width. Confirm everything stacks and nothing is clipped or
    scrolls sideways.
