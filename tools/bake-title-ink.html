@@ -1,0 +1,364 @@
+<!doctype html>
+<!--
+  The Gallery title ink bake (one-off tool — never shipped with the site).
+
+  Opened by tools/bake-title-ink.py, which reads window.__bake and saves the
+  SVG to assets/gallery-title-ink.svg. Renders "Gallery" in the blackletter
+  at 3x on its own canvas; applies the
+  Gallery game's ink-outline math (ported from
+  client/src/scene/outline/ on the game repo's king-linez branch), traces the
+  raster into vector paths, and exposes the result. Deterministic: the same
+  inputs always produce the same SVG.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gallery title ink bake</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=block">
+<style>
+  body { background: #0b1422; color: #f2f0e8; font: 14px/1.5 sans-serif; margin: 20px; }
+  canvas { display: block; margin-top: 12px; max-width: 100%; }
+  .err { color: #ff9b65; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<p>Baking "Gallery"… (this page is driven by tools/bake-title-ink.py)</p>
+<canvas id="preview"></canvas>
+<pre class="err" id="err"></pre>
+<script>
+"use strict";
+
+// ---- Constants (game: client/src/scene/outline/outlinePass.ts) -------------
+const INK_COLOR = "#150e09";   // INK_COLOR 0x150e09
+const GLYPH_COLOR = "#f2f0e8"; // the site's --ink: the letters themselves
+// The game's shader normalizes its constants to its device-pixel buffer
+// (highPixelRatio() = 2 on the High preset). These are that result expressed
+// per CSS px — what the stroke actually looks like on screen.
+const STROKE_RADIUS = 4.5;     // CSS px — mean reach (the game's on-screen stroke weight)
+const NOISE_SCALE = 0.008;     // per CSS px — the game's on-screen ink-field rate
+const RHYTHM_MULT = 3;         // width-rhythm runs at RHYTHM_MULT × NOISE_SCALE (game: 3x)
+const HALO_STRENGTH = 0.85;
+const STROKE_MAX = 0.9;
+
+// ---- Bake geometry ----------------------------------------------------------
+const BAKE_SCALE = 3;                    // bake px per CSS px
+const TITLE_PX = 108 * BAKE_SCALE;       // 324 — the font clamp ceiling
+const R_BAKE = STROKE_RADIUS * BAKE_SCALE; // 13.5 — mean reach in bake px (the title's knob)
+const PAD = 40;                          // bake px margin (>= 1.3 * max reach 17.55)
+const BIG = 120;                         // generous draw margin, cropped away later
+const TRACE_TOLERANCE = 0.75;            // RDP tolerance, bake px
+const MIN_LOOP_POINTS = 8;               // drop shorter loops (noise specks)
+
+// ---- Noise field, verbatim from the game's JS port -------------------------
+// (client/src/utils/strokePainting.ts — the shader's field as JS)
+function fract(v) { return v - Math.floor(v); }
+function hash(cx, cy) {
+  const fx = fract(cx * 123.34), fy = fract(cy * 456.21);
+  const m = fx * (fx + 45.32) + fy * (fy + 45.32);
+  return fract((fx + m) * (fy + m));
+}
+function valueNoise(px, py) {
+  const cx = Math.floor(px), cy = Math.floor(py);
+  const sx = px - cx, sy = py - cy;
+  const smX = sx * sx * (3 - 2 * sx), smY = sy * sy * (3 - 2 * sy);
+  const a = hash(cx, cy), b = hash(cx + 1, cy), c = hash(cx, cy + 1), d = hash(cx + 1, cy + 1);
+  return a + (b - a) * smX + (c - a) * smY + (a - b - c + d) * smX * smY;
+}
+function smoothstep(e0, e1, v) {
+  const t = Math.min(Math.max((v - e0) / (e1 - e0), 0), 1);
+  return t * t * (3 - 2 * t);
+}
+function mix(a, b, t) { return a + (b - a) * t; }
+
+// ---- Felzenszwalb–Huttenlocher squared Euclidean distance transform --------
+// f = 0 on glyph pixels, big elsewhere; two 1D passes (columns, then rows).
+function edt(mask, W, H) {
+  const INF = 1e12;
+  const f = new Float64Array(Math.max(W, H));
+  const d = new Float64Array(Math.max(W, H));
+  const v = new Int32Array(Math.max(W, H) + 1);
+  const z = new Float64Array(Math.max(W, H) + 2);
+  const grid = new Float64Array(W * H);
+  for (let i = 0; i < W * H; i++) grid[i] = mask[i] ? 0 : INF;
+  function edt1d(n) {
+    let k = 0; v[0] = 0; z[0] = -INF; z[1] = INF;
+    for (let q = 1; q < n; q++) {
+      let s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+      while (s <= z[k]) {
+        k--;
+        s = ((f[q] + q * q) - (f[v[k]] + v[k] * v[k])) / (2 * q - 2 * v[k]);
+      }
+      k++; v[k] = q; z[k] = s; z[k + 1] = INF;
+    }
+    k = 0;
+    for (let q = 0; q < n; q++) {
+      while (z[k + 1] < q) k++;
+      d[q] = (q - v[k]) * (q - v[k]) + f[v[k]];
+    }
+  }
+  for (let x = 0; x < W; x++) {           // columns
+    for (let y = 0; y < H; y++) f[y] = grid[y * W + x];
+    edt1d(H);
+    for (let y = 0; y < H; y++) grid[y * W + x] = d[y];
+  }
+  for (let y = 0; y < H; y++) {           // rows
+    for (let x = 0; x < W; x++) f[x] = grid[y * W + x];
+    edt1d(W);
+    for (let x = 0; x < W; x++) grid[y * W + x] = d[x];
+  }
+  for (let i = 0; i < W * H; i++) grid[i] = Math.sqrt(grid[i]);
+  return grid; // distance to the nearest glyph pixel, bake px
+}
+
+// ---- Boundary tracing -------------------------------------------------------
+// All unit grid edges between a set pixel and an unset one, oriented so the
+// set pixel stays on the left, chained into closed loops. (Binary-field
+// marching squares: same loops the 16-case walker produces, no ambiguity.)
+function traceLoops(get, W, H) {
+  const out = new Map(); // "x,y" (start) -> array of [x,y] endpoints
+  function addEdge(x1, y1, x2, y2) {
+    const k = x1 + "," + y1;
+    let a = out.get(k);
+    if (!a) { a = []; out.set(k, a); }
+    a.push([x2, y2]);
+  }
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (!get(x, y)) continue;
+      if (y === 0 || !get(x, y - 1)) addEdge(x + 1, y, x, y);         // top → west
+      if (y === H - 1 || !get(x, y + 1)) addEdge(x, y + 1, x + 1, y + 1); // bottom → east
+      if (x === 0 || !get(x - 1, y)) addEdge(x, y, x, y + 1);         // left → south
+      if (x === W - 1 || !get(x + 1, y)) addEdge(x + 1, y + 1, x + 1, y); // right → north
+    }
+  }
+  const loops = [];
+  while (out.size) {
+    const startKey = out.keys().next().value;
+    const loop = [];
+    let key = startKey;
+    while (true) {
+      const arr = out.get(key);
+      if (!arr || arr.length === 0) break; // defensive; loops should close first
+      const [nx, ny] = arr.pop();
+      if (arr.length === 0) out.delete(key);
+      const [cx, cy] = key.split(",").map(Number);
+      loop.push([cx, cy]);
+      key = nx + "," + ny;
+      if (key === startKey) break;
+    }
+    if (loop.length) loops.push(loop);
+  }
+  return loops;
+}
+
+// Ramer–Douglas–Peucker on an open polyline.
+function rdp(pts, eps) {
+  if (pts.length < 3) return pts;
+  const keep = new Uint8Array(pts.length);
+  keep[0] = keep[pts.length - 1] = 1;
+  const stack = [[0, pts.length - 1]];
+  while (stack.length) {
+    const [a, b] = stack.pop();
+    const ax = pts[a][0], ay = pts[a][1], bx = pts[b][0], by = pts[b][1];
+    const dx = bx - ax, dy = by - ay, len2 = dx * dx + dy * dy;
+    let maxD = -1, idx = -1;
+    for (let i = a + 1; i < b; i++) {
+      const px = pts[i][0], py = pts[i][1];
+      let dist;
+      if (len2 === 0) {
+        dist = Math.hypot(px - ax, py - ay);
+      } else {
+        let t = ((px - ax) * dx + (py - ay) * dy) / len2;
+        t = Math.max(0, Math.min(1, t));
+        dist = Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+      }
+      if (dist > maxD) { maxD = dist; idx = i; }
+    }
+    if (maxD > eps) { keep[idx] = 1; stack.push([a, idx], [idx, b]); }
+  }
+  return pts.filter((_, i) => keep[i]);
+}
+
+// Simplify one closed loop: split at the point farthest from the start, RDP
+// both halves, rejoin. Returns null for loops too short to keep.
+function simplifyLoop(loop, eps) {
+  if (loop.length < MIN_LOOP_POINTS) return null;
+  let far = 1, fd = -1;
+  for (let i = 1; i < loop.length; i++) {
+    const d = (loop[i][0] - loop[0][0]) ** 2 + (loop[i][1] - loop[0][1]) ** 2;
+    if (d > fd) { fd = d; far = i; }
+  }
+  const halfA = rdp(loop.slice(0, far + 1), eps);
+  const halfB = rdp(loop.slice(far).concat([loop[0]]), eps);
+  const ring = halfA.slice(0, -1).concat(halfB.slice(0, -1));
+  return ring.length >= 3 ? ring : null;
+}
+
+const fmt = v => String(Math.round(v * 100) / 100);
+function loopsToPath(loops) { // loops in bake px; divide down to CSS px here
+  let s = "";
+  for (const ring of loops) {
+    s += "M" + fmt(ring[0][0] / BAKE_SCALE) + " " + fmt(ring[0][1] / BAKE_SCALE);
+    for (let i = 1; i < ring.length; i++) {
+      s += "L" + fmt(ring[i][0] / BAKE_SCALE) + " " + fmt(ring[i][1] / BAKE_SCALE);
+    }
+    s += "Z";
+  }
+  return s;
+}
+
+// ---- The bake ---------------------------------------------------------------
+async function bake() {
+  // 1. Fonts. A fallback-serif bake is the failure mode to guard — fail loudly.
+  const fontSpec = px => '700 ' + px + 'px "UnifrakturCook"';
+  await document.fonts.load(fontSpec(TITLE_PX), "Gallery");
+  if (!document.fonts.check(fontSpec(TITLE_PX))) {
+    throw new Error("UnifrakturCook did not load — refusing to bake a fallback serif");
+  }
+
+  // 2. Layout the title on one canvas.
+  const cv = document.createElement("canvas");
+  const ctx = cv.getContext("2d", { willReadFrequently: true });
+  ctx.font = fontSpec(TITLE_PX);
+  const mTitle = ctx.measureText("Gallery");
+  const titleW = mTitle.width;
+  const asc = mTitle.actualBoundingBoxAscent;
+  const desc = mTitle.actualBoundingBoxDescent;
+
+  const W0 = Math.ceil(titleW) + 2 * BIG;
+  const H0 = Math.ceil(asc + desc) + 2 * BIG;
+  cv.width = W0;
+  cv.height = H0;
+  // Setting width/height resets a canvas context — re-apply font + fill.
+  ctx.font = fontSpec(TITLE_PX);
+  const baseline = BIG + asc;
+  ctx.fillStyle = GLYPH_COLOR;
+  ctx.fillText("Gallery", BIG, baseline);
+
+  // Mask from the canvas's own alpha.
+  const a = ctx.getImageData(0, 0, W0, H0).data;
+  const mask0 = new Uint8Array(W0 * H0);
+  let minX = W0, minY = H0, maxX = -1, maxY = -1, glyphCount = 0;
+  for (let y = 0; y < H0; y++) {
+    for (let x = 0; x < W0; x++) {
+      const i = y * W0 + x;
+      if (a[i * 4 + 3] >= 128) {
+        mask0[i] = 1;
+        glyphCount++;
+        if (x < minX) minX = x; if (x > maxX) maxX = x;
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (glyphCount === 0) throw new Error("nothing rendered — font metrics gave an empty canvas");
+
+  // Crop to ink + PAD.
+  const x0 = Math.max(0, minX - PAD), y0 = Math.max(0, minY - PAD);
+  const x1 = Math.min(W0, maxX + 1 + PAD), y1 = Math.min(H0, maxY + 1 + PAD);
+  const W = x1 - x0, H = y1 - y0;
+  const mask = new Uint8Array(W * H);
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      mask[y * W + x] = mask0[(y + y0) * W0 + (x + x0)];
+    }
+  }
+
+  // 3. Distance field (bake px).
+  const dist = edt(mask, W, H);
+
+  // 4. Ink pass — the game's shader math, depth edges swapped for distances.
+  //    Coverage only where d > 0 (the one-sided sticker-halo rule).
+  const line = new Float32Array(W * H);
+  let inkCount = 0;
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const i = y * W + x;
+      const d = dist[i];
+      if (mask[i] || d === 0) { line[i] = 0; continue; } // never on the glyph
+      const cssX = x / BAKE_SCALE, cssY = y / BAKE_SCALE;
+      const n = valueNoise(cssX * NOISE_SCALE, cssY * NOISE_SCALE);
+      const r = smoothstep(0.35, 0.65, valueNoise(cssX * NOISE_SCALE * RHYTHM_MULT + 37, cssY * NOISE_SCALE * RHYTHM_MULT + 37));
+      const reach = R_BAKE * mix(0.7, 1.3, r);          // width rhythm 0.7–1.3x
+      const thr = 0.1 * mix(0.6, 1.5, n);               // threshold jitter
+      const coreResidual = Math.max(0, 1 - d / 3);      // the hairline (CORE_W = 3)
+      const coreLine = smoothstep(thr, 2 * thr, coreResidual);
+      const wideResidual = smoothstep(reach, reach * 0.7, d);
+      const halo = smoothstep(thr * 0.5, thr * 1.25, wideResidual);
+      let v = Math.min(Math.max(coreLine + halo * mix(0.65, HALO_STRENGTH, n), 0), 1);
+      v *= mix(0.75, 1.0, smoothstep(0.15, 0.6, n));    // weak-noise thinning
+      v *= STROKE_MAX;
+      line[i] = v;
+      if (v > 0.02) inkCount++;
+    }
+  }
+  if (inkCount < 1000) throw new Error("ink pass produced only " + inkCount + " pixels");
+  for (let x = 0; x < W; x++) { // border ring must be clean: no stroke clipping
+    for (const y of [0, 1, H - 2, H - 1]) {
+      if (line[y * W + x] > 0) throw new Error("ink touches the top/bottom border — PAD too small");
+    }
+  }
+  for (let y = 0; y < H; y++) {
+    for (const x of [0, 1, W - 2, W - 1]) {
+      if (line[y * W + x] > 0) throw new Error("ink touches the left/right border — PAD too small");
+    }
+  }
+
+  // 5. Trace: nested iso-bands of the ink field → loops → simplify → CSS-px
+  //    paths, plus the glyph itself.
+  const getGlyph = (x, y) => mask[y * W + x] === 1;
+  const LEVELS = [0.1, 0.25, 0.4, 0.55, 0.7, 0.85];
+  function tracedPath(get) {
+    const rings = traceLoops(get, W, H)
+      .map(l => simplifyLoop(l, TRACE_TOLERANCE))
+      .filter(Boolean);
+    return loopsToPath(rings);
+  }
+  const bandD = LEVELS.map(t => tracedPath((x, y) => line[y * W + x] >= t));
+  if (bandD.some(d => !d)) throw new Error("an ink band traced empty");
+  const glyphD = tracedPath(getGlyph);
+  if (!glyphD) throw new Error("glyph trace came out empty");
+
+  // 6. Assemble. The bands are nested iso-levels of one field, painted lowest
+  //    threshold first. Band k's opacity is the alpha wedge (t_k − t_{k−1}) /
+  //    (1 − t_{k−1}), which makes the straight-alpha stack composite to exactly
+  //    LEVELS[k] everywhere inside band k — the SVG reproduces the game's
+  //    continuous line-alpha ramp (the game paints mix(color, ink, line)).
+  const Wcss = Math.round(W / BAKE_SCALE), Hcss = Math.round(H / BAKE_SCALE);
+  let inkPaths = "";
+  for (let k = 0; k < LEVELS.length; k++) {
+    const prev = k ? LEVELS[k - 1] : 0;
+    const a = Math.round((LEVELS[k] - prev) / (1 - prev) * 1000) / 1000;
+    inkPaths += '  <path d="' + bandD[k] + '" fill="' + INK_COLOR +
+      '" fill-opacity="' + a + '" fill-rule="evenodd"/>\n';
+  }
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + Wcss + " " + Hcss +
+    '" width="' + Wcss + '" height="' + Hcss + '">\n' +
+    inkPaths +
+    '  <path d="' + glyphD + '" fill="' + GLYPH_COLOR + '" fill-rule="evenodd"/>\n' +
+    '</svg>\n';
+
+  // Human preview: ink coverage as greyscale over the page background.
+  const pv = document.getElementById("preview");
+  pv.width = Wcss; pv.height = Hcss;
+  const pctx = pv.getContext("2d");
+  const pim = pctx.createImageData(W, H);
+  for (let i = 0; i < W * H; i++) {
+    const c = line[i] > 0 ? Math.round(255 * (1 - line[i])) : (mask[i] ? 240 : 11);
+    pim.data[i * 4] = c; pim.data[i * 4 + 1] = c; pim.data[i * 4 + 2] = c; pim.data[i * 4 + 3] = 255;
+  }
+  const tmp = document.createElement("canvas");
+  tmp.width = W; tmp.height = H;
+  tmp.getContext("2d").putImageData(pim, 0, 0);
+  pctx.drawImage(tmp, 0, 0, Wcss, Hcss);
+
+  window.__bake = { width: Wcss, height: Hcss, svg, glyphCount, inkCount };
+  window.__bakeReady = true;
+}
+
+bake().catch(e => {
+  document.getElementById("err").textContent = "BAKE ERROR: " + (e && e.message || e);
+  window.__bakeError = String(e && e.message || e);
+});
+</script>
+</body>
+</html>

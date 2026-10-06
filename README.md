@@ -1,20 +1,17 @@
 # NewGameStudio website
 
-A one-page static website. Plain HTML, CSS and JavaScript. No build step, no packages, no server needed.
+A small static website: the game on `index.html`, the team on `fools.html`. "give us money" in the nav opens a donation modal on either page, and the front page's "fill it out" opens a playtest questionnaire. Plain HTML, CSS and JavaScript. No build step, no packages, no server needed.
 
 ## Files
 
 | File | What it is |
 | --- | --- |
-| `index.html` | All the text and page structure. Edit this to change what the site says. |
-| `style.css` | All the styling. Colours are at the top. Phone and tablet rules are at the bottom. |
-| `main.js` | The image carousel, the enlarge dialog and the logo joke. Timing settings are at the top. |
-| `workshop-scope.js` | The word SCOPE that drifts up over the workshop picture now and then. Timing and positions are at the top. |
-| `rocket.js` | The rocket that leaves the workshop as you scroll and comes back in the workbench section to push SCOPE away. Settings at the top. |
-| `surface.js` | The decorative folding background. Desktop only. Safe to remove. |
-| `assets/` | All images. |
-| `gallery/` | The drawable 3D practice easel in the Gallery section: model and behaviour code. |
-| `coffee/` | The interactive 3D coffee mug: model, Three.js, behaviour code and tests. See `coffee/README.md`. |
+| `index.html` | The front page: the Gallery game text, the development carousel, and the help-us-test section with its questionnaire modal. |
+| `fools.html` | The team page. |
+| `style.css` | All the styling for both pages. Colours are at the top. Phone and tablet rules are at the bottom. |
+| `main.js` | The money modal on every page, plus the playtest modal, the filmstrip carousel and the enlarge dialog on `index.html`. Settings are at the top. |
+| `assets/` | All images, including `gallery-title-ink.svg` — the baked Gallery title wordmark. |
+| `tools/` | One-off build tools (not shipped): `bake-title-ink.py` regenerates the Gallery title wordmark. |
 | `SITE-GUIDE.md` | The long guide: every section, how it works, how to change it. |
 | `NewGameStudio.code-workspace` | Shortcut for opening the folder in VS Code. Optional. |
 
@@ -26,9 +23,7 @@ Run a small web server in the folder and open http://127.0.0.1:8080:
 py -m http.server 8080 --bind 127.0.0.1
 ```
 
-Double-clicking `index.html` also works, except the 3D easel and the 3D coffee mug, which browsers
-refuse to load straight from disk. The easel shows a short note and the coffee section a plain ☕
-instead. Everything else is the same.
+Double-clicking `index.html` also works — every feature runs straight from disk.
 
 ## Host it on GitHub Pages
 
@@ -41,30 +36,20 @@ Every push to that branch updates the live site.
 
 ## Common edits
 
-**Change text.** Open `index.html`. The file is split into numbered sections with comments (Header, Hero, Gallery, Also on the workbench, The fools, Coffee, Footer). Edit the words in place.
-
-**Move or retime the SCOPE thought.** Open `workshop-scope.js`. `POSITIONS` are percentages of the workshop picture's width and height; keep them in the air above the desk, away from faces and screens. The quiet time between appearances and the chance of the small "scope…" echo are settings right above it. The movement itself is a set of keyframes in section 4b of `style.css`.
+**Change text.** Open the page you want. Each file is split into numbered sections with comments (Header, Gallery, Footer, and so on). The header, footer and money dialog are duplicated in both files — edit them in each.
 
 **Change colours.** Open `style.css`. The colours are variables in the `:root` block at the top.
 
-**Add or remove a carousel image.** Put the image in `assets/`. In `index.html`, find the block marked `SLIDES` and copy one `<div class="slide">` block. Change the `src`, the `alt` text and the `data-title` caption. Thumbnails and the "01 / 12" counter update automatically. The first slide in the list is shown first.
-
-**Change carousel speed.** Open `main.js` and change `AUTOPLAY_INTERVAL_MS` at the top. The value is in milliseconds. Browsing is manual by default; the "Auto-play screenshots" button under the image runs it. To autoplay on load, set `playing` to `true` near the top of the carousel code.
-
-**Replace the easel model.** Overwrite `gallery/easel-with-canvas.glb`. Keep a node named `easelCanvas` for the stretched canvas; the drawing surface is placed on its front face. Brush size and colours are settings at the top of `gallery/practice-easel.js`.
-
-**Replace the rocket art.** `workshop.webp` (the workshop with an empty shelf), `rocket.webp` (the rocket alone, parked on that shelf by CSS) and `rocket-side.webp` (long, left-pointing, cream hull) live in `assets/`. If you change them, re-measure the hull and shelf positions as described in the guide, section 9.
+**Add or remove a carousel image.** Put the image in `assets/`. In `index.html`, find the block marked `SLIDES` and copy one `<div class="slide">` block. Change the `src`, the `alt` text and the `data-title` caption. The strip loops through the list forever and the thumbnails update automatically; the first slide in the list is where it starts.
 
 **Change the Play Gallery link.** It points at https://gallery.newgamestudio.com/ in the Gallery section of `index.html`.
 
-**Add the donation link.** The "Refill the devs" label is intentionally not a link yet. Open `coffee/coffee-mug.js` and paste the URL into `DONATION_URL` at the top. The "Refill the devs" label becomes a link that opens in a new tab and refills the mug.
+**Change the Gallery title.** The blackletter wordmark with its ink outline is a baked SVG (`assets/gallery-title-ink.svg`), generated by `tools/bake-title-ink.py` — edit the text there, re-run the tool, never draw it live. See `SITE-GUIDE.md` section 5.2.
 
-**Test the coffee mug rules.** Run `node --test "coffee/tests/*.test.mjs"` in the folder.
-
-**Remove the background effect.** Delete the `<canvas class="origami-surface">` line and the `surface.js` script tag from `index.html`. You can then delete `surface.js`.
+**Add the donation link.** The money modal's "donation link coming soon" sentence lives in the money dialog in `index.html` and `fools.html`. When a real URL exists, replace the sentence with a link (or edit both files to say where to go).
 
 ## Notes
 
 - Fonts load from Google Fonts. Offline, the browser falls back to a system font.
-- The layout adapts to phones (700px and below) and tablets (1000px and below). Those rules are in section 11 of `style.css`.
-- Visitors who have "reduce motion" turned on get no autoplay, no animations and no background effect. The SCOPE thought shows as one small, still "scope." instead.
+- The layout adapts to phones (700px and below) and tablets (1000px and below). Those rules are in section 9 of `style.css`.
+- Visitors who have "reduce motion" turned on get no animations and the carousel does not drift on its own.

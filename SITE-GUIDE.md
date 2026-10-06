@@ -1,29 +1,31 @@
 # NewGameStudio website: the complete guide
 
 This is the long version of `README.md`. It explains what the site is made of, how every
-section works, where each piece lives and how to change it. Read `README.md` first if you only
+page works, where each piece lives and how to change it. Read `README.md` first if you only
 want to get it running.
 
-Everything here was checked against the code on 17 September 2026, after the rocket
-sequence was added: the shelf rocket leaves the workshop as you scroll and comes back in the
-workbench section to push SCOPE off the page and carry the two other games in.
+Everything here was checked against the code on 6 October 2026, after the site became two
+pages — the game on `index.html`, the team on `fools.html` — the coffee page was folded into
+a "give us money" modal that opens from the nav on either page (and the 3D mug went with it),
+the carousel was rebuilt as an endlessly drifting filmstrip, and a help-us-test section with
+a playtest questionnaire modal joined the front page.
 
 ---
 
 ## 1. What this is
 
-A one-page static website for NewGameStudio, the studio run by Daniel, Ahmed and Micky.
-The studio comes first, with the workshop picture and the word SCOPE that drifts over it now
-and then. Then the first game (Gallery) with a drawable practice easel, the two other games in
-production, the team, and a full-width "buy us coffee" band with an interactive 3D mug.
+A small static website for NewGameStudio, the studio run by Daniel, Ahmed and Micky. Two
+pages: the first game (Gallery) with its development carousel and a help-us-test section, and
+the team (the fools). "give us money" in the nav opens a donation modal on either page; the
+front page's "fill it out" opens a playtest questionnaire modal. The header and footer are
+shared by both pages (duplicated in each HTML file — there is no build step to include them
+from one place).
 
 Technical shape:
 
 - Plain HTML, CSS and JavaScript. No framework, no bundler, no package manager, no build step.
-- One HTML file, one stylesheet, four ordinary scripts and two ES module folders (easel, mug).
-- The only third-party code is Three.js, copied into the repository once under `coffee/vendor/`
-  and shared by the easel and the mug. Fonts come from Google Fonts and fall back to system
-  fonts offline.
+- Two HTML files, one stylesheet, one ordinary script. That's all.
+- Fonts come from Google Fonts and fall back to system fonts offline.
 - Hosted as static files. GitHub Pages is the intended host, but any static host works.
 
 ---
@@ -39,9 +41,7 @@ http://127.0.0.1:8080 in a browser:
 py -m http.server 8080 --bind 127.0.0.1
 ```
 
-Double-clicking `index.html` also works for everything except the two 3D pieces. Browsers
-refuse to load ES modules and models straight from disk, so the easel shows a one-line note and
-the coffee section falls back to a plain ☕. That is expected, not a bug.
+Double-clicking `index.html` also works — every feature runs straight from disk.
 
 ### Publish
 
@@ -64,353 +64,193 @@ receive.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The whole page. All text lives here, split into numbered, commented sections. |
-| `style.css` | All styling, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
-| `main.js` | Carousel, image preview dialog and the logo tooltip joke. Timing settings at the top. |
-| `workshop-scope.js` | The SCOPE thought over the workshop picture: when it appears and where. Settings at the top. |
-| `rocket.js` | The rocket: the hero launch and the workbench scroll scene. One controller, settings at the top. |
-| `surface.js` | The decorative folding-triangle background. Desktop with a mouse only. Safe to delete. |
-| `assets/` | Every image on the page: the transparent workshop (`workshop.webp`, no rocket on its shelf), the rocket pictures (`rocket.webp` upright, `rocket-side.webp` side-on), team photo, twelve carousel images. |
-| `gallery/practice-easel.js` | The drawable 3D easel: loads the model, paints, handles pointer input and fallbacks. Settings at the top. |
-| `gallery/easel-with-canvas.glb` | The easel model, exported from Blender. |
-| `coffee/` | The interactive 3D coffee mug. Model, behaviour, rules, tests, vendored Three.js. |
-| `coffee/coffee-mug.js` | Loads and renders the mug, handles spin, drag, click, splash, keyboard and fallback. Settings at the top, including `DONATION_URL`. |
-| `coffee/coffee-state.js` | The mug's rules with no graphics: sips left, click versus drag, liquid easing. |
-| `coffee/tests/` | Node tests for those rules. |
-| `coffee/vendor/` | Three.js r170 and its GLTF loader, plus the MIT licence. Used by both the easel and the mug. |
-| `coffee/workshop-mug-with-steam.glb` | The mug model. |
-| `coffee/kit/` | The original mug design kit. Not used by the site at runtime. |
-| `coffee/README.md`, `coffee/IMPLEMENTATION-SPEC.md` | Mug-specific notes and the original brief. |
+| `index.html` | The front page: the Gallery game text, the development carousel, and the help-us-test section (which opens the playtest questionnaire). |
+| `fools.html` | The team page. |
+| `style.css` | All styling for both pages, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
+| `main.js` | The money modal (every page), the playtest modal, the filmstrip carousel and the image preview dialog (the last three on `index.html` only). Each part is guarded on its element existing. Settings at the top. |
+| `assets/` | Every image on the site: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, three avatar portraits, seventeen carousel images. |
+| `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2). |
 | `README.md` | Short getting-started guide. |
 | `NewGameStudio.code-workspace` | VS Code workspace shortcut. Optional. |
 
 ---
 
-## 4. How the page loads
+## 4. How the pages load
 
-1. `index.html` links `style.css` in the head.
-2. Just before `</body>`, an import map tells the browser that `three` means
-   `coffee/vendor/three.module.min.js`.
-3. `main.js` runs (carousel, dialog, logo joke).
-4. `surface.js` runs (background effect, if the device qualifies).
-5. `workshop-scope.js` runs (the SCOPE thought, once the workshop picture is on screen).
-6. `rocket.js` runs. Once the shelf rocket picture has loaded it takes over the sprite for the
-   scroll flight, and once `assets/rocket-side.webp` has loaded it turns the workbench section
-   into the scroll scene, on wide screens without reduced motion.
-7. A small inline module imports `gallery/practice-easel.js` and mounts the easel into
-   `#practice-easel`, then imports `coffee/coffee-mug.js` and mounts the mug into `#coffee-mug`.
-   If either import fails, the same inline code switches that piece to its fallback so the page
-   never shows a stuck "loading" state.
+**Every page** links `style.css` and loads `main.js` just before `</body>`. The `?v=` on both
+links busts caches — bump both whenever either file changes, on both pages.
 
-The mounted pieces are exposed as `window.practiceEasel` and `window.coffeeMug` for testing in
-the browser console.
+**Every page**: `main.js` first wires the money modal (section 5.6 below) — the nav button
+and dialog exist on both pages.
+
+**`index.html`**: `main.js` also wires the playtest modal (section 5.5 below), finds the
+carousel and starts the filmstrip (section 5.3 below), and wires the image preview dialog.
+No other scripts.
+
+**`fools.html`**: no carousel, no preview dialog — those parts no-op. No other scripts.
 
 ---
 
-## 5. The page, section by section
+## 5. The pages, section by section
 
-The section numbers below match the comments in `index.html`.
+The section numbers below match the comments in the HTML files.
 
-### 5.1 Header
+### 5.1 Header (both pages)
 
-Sticky bar with the logo and three navigation links: Games, The fools, Buy us coffee. The
-links jump to sections on the same page. The "Buy us coffee" link is hidden on phones.
+Sticky bar with the wordmark and the navigation: "gallery" (to `index.html`), "the fools"
+(to `fools.html`), and "give us money ↗" — a bordered `<button>` that opens the money modal
+(section 5.6), not a link. The nav item for the page you're on is pinned cyan
+(`class="active"` + `aria-current="page"`, hard-coded per page) and wears a small cyan dot
+centred under its text (`nav a.active::after`) — so exactly one dot shows per page, always
+naming the page you're on. On phones the nav wraps to a
+second row under the logo; all three items stay visible.
 
-**Logo joke.** The logo is a button. Hovering or focusing it shows a tooltip that reads
-"Dont work because of scope". Tapping it on touch devices shows the tooltip for a few seconds
-(`LOGO_JOKE_VISIBLE_MS` in `main.js`). Escape or tapping elsewhere dismisses it. The same logo
-and joke appear again in the footer. This is deliberate and should stay exactly as it is.
+**The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a link to
+`index.html` on every page. Beside it sits the studio's one-liner, "three fools making games",
+in the small secondary style (`--muted`, 14px); hidden on phones. There is no hide-and-swap
+behaviour — the wordmark is always visible.
 
-Where: `index.html` section 1, `style.css` section 3, `main.js` part 3.
+Where: both HTML files section 1, `style.css` section 3.
 
-### 5.2 Hero, with the workshop picture
+### 5.2 The Gallery card (`index.html` section 2)
 
-Two columns that share a floor. The left column holds everything the studio has to say:
-eyebrow, the headline ("Three fools. Too many ideas. One more late night."), the intro line,
-the two calls to action (Explore Gallery, Meet the fools) side by side, the small "free to
-play" note and the closing "Independent games. Questionable bedtimes." line. The right column
-holds the workshop illustration, its feet level with that last line, so it rises alongside the
-lower part of the headline without touching the text. At 1440 by 900 the whole group and the
-whole picture fit on the first screen.
+One row on the card: the game's name and its one-line pitch on the left, the "Play for free"
+button on the right, all centred vertically. The card sits a 16px slide-gap under the nav's
+underline (`#games { padding-top: 16px }` — the one exception to the section-gap rhythm; the
+ID out-ranks the phone media query's `.section` shorthand, so it holds at every width). The
+button links to https://gallery.newgamestudio.com/ and opens in a new tab. The card is
+content-driven, about 250px tall.
 
-The picture is `assets/workshop.webp`, the workshop scene with its background removed, so it
-sits straight on the page with a soft drop shadow. Its shelf is empty in the file: the small
-rocket standing there is a separate picture (`assets/rocket.webp`) parked by the `.rocket-flyer`
-rule in `style.css` section 4, so it is there without JavaScript too. There is nothing to click
-on the picture.
+**The title is a baked image, not text.** `assets/gallery-title-ink.svg` is a one-time render
+of "Gallery" in the game's blackletter (UnifrakturCook). It wears the
+ink-outline treatment the game draws around its 3D props — a near-black
+sticker halo whose thickness breathes ±30% around the stroke mean, at the game's on-screen
+stroke weight and noise rate — traced into six nested ink bands (thresholds 0.1 to 0.85)
+whose wedge opacities stack to reproduce the game's continuous alpha ramp exactly.
+It was produced by `tools/bake-title-ink.py`
+(which runs `tools/bake-title-ink.html` headless); the SVG is the only runtime artefact and
+nothing is calculated on the page. The `<img>` lives inside the `<h2>`, so the heading
+semantics survive via its `alt` ("Gallery"). Its CSS width repeats the old
+`clamp(64px, 7.5vw, 108px)` font rule with every term scaled by the lockup's width, so it
+scales exactly like the font did. To change the title copy: edit the `fillText` call in
+the bake page, re-run the driver, and paste its printed numbers into `.game-title img` and
+the img's `width`/`height` attributes — and bump the `?v=` on the img's `src` (the bake
+changes content at the same path).
 
-**The launch.** As you scroll, `rocket.js` lifts that shelf rocket off with its engine lit,
-leans it well over to the right and dips it out past the right edge before the Gallery section
-reaches the header, so it never covers the headline, the navigation or the easel. The motion
-eases toward the scroll position over about a tenth of a second, so wheel notches glide. With
-reduced motion, or if the rocket picture fails to load, it simply stays on the shelf. The flight is a pure function of the scroll position: scrolling back brings it
-back, and a page opened further down never shows it. If either file is missing, the picture
-stays as it is and nothing flies. The rocket returns in the workbench section (5.5).
+**The backdrop.** One copy of the menu picture (`assets/menu-backdrop.jpg`, captured from the
+game) on the card's `::before` (`z-index: -1` inside the card's own stacking context),
+undimmed but softened with `filter: blur(6px)` — the pseudo-element is oversized
+(`inset: -24px`) so the blur's soft edge hides inside the card's clipped corners. Fully
+static CSS: nothing interactive. The pitch line under the title reads "a drawing deduction
+game for the browser. Now in beta", set in the body font (DM Sans, like the header tagline)
+in the title's white (`--ink`), and carries a soft two-layer navy
+`text-shadow` so it stays readable over the undimmed picture.
 
-On phones the order is eyebrow, headline, picture, then the intro and buttons.
+**The joint with the carousel.** The card and the strip are two separate rounded panels with
+one slide-gap (16px, the same space as between pictures) between them.
 
-Where: `index.html` section 2, `style.css` section 4 (`.rocket-flyer`), `rocket.js` part 1.
+Where: `index.html` section 2, `style.css` section 4, `tools/` for the title bake.
 
-### 5.3 The SCOPE thought
+### 5.3 The development carousel (`index.html` section 2)
 
-The running joke lives over the workshop picture instead of in its own section. Every so
-often a small SCOPE appears in the air above the developers, inflates in two comical spurts to
-about three times its size, pops, and a sheepish little "scope." takes its place before fading.
-About one time in three a small orange "just one more feature" afterthought follows.
+An endless filmstrip: all seventeen images in one row — the latest in-game screenshots first,
+then development studies and older builds — one slide-gap below the card. The strip's viewport
+(`.slide-stage`) is painted the page background colour, so the gaps between pictures read as
+the page showing through rather than a lighter panel.
 
-| When | What happens |
-| --- | --- |
-| Picture scrolls into view | 4.5 quiet seconds first. |
-| One appearance | 4 seconds: small thought, two growth spurts, pop, sheepish "scope.", fade. |
-| Between appearances | 10.5 to 18 quiet seconds, so one thought every 14.5 to 22 seconds. |
-| Picture off screen, tab hidden | Nothing plays. It starts over when the picture comes back. |
+- **Browsing is native.** The strip is a real horizontal scroller (no visible scrollbar), so
+  trackpad swipes, touch drags and shift-plus-wheel all work with no JavaScript.
+- **It drifts.** When the visitor is not on it — no pointer over the carousel, no keyboard
+  focus inside, no press on the strip, preview closed, carousel on screen — it advances on
+  its own at a slow, constant rate (`AUTO_SCROLL_PX_PER_S`, at the top of `main.js`).
+- **It loops.** `main.js` appends one hidden copy of the slide list and quietly pulls the
+  scroll position back one copy width each time it crosses the seam. Content at `s` and at
+  `s + loopWidth` is pixel-identical, so the wrap is invisible, in either direction.
+- **The chevron buttons.** A round button in the page's own background colour floats over
+  each end of the strip (46px circle, 18px in from the edge; 38px and 10px on phones), with
+  an inline-SVG chevron that turns cyan and grows slightly on hover. One press moves exactly
+  one picture: from the centre of the picture in view to the centre of the next (or
+  previous), taking the shortest way around the loop.
+- **Caption labels.** Each picture carries its `data-title` as a small label in its
+  bottom-right corner — page-background chip, rounded top-left corner — via a `.slide::after`
+  pseudo-element (`content: attr(data-title)`), so the loop's clones label themselves for
+  free and adding a slide needs no extra markup.
+- **Thumbnails.** The clickable preview rail sits under the panel, still built by `main.js`.
+  It follows whatever is in view — manual scroll, drift or chevrons — and clicking a thumb
+  centres that image, exactly as a chevron press would.
+- **Click a picture to enlarge it.** A short press (under 45px of movement) anywhere on a
+  slide — picture or caption label — opens the preview dialog; drags are the strip's own
+  scrolling. Keyboard: arrows on the focused carousel step one picture like the chevrons,
+  Enter or Space opens the preview of the picture in view.
 
-It picks one of three curated spots each time, never the same one twice in a row. The spots
-are percentages of the picture and sit above the desk, away from the faces and screens, and
-low enough that the biggest pose stays clear of the headline just above the picture.
+Where: `index.html` section 2, `style.css` section 4, `main.js` part 3.
 
-Pointing the mouse at the word while it is up brings out the afterthought once, a nod to the
-logo's own scope joke. Otherwise it is decorative only: nothing to click, no sound, no layout
-change, hidden from assistive technology. With "reduce motion" on it shows as one small, faint,
-still "scope." instead.
+### 5.4 The fools page (`fools.html`)
 
-Where: `index.html` section 2 (the `scope-cloud` element inside the picture wrapper),
-`style.css` section 4b (the keyframes), `workshop-scope.js` (timing and spots).
+The group photo as a banner (`assets/fools-banner.jpg`): full column width, cropped to a
+~320px-tall strip with the top of the picture anchored in frame (`object-fit: cover`,
+`object-position: 50% 20%`) and shown as-is — no dimming, tint or blur, unlike the Gallery
+card's backdrop. Below it, all left-aligned: the heading ("look how youthful we were before
+the scope-creep got *completely out of control*", the span in cyan), the rock-climbing
+caption, and the three names — each with a small round avatar portrait and a grey one-liner
+bio, separated by the same row rules the old name list used. No box or band around the
+section. `main.js` only wires the money modal here.
 
-### 5.4 Gallery, with the practice easel
+Where: `fools.html` section 2, `style.css` section 5.
 
-One composition built around the easel. There is no separate section heading; the game's own
-heading does that job. Three parts:
+### 5.5 Help us test + the playtest modal (`index.html`)
 
-**The practice easel** (left, 55% on desktop). A 3D easel standing straight on the page, no box
-or border, seen from a fixed camera a little to the left and above, so the canvas faces inward
-toward the text. Press and drag on its canvas to draw. Right under its feet: "Go on. Draw
-something." and a Reset button. Described in full in section 6 below.
+Below the carousel, styled exactly like the fools page content: the heading "help us *test*"
+(the span in cyan), the caption "we've just sort of 'released' an open beta for Gallery, so
+play the shit out of it and fill this thing out:", then a "questionnaire ↗" button reusing
+the nav button's `.nav-money` class (its hover rule was un-scoped from the nav for this). The
+button opens the questionnaire (`#test`), a native `<dialog>` in the money modal's exact style —
+same box, title ("we need you to *fill* this out", "fill" cyan), lede, and corner ×. Inside,
+sixteen open questions (`label.test-q` with a muted question line and a textarea each) scroll
+inside a fixed-height `.test-form`, so the header and the × stay visible while the list
+scrolls. The "send it" button is a deliberate no-op (`type="button"`, no handler): responses
+will be wired to somewhere real later. Closes the same three ways as the money modal.
 
-**The game** (right, 45%, vertically centred on the easel). The small label "GALLERY / FREE
-BROWSER GAME", the heading "Less talking. More drawing.", the tagline "Bring your friends. Make
-your mark.", two short descriptive lines (one of them explaining that this easel is the
-practice one), and the "Play Gallery" button, which links to https://gallery.newgamestudio.com/.
+Where: `index.html` sections 3 and 7, `style.css` sections 5 (`.help-test`) and 7
+(`dialog#test`, `.test-form`, `.test-q`), `main.js` part 2.
 
-**The development carousel** (full width below, under the heading "It didn't start like
-this."). Twelve images tracing Gallery from layout studies to a playable browser build. The
-image sits on a dark card pinned up slightly askew. Directly under it, one row: the previous
-arrow, caption and count, the next arrow, then the "Auto-play screenshots" switch. Under that,
-one horizontal strip of thumbnails that scrolls sideways when it runs out of room; the current
-one has a cyan edge and is scrolled into view. Each image is a `<div class="slide">` with a
-`data-title` caption; `main.js` builds the thumbnails, counter and accessibility labels from
-that list.
+### 5.6 The money modal (both pages)
 
-Carousel behaviour:
+The nav's "give us money ↗" is a button, not a link. Clicking it opens a small native
+`<dialog>` (`#money`) in the browser's top layer, above everything including the sticky
+header, over a dimmed backdrop. Text only, in the usual panel colours — no orange: the title
+"Gallery is free" (Space Grotesk, 34px), then the lede in two lines (18px) — "but if you're
+rich as hell," / "we'd like several million euros please" — with "rich as hell" and "several
+million euros" in cyan (`.money-hot`), then "donation link coming soon. You can still mail us
+cash or other valuables" (14px, muted). Closing is a small × in the dialog's top-right corner
+(`.money-close`, grey, cyan on hover — it overrides the shared dialog-button rule). It closes
+on the ×, Escape, or a click on the dimmed background (the shared `closeOnOutsideClick` helper
+in `main.js`). The dialog markup is duplicated in both HTML files, like the header and footer.
 
-- Browsing is manual by default. "Auto-play screenshots" runs the sequence every 4.5 seconds
-  (`AUTOPLAY_INTERVAL_MS`); while running it reads "Pause auto-play" and is marked pressed.
-- While playing, it pauses automatically when the mouse is over it, when anything inside has
-  focus, when the tab is hidden, when it is scrolled off screen, or when the preview dialog is
-  open.
-- Any manual navigation (arrows, thumbnails, keyboard, swipe) stops autoplay until the switch
-  is pressed again.
-- Left and right arrow keys work when the carousel is focused. Touch swipes of 45px or more
-  (`SWIPE_DISTANCE_PX`) change the slide.
-- The ↗ button opens the current image in the preview dialog.
+Where: both HTML files, `style.css` section 7, `main.js` part 1.
 
-On phones the order is: the game text with its Play Gallery button, then the easel, then the
-carousel with its controls and thumbnail strip.
+### 5.7 Footer (both pages)
 
-Where: `index.html` section 3, `style.css` section 5, `main.js` part 1, `gallery/`.
+Three parts on one grid row: the wordmark at the left edge, the credit dead-centre
+("made with love by daniel, ahmed & micky." with the year under it — `1fr auto 1fr` columns
+make the middle truly centred however wide the sides are), and the contact address
+(`contact@newgamestudio.com`, a `mailto:` link, muted, cyan on hover) at the right edge. On
+phones they stack centred: logo, then credit, then address.
 
-### 5.5 Also on the workbench
+Where: both HTML files, `style.css` section 6.
 
-The rocket's return. On desktop, with motion allowed and `assets/rocket-side.webp` loaded,
-`rocket.js` turns the section into a scroll scene: the section becomes about twice the height
-of the viewport and a stage the height of the viewport (minus the header) sticks while you
-scroll through it. Progress through that scroll drives everything:
+### 5.8 Image preview dialog (`index.html`)
 
-| Progress | What happens |
-| --- | --- |
-| 0 to 12% | The stage with the small "Also on the workbench" label and a small SCOPE already sitting in the middle. |
-| 12 to 45% | SCOPE grows to 80% of the page column, expanding equally to both sides. |
-| 45 to 62% | SCOPE holds. The rocket's nose peeks in from the right edge of the viewport, pointing left. |
-| 62 to 82% | The rocket travels left. The moment its nose reaches the word's right edge, SCOPE is shoved along with it, tilting and squashing a little, and leaves past the left edge. |
-| 82 to 100% | The rocket settles centred and the copy fades in on its cream hull. Then the stage releases and the page scrolls on. |
+A native `<dialog>` that opens on a short press on any picture in the strip (or Enter/Space
+on the focused carousel). Shows the picture full size with its `data-title` caption. Closes
+with the Close button, Escape, or a click outside the box. While it is open the strip's drift
+pauses.
 
-The stage spans the whole viewport during the scene so the rocket really comes in from the edge;
-SCOPE and the rocket themselves are sized to the 1280px page column. SCOPE is laid out at its
-full size and only ever scaled down, which keeps it crisp and cheap to animate. Like the
-launch, the scene eases toward the scroll position over about a tenth of a second.
-
-The copy is ordinary HTML text laid over the hull: the heading and intro near the nose, one
-project per panel behind it. It stays horizontal while the rocket moves and remains readable
-once the section has scrolled on. The hull's position on the picture is set by the
-`--hull-left`, `--hull-right` and `--hull-middle` variables in `style.css` section 5b; measure
-them again if the rocket picture changes.
-
-Everywhere else (phones, reduced motion, no JavaScript, or a rocket picture that failed to
-load) the section is plain: the label, a small rocket picture, then the heading, intro and the
-two entries, each a title, one sentence and "In development". Nothing decorative is in the
-accessibility tree; the heading and entries always are. The hero's own small SCOPE thought
-only ever plays while the workshop picture is on screen, so the two jokes never overlap.
-
-Reverse scrolling, fast scrolling, resizing, reloading mid-scene and arriving by the
-`#workbench` anchor all land in the right state because the scene is computed from the scroll
-position alone.
-
-Where: `index.html` section 4, `style.css` section 5b, `rocket.js` part 2.
-
-### 5.6 The fools
-
-The team photo (`assets/team.jpg`), large and pinned up slightly askew, beside the team block:
-eyebrow, heading ("Who thought this was a good idea? All three of us."), a short introduction,
-the three names and a closing line. No box or band around the section; it sits straight on the
-page with modest room above and below. The names are listed, not matched to positions in the
-photo.
-
-Where: `index.html` section 5, `style.css` section 6.
-
-### 5.7 Coffee
-
-A full-width orange band, its content lined up with the page column: copy on the left, the 3D
-mug in the middle with "Click to sip · Drag to spin" under it, and "REFILL THE DEVS ☕" right
-beside it so the two read as one interaction. The mug stands mostly inside the band; only its
-rim and steam cross the top edge on desktop and tablet. Nothing is shown while the mug loads;
-the status line under it is for screen readers only, except in the no-3D fallback where it
-explains itself. The mug's behaviour is unchanged and described in section 7 below. The donation
-label becomes a real link only when `DONATION_URL` is set in `coffee/coffee-mug.js`. On phones
-the copy, the mug and the refill label stack.
-
-Where: `index.html` section 6, `style.css` section 7, `coffee/coffee-mug.js`.
-
-### 5.8 Footer
-
-Logo (with the same joke), a "Made after bedtime" credit with the year, and a "Back to top" link.
-
-Where: `index.html` section 7, `style.css` section 8.
-
-### 5.9 Image preview dialog
-
-A native `<dialog>` that opens from the carousel's ↗ button. Shows the current image full size
-with its caption. Closes with the Close button, Escape, or a click outside the box. The
-carousel pauses while it is open.
-
-Where: `index.html` section 8, `style.css` section 9, `main.js` part 2.
-
-### 5.10 Animated background
-
-A full-screen canvas behind everything that draws a flat sheet of triangles which fold where
-the mouse moves and flatten again after about three seconds. Runs only on devices with a mouse
-and hover, never with reduced motion, never while the tab is hidden. To remove it, delete the
-`<canvas class="origami-surface">` line and the `surface.js` script tag from `index.html`.
-
-Where: `surface.js`, `style.css` section 10.
+Where: `index.html` section 5, `style.css` section 7, `main.js` part 4.
 
 ---
 
-## 6. The practice easel in detail
-
-### What the visitor sees
-
-A wooden easel with a stretched canvas, lit warm with a cyan fill like the rest of the site,
-seen from slightly left and above so the canvas faces inward toward the Gallery text: the
-canvas's left edge is nearer the camera and draws taller, which is how to check the direction
-in the browser. A long lens keeps the perspective gentle. The canvas fills about two thirds of
-the height, with the tray, lower beam and legs beneath it. There is no box behind it; the page
-shows through. The camera never moves and the easel never rotates.
-
-### Behaviour
-
-| Action | Result |
-| --- | --- |
-| Press and drag on the canvas | Draws with one dark, round brush. |
-| Drag off the canvas edge | The stroke ends there. Coming back starts a fresh stroke, never a line across the canvas. |
-| Second finger or right mouse button | Ignored while one pointer is drawing. |
-| Reset | Clears this drawing only. |
-| Scroll away and back | The drawing is still there. |
-| Refresh | Blank canvas. Nothing is saved anywhere. |
-
-There is no undo, palette, download, account or network. Touch drawing works because the
-canvas element blocks browser panning over itself; the rest of the page scrolls normally.
-
-### How it works
-
-- The hidden `.easel-flat` canvas element is the paint buffer (768 by 1024 pixels, 3:4).
-- In 3D, that buffer becomes a `CanvasTexture` on a thin plane that is a child of the model's
-  `easelCanvas` node, sitting about a millimetre in front of its face and inset to 95% so the
-  canvas edge stays visible. The model's own canvas box shares one primitive with its edges and
-  uses default cube UVs, so painting straight onto it would smear; the plane avoids that.
-- Only that plane is raycast. Hit UVs map straight to buffer pixels (checked with a corner-mark
-  test on 16 September 2026: top-left lands top-left).
-- Segments are drawn between sampled points, so fast strokes stay continuous. The texture is
-  marked for update only when something changed.
-- Frames are rendered only after a change, a resize, or when the section comes back on
-  screen. A still easel costs nothing.
-
-### Fallbacks
-
-- **WebGL unavailable or model failed:** the paint buffer itself is shown flat, letterboxed
-  with a wooden border, with the same drawing and the same Reset button.
-- **Module failed to load** (for example the page was opened from disk): a one-line note
-  replaces the stage. Reset is hidden.
-
-### Settings you may want to change
-
-All at the top of `gallery/practice-easel.js`:
-
-| Setting | Meaning |
-| --- | --- |
-| `CANVAS_NODE` | Name of the model node that holds the canvas. Currently `easelCanvas`. |
-| `BRUSH_PX`, `INK_COLOR`, `PAINT_COLOR` | Brush width, ink colour, blank canvas colour. |
-| `PLANE_INSET`, `PLANE_LIFT` | How much of the canvas face is paintable and how far in front the plane sits. |
-| `CAMERA_FOV`, `CAMERA_DIRECTION`, `FRAME_MARGIN`, `LOOK_DROP` | Framing. `CAMERA_DIRECTION` is `[-0.22, 0.10, 1]` (from the left), `CAMERA_FOV` 20, `FRAME_MARGIN` 1.5 and `LOOK_DROP` 0.12. Raise the margin a little if something important gets clipped. |
-
-### Testing in the browser
-
-With the site served locally, open the console:
-
-```js
-practiceEasel.mode    // '3d', 'flat' or 'static'
-practiceEasel.reset()
-```
-
----
-
-## 7. The coffee mug in detail
-
-Unchanged by the redesign.
-
-### Behaviour
-
-| Action | Result |
-| --- | --- |
-| Do nothing | The mug turns slowly on its own (`IDLE_SPIN_SPEED`). |
-| Drag horizontally | The mug follows the pointer. On release it keeps the throw, then eases back to the slow idle spin in the direction it was thrown. |
-| Spin fast | Three to five coffee droplets fly off the rim and fade. Cosmetic only. Never from an empty mug. |
-| Click the ceramic | Takes a sip. Three sips empty the mug. Steam fades with the last sip. |
-| Click an empty mug | Nothing. |
-| Click the donation link (once live) | Refills the mug and opens the link. |
-| Refresh the page | Mug starts full again. Sip state is never stored. |
-
-A small "Click to sip · Drag to spin" hint sits under the mug.
-
-### Keyboard and screen readers
-
-Enter or Space on the focused canvas sips; arrow keys nudge the mug. A visually hidden status
-line announces sips left. With "reduce motion" on, the mug stands still and sips snap instantly.
-
-### Files, settings and tests
-
-Rules in `coffee/coffee-state.js`, graphics in `coffee/coffee-mug.js`, settings at the top of
-that file (including `DONATION_URL`). The model must keep the node names `MugRoot`, `Mug_Body`,
-`Mug_Handle`, `Mug_Accent`, `Coffee`, `Steam_1`, `Steam_2`, `Steam_3`.
-
-```powershell
-node --test "coffee/tests/*.test.mjs"
-```
-
-In the browser console: `coffeeMug.sips`, `coffeeMug.sip()`, `coffeeMug.refill()`.
-
----
-
-## 8. Design system
+## 6. Design system
 
 ### Colours
 
@@ -418,115 +258,92 @@ Defined once as variables in the `:root` block at the top of `style.css`:
 
 | Variable | Use |
 | --- | --- |
-| `--bg` | Page background, deep navy |
-| `--panel` | Carousel buttons and the preview dialog |
+| `--bg` | Page background, deep navy (also the carousel stage, so the strip's picture gaps read as page) |
+| `--panel` | The dialogs and buttons |
 | `--ink` | Main text, warm off-white |
-| `--muted` | Secondary text |
-| `--cyan` | Accent 1: links, highlights, buttons, the first workbench rule |
-| `--orange` | Accent 2: the coffee band, workbench status, the small "scope…" echo |
+| `--muted` | Secondary text (the header tagline, captions) |
+| `--cyan` | Accent 1: links, highlights, buttons, the active nav item, list rules |
+| `--orange` | Accent 2: the keyboard focus ring |
 | `--line` | Borders |
 
 ### Type
 
-Space Grotesk for headings, labels and the SCOPE thought; DM Sans for body text. Both from
-Google Fonts. Section headings are all in the 34 to 56px range and the hero headline tops out
-at 70px, so no one heading shouts over the rest.
+Space Grotesk for headings and labels; DM Sans for body text. Both from
+Google Fonts. The Gallery title is the one outlier — the game's own blackletter
+(UnifrakturCook) — but it ships as a baked SVG wordmark (section 5.2), not a live
+font; the site itself stays in the 34 to 56px heading range.
 
 ### Spacing
 
 One scale: 8, 16, 24, 32, 40, 56, 64px. Things that belong together sit 8 to 32px apart;
-56 and 64px are reserved for the gaps between sections. Asymmetry comes from proportions
-(55/45 in the Gallery, 5/7 in the workbench, a narrower second workbench entry) rather than
-from odd margins.
+56 and 64px are reserved for the gaps between sections.
 
 ### Screen sizes
 
 | Breakpoint | Behaviour |
 | --- | --- |
-| Desktop | The hero headline scales with the window up to 70px. Content is limited to a 1280px column; the coffee band runs edge to edge with its content on that column. |
-| 1000px and below (tablet) | Hero columns go 50/50, tighter gaps, shorter carousel image, workbench copy stacks under the rocket picture, smaller mug |
-| 820px and below (tablet held upright) | The coffee copy takes the full width of the band, with the mug and refill label side by side beneath it |
-| 700px and below (phone) | Everything stacks. Hero picture comes right after the headline. Game text comes before the easel. No rocket scene: a small rocket picture, then the workbench copy. "Buy us coffee" nav link hidden. |
+| Desktop | Content is limited to a 1280px column. |
+| 1000px and below (tablet) | Tighter page margins, smaller Gallery title, shorter carousel strip |
+| 700px and below (phone) | Everything stacks: the Gallery card (copy, then button), the carousel, and the team content. The header tagline hides; the nav wraps to a second row under the logo, all three items visible. |
 
 ### Reduced motion
 
 When the visitor's system asks for reduced motion: no smooth scrolling, no CSS transitions or
-animations (the SCOPE thought shows as one small still "scope."), no carousel autoplay, no
-background effect, no mug spin, splash or steam drift, and no rocket: the hero picture keeps its
-shelf rocket and the workbench shows its plain layout. Drawing on the easel still works; it is input, not animation.
+animations, and the carousel does not drift on its own (arrows jump instantly, manual
+scrolling still works).
 
 ---
 
-## 9. Common tasks
+## 7. Common tasks
 
-**Change any text.** Edit `index.html`. Sections are numbered and commented.
-
-**Move the SCOPE thought.** In `workshop-scope.js`, `POSITIONS` are percentages of the
-workshop picture's width and height. Keep them in the air above the desk, away from faces and
-screens, and check the biggest pose at a wide window so it stays clear of the headline.
-
-**Change how often SCOPE appears.** The delays and the echo chance are the settings at the top
-of `workshop-scope.js`.
-
-**Change the SCOPE movement.** The keyframes are in `style.css` section 4b. If you change the
-4s duration there, change `SEQUENCE_MS` in `workshop-scope.js` to match.
+**Change any text.** Edit the HTML file the text lives on. Sections are numbered and
+commented. The header, footer and money dialog exist in both files — change them in each.
 
 **Add a carousel image.** Drop the file in `assets/`. In `index.html`, inside the block marked
 `SLIDES`, copy one `<div class="slide">` block and change `src`, `alt` and `data-title`.
-
-**Autoplay the carousel on load.** In `main.js`, set `playing` to `true` near the top of part 1.
-The "Auto-play screenshots" switch then starts pressed.
+The loop and the thumbnails pick it up automatically.
 
 **Change the Play Gallery link.** Edit the `href` on the `play-gallery` button in `index.html`
-section 3.
+section 2.
 
-**Make "Refill the devs" a real link.** Paste the URL into `DONATION_URL` in
-`coffee/coffee-mug.js`.
+**Re-bake the Gallery title.** The wordmark is generated, never hand-edited: edit the
+`fillText` call in `tools/bake-title-ink.html`, run `python3 tools/bake-title-ink.py`
+(it needs the machine-local headless Chrome the path at its top points to, plus network for
+the font), and it overwrites `assets/gallery-title-ink.svg` and prints the CSS sizing
+numbers — paste those into `.game-title img` and the img's `width`/`height` attributes in
+`index.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
+links if those changed too).
 
-**Replace the easel model.** Overwrite `gallery/easel-with-canvas.glb`, keeping a node named
-`easelCanvas` (or change `CANVAS_NODE`). Its local +Z must be the front of the canvas.
+**Make the donation link real.** The money modal's "donation link coming soon" sentence lives
+in the money dialog in both HTML files. Replace the sentence with a link (or point it
+somewhere new) in both.
 
-**Replace the mug model.** Overwrite `coffee/workshop-mug-with-steam.glb`, keeping the node
-names listed in section 7.
+**Tune the carousel.** `AUTO_SCROLL_PX_PER_S` (the drift speed) and `SWIPE_DISTANCE_PX`
+(click threshold) sit at the top of `main.js`; the chevron buttons' size, inset and colours
+are the `.strip-arrow` rules in `style.css` section 4.
 
-**Add a picture to a workbench game.** Only once the game has art of its own. Add an `<img>`
-inside that list item and give it a rule in `style.css` section 5b.
+**Wire up the questionnaire.** The playtest form's sixteen questions live in the `#test`
+dialog in `index.html` section 7 (one `label.test-q` per question, `name="q01"`…`q16`). The
+"send it" button is a `type="button"` no-op; when a destination exists, give the form a
+handler in `main.js` part 2 (or a real `action`) and flip the button to
+`type="submit"`.
 
-**Replace the rocket art.** Three files in `assets/`: `workshop.webp` (the workshop with an
-empty shelf, 1536 by 1024), `rocket.webp` (the upright rocket alone, transparent) and
-`rocket-side.webp` (a long left-pointing rocket with a broad cream hull, currently 1921 by 819).
-After swapping `rocket-side.webp`, measure the cream hull and update `--hull-left`,
-`--hull-right` and `--hull-middle` in `style.css` section 5b; after swapping the workshop
-picture, re-measure the shelf position in the `.rocket-flyer` rule in section 4.
-
-**Move the shelf rocket.** The `.rocket-flyer` rule in `style.css` section 4 places it by
-percentages of the workshop picture. In `rocket.js`, `FLIGHT_LIFT`, `MAX_BANK` and `BANK_BIAS`
-shape the flight, `PHASE` holds the workbench timings and `SMOOTH_TIME` sets how quickly both
-scenes catch up with the scroll (0 makes them instant).
-
-**Replace the workshop picture.** Overwrite `assets/workshop.webp` with another 3:2 image with
-a transparent background and an empty shelf, then check the SCOPE spots still sit in clear air
-and the shelf rocket still stands on the shelf.
-
-**Remove the background effect.** Delete the canvas line and the `surface.js` script tag from
-`index.html`, then delete `surface.js`.
-
-**Upgrade Three.js.** Replace the three files in `coffee/vendor/` with the same files from the
-new version, all on one version, and re-apply the one import path change noted in
-`coffee/vendor/README.md`. Both the easel and the mug use these files.
+**Add a contact channel.** The footer's address is the `.footer-mail` link in both HTML
+files; change the `href` and text in each.
 
 ---
 
-## 10. Checklist before pushing
+## 8. Checklist before pushing
 
-1. Serve the site locally and load it once. Wait a few seconds on the hero: SCOPE inflates
-   over the workshop and shrinks to "scope.". Scroll: the rocket lifts off the shelf and leaves
-   right. Further down: the easel renders and takes a
-   stroke, Reset clears it, the carousel arrows and auto-play switch work, SCOPE grows in the
-   workbench and the rocket pushes it away, the copy reads on the hull, the mug spins and
-   empties after three clicks.
-2. Resize the window down to phone width. Confirm everything stacks and nothing is clipped or
-   scrolls sideways.
-3. Run the mug tests: `node --test "coffee/tests/*.test.mjs"`.
-4. If you touched a script, run `node --check` on it to catch syntax slips.
+1. Serve the site locally and load **both pages**: navigation works both ways, the current
+   page's nav item is cyan, "give us money" opens the modal and it closes from the corner ×,
+   Escape and a click outside, the strip drifts and loops, hover pauses it, the chevrons
+   step one picture at a time, the thumbnails centre their picture, and a short click on a
+   picture (or its label) opens the preview. On the front page, "fill it out" opens the
+   questionnaire and its × closes it.
+2. Resize the window down to phone width. Confirm everything stacks, the nav wraps onto its
+   own row, and nothing is clipped or scrolls sideways.
+3. If you touched a script, run `node --check` on it to catch syntax slips.
+4. If you changed `style.css` or `main.js`, bump the `?v=` on both links in **both**
+   HTML files.
 5. Commit and push. GitHub Pages redeploys on its own.

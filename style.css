@@ -4,21 +4,17 @@
    Sections:
    1.  Fonts and colours (change the look here)
    2.  Base styles
-   3.  Header, navigation and the logo joke
-   4.  Hero (headline and copy on the left, the transparent workshop picture on the right)
-   4b. The SCOPE thought (appears over the workshop now and then)
-   5.  Gallery section (practice easel with the game text beside it, development carousel)
-   5b. Also on the workbench (the two other games, and the rocket scene)
-   6.  The fools (team)
-   7.  Coffee band
+   3.  Header and navigation (shared by both pages)
+   4.  Gallery section (game text beside the menu backdrop, filmstrip carousel)
+   5.  The fools (team page)
 
    Spacing scale: 8, 16, 24, 32, 40, 56, 64. Inside a section things sit 8 to 32
-   apart; 56 and 64 are for the gaps between sections.
-   8.  Footer
-   9.  Image preview dialog
-   10. Animated background canvas
-   11. Screen sizes: large desktop, tablet (1000px and below), phone (700px and below)
-   12. Reduced motion
+   apart; 56 and 64 are for the gaps between sections (the first card under the
+   header is the one exception — it sits a 16px slide-gap down).
+   6.  Footer
+   7.  Dialogs (image preview, money modal)
+   8.  Screen sizes: large desktop, tablet (1000px and below), phone (700px and below)
+   9.  Reduced motion
    =================================================================== */
 
 
@@ -32,7 +28,7 @@
   --ink: #f2f0e8;      /* main text */
   --muted: #a2b1c3;    /* secondary text */
   --cyan: #66e8de;     /* accent 1: links, highlights */
-  --orange: #ff9b65;   /* accent 2: coffee band, status labels, SCOPE afterthought */
+  --orange: #ff9b65;   /* accent 2: focus rings */
   --line: #2a3747;     /* borders */
 }
 
@@ -53,16 +49,13 @@ body {
   font-family: 'DM Sans', sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  isolation: isolate; /* lets the background canvas sit behind everything */
 }
-
-main, footer { position: relative; z-index: 1; }
 
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
 button, a { -webkit-tap-highlight-color: transparent; }
 
-a:focus-visible, button:focus-visible {
+a:focus-visible, button:focus-visible, textarea:focus-visible {
   outline: 3px solid var(--orange);
   outline-offset: 6px;
 }
@@ -73,24 +66,28 @@ a:focus-visible, button:focus-visible {
   margin: auto;
 }
 
-/* Small uppercase label above headings */
-.eyebrow {
-  font-family: 'Space Grotesk', sans-serif;
-  letter-spacing: 2px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--cyan);
-  margin: 0 0 25px;
-}
-
 h2 {
   font: 600 clamp(36px, 4vw, 54px) / 1.1 'Space Grotesk', sans-serif;
   letter-spacing: -2px;
   margin: 0;
 }
 
+/* The one accent button ("Play for free" on the Gallery card) */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+  background: var(--cyan);
+  color: #0b1422;
+  padding: 15px 21px;
+  border-radius: 5px;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+.button:hover { transform: translateY(-3px); }
 
-/* 3. HEADER, NAVIGATION AND LOGO JOKE =============================== */
+
+/* 3. HEADER AND NAVIGATION ========================================== */
 
 .site-header {
   position: sticky;
@@ -116,23 +113,48 @@ nav {
   font-size: 14px;
 }
 
-nav a:hover, .text-link:hover { color: var(--cyan); }
+nav a:hover { color: var(--cyan); }
+nav a.active { position: relative; color: var(--cyan); }
+/* The current page's own item wears a small dot, centred under its text.
+   Each page hard-codes class="active" on its own item, so exactly one dot
+   shows per page. */
+nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--cyan);
+}
 
-.nav-coffee {
+/* "give us money": a <button> that opens the money dialog. Buttons don't
+   inherit colour or lose their default background, so set both. The help-us
+   test section reuses this class for its identical opener button. */
+.nav-money {
+  background: none;
+  color: var(--ink);
   border: 1px solid #53606e;
   padding: 9px 16px;
   border-radius: 5px;
 }
-.nav-coffee span { margin-left: 18px; }
+.nav-money:hover { color: var(--cyan); }
+.nav-money span { margin-left: 18px; }
 
-/* The logo is a button so it can show the joke on tap as well as hover. */
-.logo-wrap { position: relative; flex-shrink: 0; }
+/* The wordmark is the way home (all pages link their logo to index.html),
+   with the studio's one-liner beside it in the small secondary style. */
+.logo-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
 
 .brand {
   display: flex;
   align-items: center;
-  background: none;
-  border: 0;
   padding: 10px 0;
   color: var(--ink);
   font: 700 24px 'Space Grotesk', sans-serif;
@@ -140,453 +162,149 @@ nav a:hover, .text-link:hover { color: var(--cyan); }
 }
 .brand > span { color: var(--cyan); }
 
-.scope-joke {
-  position: absolute;
-  top: calc(100% + 3px);
-  left: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 250px;
-  padding: 15px 18px;
-  background: var(--orange);
-  color: #23170e;
-  border: 2px solid #23170e;
-  box-shadow: 5px 5px 0 var(--cyan);
-  font: 700 17px / 1.2 'Space Grotesk', sans-serif;
-  letter-spacing: -0.4px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-5px) rotate(-5deg);
-  transition: opacity 0.16s, transform 0.16s, visibility 0.16s;
-  pointer-events: none;
-}
-.scope-joke > span { font-size: 32px; }
-
-.logo-wrap:hover:not(.dismissed) .scope-joke,
-.logo-wrap:focus-within:not(.dismissed) .scope-joke,
-.logo-wrap.joke-open .scope-joke {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) rotate(-5deg);
-  pointer-events: auto;
-}
-
-footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
+.brand-tag { color: var(--muted); font-size: 14px; }
 
 
-/* 4. HERO =========================================================== */
-/* Two columns that share a floor. Everything the studio has to say sits in
-   the left column; the transparent workshop stands in the right one, its
-   feet level with the last line of copy, so it rises alongside the lower
-   part of the headline without ever touching the text. */
-
-.hero {
-  display: grid;
-  grid-template-columns: minmax(0, 52fr) minmax(0, 48fr);
-  column-gap: 32px;
-  align-items: end;
-  padding: 40px 0 0;
-}
-.hero-copy { padding-bottom: 8px; }
-.hero-copy > .eyebrow { margin-bottom: 16px; }
-
-.hero h1 {
-  margin: 0;
-  font: 700 clamp(40px, 4.8vw, 70px) / 0.98 'Space Grotesk', sans-serif;
-  letter-spacing: -0.065em;
-}
-.hero h1 span { color: var(--cyan); }
-
-.intro {
-  max-width: 420px;
-  margin: 24px 0 0;
-  color: var(--muted);
-  font-size: 17px;
-  line-height: 1.7;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px 24px;
-  margin-top: 24px;
-}
-
-.button {
-  display: inline-flex;
-  align-items: center;
-  gap: 24px;
-  background: var(--cyan);
-  color: #0b1422;
-  padding: 15px 21px;
-  border-radius: 5px;
-  font-weight: 700;
-  transition: transform 0.2s;
-}
-.button:hover { transform: translateY(-3px); }
-
-.text-link { font-size: 14px; }
-.text-link span { margin-left: 9px; }
-
-.micro {
-  margin: 16px 0 0;
-  font-size: 12px;
-  color: var(--muted);
-}
-.hero-bottom {
-  margin: 32px 0 0;
-  font-size: 10px;
-  letter-spacing: 1.8px;
-  color: var(--muted);
-}
-
-/* The picture has a transparent background, so it sits straight on the page. */
-.hero-art {
-  position: relative;
-  min-width: 0;
-  margin-right: -24px; /* lets the desk run a little past the column edge */
-}
-.workshop { position: relative; isolation: isolate; }
-.workshop img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 2;
-  object-fit: contain;
-  filter: drop-shadow(0 18px 25px #02091635);
-}
-
-
-/* The shelf rocket. At rest it is parked on the shelf by these percentages of the picture
-   (the picture itself has no rocket painted in). In flight rocket.js switches it to a fixed
-   position and drives the transform; --flame goes from 0 on the shelf to 1 in flight. */
-.rocket-flyer {
-  --flame: 0;
-  position: absolute;
-  left: 18.9%;
-  top: 5.5%;
-  width: 4.2%;
-  height: 12.6%;
-  z-index: 2;
-  pointer-events: none;
-}
-.rocket-flyer img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: 50% 100%; /* stands on the shelf */
-}
-.rocket-flyer.is-flying {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 30; /* under the sticky header */
-  will-change: transform;
-}
-
-/* Engine exhaust: a soft teardrop of light that flickers under the launched rocket. */
-.rocket-flame {
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: 70%;
-  height: 60%;
-  transform: translate(-50%, -12%);
-  transform-origin: 50% 0;
-  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
-  background: radial-gradient(ellipse at 50% 15%, #fff7d6 0%, #ffcf5a 30%, #ff8a3d 60%, transparent 100%);
-  opacity: var(--flame, 0);
-  animation: flame-flicker 0.16s infinite alternate;
-  pointer-events: none;
-}
-@keyframes flame-flicker { from { transform: translate(-50%, -12%) scale(0.92, 0.85); } to { transform: translate(-50%, -12%) scale(1.05, 1.1); } }
-
-
-/* 4b. THE SCOPE THOUGHT ============================================= */
-/* Three words stacked on one spot over the workshop. workshop-scope.js sets
-   --thought-x and --thought-y to one of its curated spots and adds
-   "is-playing" (sometimes also "has-echo") for one four-second run:
-   SCOPE inflates far past its size, vanishes, a sheepish "scope." takes its
-   place, and now and then "just one more feature" follows. */
-
-.scope-cloud {
-  --thought-x: 23%; /* where the still "scope." sits under reduced motion; the script picks its own spots */
-  --thought-y: 8%;
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-}
-.scope-thought,
-.scope-small {
-  position: absolute;
-  left: var(--thought-x);
-  top: var(--thought-y);
-  font: 700 clamp(22px, 2.7vw, 40px) / 1 'Space Grotesk', sans-serif;
-  letter-spacing: -0.07em;
-  color: var(--ink);
-  text-shadow: 0 3px 18px #0b1422;
-  white-space: nowrap;
-  opacity: 0;
-  transform: translate(-50%, -50%) rotate(-6deg) scale(0.6);
-}
-.scope-small { font-weight: 500; font-size: clamp(16px, 1.6vw, 24px); letter-spacing: -0.02em; color: var(--muted); }
-.scope-echo {
-  position: absolute;
-  left: calc(var(--thought-x) + 8%);
-  top: calc(var(--thought-y) + 9%);
-  font: 500 clamp(12px, 1.1vw, 15px) 'Space Grotesk', sans-serif;
-  color: var(--orange);
-  white-space: nowrap;
-  opacity: 0;
-  transform: rotate(4deg);
-}
-.scope-cloud.is-playing .scope-thought { animation: scope-inflate 4s both; pointer-events: auto; cursor: default; }
-.scope-cloud.is-playing .scope-small { animation: scope-sheepish 4s both; }
-.scope-cloud.is-playing.has-echo .scope-echo { animation: scope-afterthought 4s both; }
-.scope-cloud.is-echoing .scope-echo { animation: scope-afterthought-once 1.6s both; } /* pointing at the word */
-
-/* Small thought, two comical growth spurts, then it pops. */
-@keyframes scope-inflate {
-  0%   { opacity: 0; transform: translate(-50%, -40%) rotate(-8deg) scale(0.45); }
-  10%  { opacity: 1; transform: translate(-50%, -50%) rotate(-6deg) scale(0.6); }
-  30%  { opacity: 1; transform: translate(-50%, -52%) rotate(-5deg) scale(0.7); }
-  38%  { opacity: 1; transform: translate(-50%, -54%) rotate(-3deg) scale(1.15); }
-  46%  { opacity: 1; transform: translate(-50%, -54%) rotate(-4deg) scale(1.05); }
-  62%  { opacity: 1; transform: translate(-50%, -60%) rotate(3deg) scale(1.9); }
-  63%, 100% { opacity: 0; transform: translate(-50%, -60%) rotate(3deg) scale(1.9); }
-}
-/* The sheepish version takes over exactly when the big one pops. */
-@keyframes scope-sheepish {
-  0%, 62% { opacity: 0; transform: translate(-50%, -50%) rotate(-6deg) scale(0.6); }
-  64%     { opacity: 1; transform: translate(-50%, -50%) rotate(-6deg) scale(1); }
-  88%     { opacity: 1; transform: translate(-50%, -48%) rotate(-6deg) scale(1); }
-  100%    { opacity: 0; transform: translate(-50%, -40%) rotate(-6deg) scale(1); }
-}
-@keyframes scope-afterthought {
-  0%, 74%  { opacity: 0; transform: rotate(4deg) translateY(6px); }
-  80%, 94% { opacity: 0.9; transform: rotate(4deg); }
-  100%     { opacity: 0; transform: rotate(4deg); }
-}
-@keyframes scope-afterthought-once {
-  0%       { opacity: 0;   transform: rotate(4deg) translateY(6px); }
-  20%, 70% { opacity: 0.9; transform: rotate(4deg); }
-  100%     { opacity: 0;   transform: rotate(4deg); }
-}
-
-
-/* 5. GALLERY SECTION ================================================ */
+/* 4. GALLERY SECTION ================================================ */
 
 .section { padding: 64px 0; }
+/* The Gallery card is the page's first section; it belongs to the header above
+   it, so it sits one slide-gap down instead of a full section gap. (The ID
+   also out-ranks the phone media query's .section shorthand below.) */
+#games { padding-top: 16px; }
 
-/* One composition: the easel on the left, the game introduced once on the right. */
+/* One composition: the game named on the left, the play button on the right,
+   the menu backdrop behind. No border; the strip below is a separate panel,
+   one slide-gap down. */
 .gallery-feature {
-  display: grid;
-  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
-  gap: 40px;
-  align-items: center;
-}
-
-/* --- Practice easel (markup in index.html, behaviour in gallery/practice-easel.js) --- */
-.practice-easel { min-width: 0; }
-.easel-stage {
   position: relative;
-  aspect-ratio: 1.2; /* landscape, tall enough for the tray, lower beam and legs; the page shows through */
+  isolation: isolate;
   overflow: hidden;
+  border-radius: 10px;
+  padding: 48px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
 }
-.easel-canvas, .easel-flat {
+/* The backdrop: the menu picture, undimmed, a little blurry. The oversized
+   box hides the blur's soft edge inside the card's clipped corners. */
+.gallery-feature::before {
+  content: "";
+  position: absolute;
+  inset: -24px;
+  background: url("assets/menu-backdrop.jpg") center / cover no-repeat;
+  filter: blur(6px);
+  z-index: -1;
+}
+
+/* --- The game, introduced once, on the left --- */
+.game-copy { min-width: 0; }
+/* The title is a baked SVG (tools/bake-title-ink.*) — the game's ink-outline
+   look around the blackletter, sized to track the old clamp(64px, 7.5vw, 108px)
+   font rule: the lockup's width is proportional to its font size, so the same
+   clamp with every term scaled by Wcss/108 keeps it identical at any viewport. */
+.game-title { margin: 0 0 12px; }
+.game-title img {
   display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: none; /* drawing needs both axes; the page still scrolls outside the easel */
-  cursor: crosshair;
+  width: clamp(203px, 23.8vw, 343px); /* numbers from the bake driver */
+  height: auto;
+  max-width: 100%; /* phones: the card clips before the floor does */
 }
-/* Flat fallback: the paint buffer itself, shown letterboxed at its 3:4 shape */
-.easel-flat {
-  position: absolute;
-  inset: 0;
-  width: auto;
-  height: 100%;
-  max-width: 100%;
-  margin: auto;
-  aspect-ratio: 3 / 4;
-  border: 6px solid #6b4a30;
-  box-shadow: 0 8px 30px #0008;
-}
-.easel-static {
-  display: none;
-  position: absolute;
-  inset: 0;
-  margin: 0;
-  padding: 30px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: var(--muted);
-  font-size: 15px;
-  border: 1px solid var(--line);
-}
-.easel-flat,                          /* the buffer stays hidden until the flat fallback needs it */
-.practice-easel.is-flat .easel-canvas,
-.practice-easel.is-static .easel-canvas { display: none; }
-.practice-easel.is-flat .easel-flat { display: block; }
-.practice-easel.is-static .easel-static { display: flex; }
-.practice-easel.is-static .easel-reset { display: none; }
-
-/* The hint and Reset sit right under the easel's feet */
-.easel-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 8px 12% 0;
-}
-.easel-hint { margin: 0; font: 500 16px 'Space Grotesk', sans-serif; }
-.easel-reset {
-  background: transparent;
+.game-description {
+  margin: 0 0 0 24px; /* a small indent, so the line doesn't flush with the title's left edge */
+  font-size: 18px;
+  line-height: 1.6;
   color: var(--ink);
-  border: 0;
-  border-bottom: 1px solid var(--muted);
-  padding: 8px 0;
-  font-size: 14px;
+  /* Soft navy halo: keeps the line readable over the undimmed backdrop
+     without a visible box (the left fade used to do this job). */
+  text-shadow: 0 1px 2px rgba(11, 20, 34, 0.55), 0 0 12px rgba(11, 20, 34, 0.8);
 }
-.easel-reset:hover { border-color: var(--cyan); color: var(--cyan); }
+.play-gallery { flex-shrink: 0; margin-top: 0; font-size: 16px; }
 
-/* --- The game, introduced once --- */
-.game-copy { max-width: 480px; }
-.tag {
-  margin: 0 0 16px;
-  font-size: 11px;
-  letter-spacing: 1.6px;
-  color: var(--cyan);
-}
-.tag span { margin: 0 8px; color: var(--muted); }
-.game-copy h2 {
-  margin: 0 0 20px;
-  font-size: clamp(36px, 4vw, 56px);
-  letter-spacing: -0.05em;
-}
-.game-tagline { margin: 0 0 12px; font: 500 20px / 1.4 'Space Grotesk', sans-serif; }
-.game-description { margin: 0 0 12px; font-size: 15px; line-height: 1.7; color: var(--muted); }
-.play-gallery { margin-top: 16px; font-size: 16px; }
-
-/* --- Development carousel: heading, image, controls under it, thumbnail strip --- */
-.development-heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 24px;
-  margin: 56px 0 16px;
-}
-.development-heading h3 {
-  margin: 0;
-  font: 500 clamp(24px, 2.6vw, 32px) 'Space Grotesk', sans-serif;
-  letter-spacing: -0.04em;
-}
-.development-heading p { margin: 0; font-size: 14px; color: var(--muted); }
-
+/* --- Development carousel: an endless filmstrip with round chevron buttons
+       at each end, thumbnail strip under it --- */
 .carousel {
   position: relative;
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: 16px; /* one slide-gap, matching the space between pictures */
 }
 .carousel:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
 
+/* The strip viewport: rounds off the strip's corners; painted the page colour
+   so the gaps between pictures read as the page, not a lighter panel. */
 .slide-stage {
   position: relative;
-  height: clamp(280px, 34vw, 480px);
-  isolation: isolate;
-  overflow: hidden;
-  background: #101c2a;
-  transform: rotate(-0.6deg); /* a print pinned up slightly askew */
-  touch-action: pan-y; /* allows swipe left/right while still scrolling the page vertically */
+  isolation: isolate; /* keeps the chevrons above the strip */
+  overflow: hidden;   /* clips the strip to the rounded corners */
+  background: var(--bg);
+  border-radius: 10px;
 }
 
+/* The strip itself: one long row of pictures, natively scrollable, no
+   scrollbar. main.js drifts it and wraps it into itself. */
+.strip {
+  display: flex;
+  gap: 16px;
+  height: clamp(280px, 34vw, 440px);
+  overflow-x: auto;
+  scrollbar-width: none;                     /* Firefox */
+}
+.strip::-webkit-scrollbar { display: none; } /* Chromium/Safari */
+
 .slide {
+  flex: 0 0 auto;
+  height: 100%;
+  position: relative; /* anchors the caption label */
+  display: flex;
+  align-items: center;
+}
+.slide img {
+  display: block;
+  height: 100%;
+  width: auto; /* portrait shots become narrow columns in the same row */
+  cursor: zoom-in; /* a short press opens the preview dialog */
+  -webkit-user-drag: none;
+  user-select: none;
+}
+/* The picture's caption, bottom-right, on the page's own background. */
+.slide::after {
+  content: attr(data-title);
   position: absolute;
-  inset: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 10px;
+  background: var(--bg);
+  border-top-left-radius: 6px;
+  font-size: 12px;
+  color: var(--ink);
+}
+
+/* The chevrons: round buttons in the page's own background colour, floating
+   over the ends of the strip. One press moves one picture, centre to centre. */
+.strip-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.5s, visibility 0.5s;
-}
-.slide.active { opacity: 1; visibility: visible; }
-.slide img {
-  display: block;
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-}
-
-/* Round "enlarge" button in the corner of the image */
-.expand {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 2;
-  width: 40px;
-  height: 40px;
-  border: none;
+  border: 0;
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--bg);
-  font-size: 23px;
-  box-shadow: 0 2px 10px #0004;
-}
-.expand:hover { color: var(--bg); background: var(--cyan); }
-
-/* Arrows, caption and the auto-play switch in one row */
-.carousel-controls {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.carousel-controls > button {
-  flex-shrink: 0;
-  border: 1px solid #455365;
-  background: var(--panel);
+  background: var(--bg);
   color: var(--ink);
+  padding: 0;
 }
-#previous-slide, #next-slide {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  font-size: 20px;
-}
-.autoplay {
-  margin-left: 12px; /* part of the same group as the arrows, not off at the far side */
-  padding: 9px 14px;
-  border-radius: 5px;
-  font-size: 13px;
-}
-.autoplay[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan); }
-.carousel button:hover { border-color: var(--cyan); color: var(--cyan); }
-
-.slide-caption {
-  flex: 0 1 auto;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  font-size: 15px;
-  line-height: 1.4;
-}
-.slide-caption > span:last-child {
-  font-size: 12px;
-  letter-spacing: 1.8px;
-  color: var(--muted);
-}
+.strip-arrow--left { left: 18px; }
+.strip-arrow--right { right: 18px; }
+.strip-arrow svg { width: 20px; height: 20px; opacity: 0.85; transition: opacity 0.2s, transform 0.2s, color 0.2s; }
+.strip-arrow:hover svg { opacity: 1; color: var(--cyan); transform: scale(1.1); }
 
 .thumbnails {
   display: flex;
@@ -610,322 +328,94 @@ footer .scope-joke { top: auto; bottom: calc(100% + 8px); }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .thumb[aria-current="true"] { border-color: var(--cyan); opacity: 1; }
 .thumb:hover { opacity: 1; }
+/* Centre the strip when it fits; the auto margins let it still scroll from
+   the very first thumb when it overflows (justify-content would clip it). */
+.thumb:first-child { margin-left: auto; }
+.thumb:last-child { margin-right: auto; }
 
 
-/* 5b. ALSO ON THE WORKBENCH ========================================= */
-/* Plain layout first: label, a small rocket picture, then the copy. This is
-   what phones, reduced motion, no JavaScript and a missing rocket picture
-   get. On desktop rocket.js adds "is-scene": the section becomes a tall
-   scroll track with a sticky stage where SCOPE grows and the rocket pushes
-   it away, carrying the copy on its hull. */
+/* 5. THE FOOLS ====================================================== */
 
-.workbench {
-  padding: 56px 0;
-  border-top: 1px solid var(--line);
-}
-.workbench-stage { position: relative; }
-.workbench-label { margin-bottom: 24px; }
-.workbench-scope { display: none; }
+.fools { padding: 24px 0 56px; }
 
-.workbench-rocket {
-  /* Where the cream hull is on rocket-side.webp, as percentages of the picture.
-     Measure them again if the picture changes. */
-  --hull-left: 27.5%;   /* measured on rocket-side.webp: cream runs from 26.6% to 75.4% across */
-  --hull-right: 74.5%;
-  --hull-middle: 42.6%; /* vertical centre of the cream panel (rows 196 to 502 of 819) */
-  position: relative;
-}
-.workbench-rocket-art {
+/* The banner: the group photo at full column width, cropped to a wide strip
+   and shown as-is — no dimming, tint or blur (unlike the Gallery backdrop). */
+.fools-banner {
   display: block;
-  width: min(100%, 560px);
-  height: auto;
-  margin: 0 0 24px;
-}
-.workbench-copy {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: 32px 64px;
-  align-items: start;
-}
-.workbench h2 { font-size: clamp(34px, 3.6vw, 50px); letter-spacing: -0.05em; }
-.workbench-intro {
-  max-width: 380px;
-  margin: 20px 0 0;
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1.7;
-}
-.workbench-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.workbench-list li {
-  max-width: 460px;
-  padding-top: 20px;
-  border-top: 2px solid var(--cyan);
-}
-.workbench-list li + li {
-  max-width: 400px;
-  margin: 40px 0 0 18%;
-  border-top-color: var(--orange);
-}
-.workbench-list h3 { margin: 0 0 6px; font: 500 26px 'Space Grotesk', sans-serif; letter-spacing: -0.5px; }
-.workbench-list p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
-.workbench-list .workbench-status {
-  margin-top: 12px;
-  font-size: 11px;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  color: var(--orange);
-}
-
-/* --- The scene: desktop, motion allowed, rocket picture loaded --- */
-.workbench.is-scene {
-  width: 100%;      /* the stage spans the whole viewport so the rocket enters from its true right edge */
-  max-width: none;
-  height: calc((100svh - var(--header-h, 90px)) * 2.1); /* the stage plus a scroll track a little longer than it */
-  padding: 0;
-}
-.is-scene .workbench-stage {
-  position: sticky;
-  top: var(--header-h, 90px);
-  height: calc(100svh - var(--header-h, 90px));
-  overflow: hidden; /* the moving parts never leave the stage */
-}
-.is-scene .workbench-label { position: absolute; top: 24px; left: max(50px, calc((100% - 1280px) / 2)); margin: 0; } /* on the page column */
-.is-scene .workbench-scope {
-  display: block;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  font: 700 100px / 1 'Space Grotesk', sans-serif; /* rocket.js sets the real size: full width, scaled down from there */
-  letter-spacing: -0.06em;
-  color: var(--ink);
-  white-space: nowrap;
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.06);
-  will-change: transform, opacity;
-}
-.is-scene .workbench-rocket {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: min(1200px, 90%); /* most of the page column, not the whole viewport */
-  transform: translate(100vw, -50%); /* off the right edge until rocket.js moves it */
-  will-change: transform;
-}
-.is-scene .workbench-rocket-art { width: 100%; margin: 0; }
-.is-scene .workbench-copy {
-  position: absolute;
-  left: var(--hull-left);
-  top: var(--hull-middle);
-  width: calc(var(--hull-right) - var(--hull-left));
-  transform: translateY(-50%); /* centred on the hull, whatever its height */
-  display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr; /* title near the nose, one project per hull panel */
-  gap: 0 28px;
-  align-items: center;
-  color: #25180f;
-  opacity: 0; /* fades in once the rocket has settled */
-}
-.is-scene .workbench-list { display: contents; }
-.workbench.is-scene h2 { font-size: clamp(19px, 1.6vw, 24px); line-height: 1.1; }
-.workbench.is-scene h2 br { display: none; } /* let the heading wrap to the panel instead */
-.is-scene .workbench-intro { max-width: none; margin-top: 10px; color: #4a3a2c; font-size: 13.5px; line-height: 1.5; }
-.is-scene .workbench-list li { max-width: none; padding-top: 12px; border-top: 2px solid #25180f; }
-.is-scene .workbench-list li + li { margin: 0; border-top-color: #b04a1a; }
-.is-scene .workbench-list h3 { font-size: 19px; margin-bottom: 4px; }
-.is-scene .workbench-list p { color: #4a3a2c; font-size: 13.5px; line-height: 1.45; }
-.is-scene .workbench-list .workbench-status { margin-top: 8px; color: #b04a1a; }
-
-
-/* 6. THE FOOLS ====================================================== */
-
-.fools { padding: 48px 0 56px; }
-
-.team {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 6%;
-  align-items: center;
-}
-
-/* A large photo, pinned up slightly askew like the carousel print */
-.team-photo {
-  position: relative;
-  overflow: hidden;
-  max-height: 530px;
-  transform: rotate(-2deg);
-}
-.team-photo img {
   width: 100%;
-  height: 530px;
+  height: clamp(200px, 24vw, 320px);
   object-fit: cover;
-  object-position: 50% 64%;
-  display: block;
-}
-.team-photo > span {
-  position: absolute;
-  bottom: 17px;
-  left: 20px;
-  background: #0b1422e6;
-  padding: 7px 10px;
-  font-size: 10px;
-  letter-spacing: 1px;
+  object-position: 50% 20%; /* anchors the crop near the top so all three faces stay in frame */
+  border-radius: 10px;
 }
 
-.team-names .eyebrow { margin-bottom: 16px; }
-.team-names h3 {
-  font: 500 clamp(30px, 3.4vw, 46px) / 1.2 'Space Grotesk', sans-serif;
-  margin: 0 0 16px;
+.fools-title {
+  font: 500 clamp(28px, 3.2vw, 42px) / 1.25 'Space Grotesk', sans-serif;
   letter-spacing: -0.05em;
+  max-width: 820px;
+  margin: 32px 0 12px;
 }
-.team-intro {
-  max-width: 380px;
-  color: var(--muted);
+.fools-title span { color: var(--cyan); }
+
+.fools-caption {
+  max-width: 700px;
+  margin: 0 0 40px;
   font-size: 16px;
   line-height: 1.7;
-  margin: 0 0 20px;
+  color: var(--muted);
 }
-.team-names h3 span { color: var(--cyan); }
 
-.name-row {
-  padding: 12px 0;
-  border-bottom: 1px solid #334050;
+.fools-list { list-style: none; margin: 0; padding: 0; max-width: 700px; }
+
+.fool {
   display: flex;
-  align-items: center;
-  gap: 24px;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #334050; /* same row rule the old name list used */
 }
-.name-row > span { font-size: 12px; color: var(--cyan); }
-.name-row strong { font: 500 24px 'Space Grotesk', sans-serif; }
-.team-names > p { font-size: 13px; color: var(--muted); margin-top: 16px; }
 
-
-/* 7. COFFEE BAND ==================================================== */
-/* A full-width orange band. ".coffee.wrap" outranks the ".wrap" width rule;
-   the side padding then lines the content up with the 1280px page column.
-   The mug stands mostly inside the band; only its rim and steam cross the
-   top edge, and the refill label sits right beside it. */
-
-.coffee.wrap {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) auto minmax(0, 1fr); /* copy | mug | refill */
-  align-items: center;
-  gap: 24px 40px;
-  margin-top: 64px;
-  margin-bottom: 40px;
-  padding: 56px max(50px, calc((100% - 1280px) / 2));
-  background: var(--orange);
-  color: #25180f;
-}
-.coffee .eyebrow { color: #573824; margin-bottom: 16px; }
-.coffee h2 { font-size: clamp(34px, 3.6vw, 50px); letter-spacing: -0.05em; }
-.coffee p { max-width: 480px; font-size: 16px; }
-
-.coffee-action { text-align: left; }
-.coffee-label {
-  font: 700 20px 'Space Grotesk', sans-serif;
-  border-bottom: 2px solid #25180f;
-  display: inline-block;
-  padding: 0 0 9px;
-  letter-spacing: 0.5px;
-}
-.coffee-action > p { font-size: 14px; }
-.coffee-action small {
+.fool-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
   display: block;
-  max-width: 230px;
-  font-size: 12px;
-  line-height: 1.7;
-  margin-top: 16px;
-  color: #573824;
 }
 
-/* Interactive 3D mug (markup in index.html, behaviour in coffee/coffee-mug.js).
-   The negative top margin cancels the band's padding and lifts the mug so its
-   rim and steam show above the edge; the body stays on the orange. */
-.coffee-mug {
-  position: relative;
-  width: 300px;
-  margin: -130px 0 0;
-  align-self: start;
-}
-.coffee-mug-canvas {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  touch-action: pan-y; /* horizontal drag spins the mug, vertical swipe still scrolls the page */
-  cursor: grab;
-}
-.coffee-mug-canvas.is-grabbing { cursor: grabbing; }
-.coffee-mug-hint {
-  margin: 0;
-  text-align: center;
-  font: 500 11px 'Space Grotesk', sans-serif;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: #573824;
-}
-.coffee-mug-fallback {
-  display: none;
-  width: 100%;
-  aspect-ratio: 1;
-  align-items: center;
-  justify-content: center;
-  font-size: 110px;
-  line-height: 1;
-}
-.coffee-mug.is-fallback .coffee-mug-fallback { display: flex; }
-.coffee-mug.is-fallback .coffee-mug-canvas,
-.coffee-mug.is-fallback .coffee-mug-hint { display: none; }
-/* The status line is for screen readers: it announces sips left but is never
-   shown on screen, not even while loading. The one exception is the fallback,
-   where it explains why there is no 3D mug. */
-.coffee-mug-status {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-.coffee-mug.is-fallback .coffee-mug-status {
-  position: static;
-  width: auto;
-  height: auto;
-  margin: 4px 0 0;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-  text-align: center;
-  font: 600 15px / 1.4 'Space Grotesk', sans-serif;
-}
+.fool-info strong { font: 500 24px 'Space Grotesk', sans-serif; line-height: 1.2; }
+.fool-info p { margin: 2px 0 0; font-size: 13px; line-height: 1.6; color: var(--muted); }
+.fool:last-child { border-bottom: 0; } /* nobody follows the last name */
 
-/* The site-wide orange focus ring would vanish on the orange panel, so use dark here. */
-.coffee a:focus-visible,
-.coffee button:focus-visible,
-.coffee-mug-canvas:focus-visible { outline: 3px solid #25180f; outline-offset: 4px; }
+/* 2b. HELP US TEST — same content styling as the fools page */
+.help-test .fools-title { margin-top: 0; }
 
 
-/* 8. FOOTER ========================================================= */
+/* 6. FOOTER ========================================================= */
 
 footer {
   border-top: 1px solid var(--line);
   padding: 29px 0 35px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* equal sides → the middle column is dead-centre */
   align-items: center;
   gap: 20px;
 }
+footer .logo-wrap { grid-column: 1; }
 footer .brand { font-size: 15px; }
-footer p, footer > a:last-child { font-size: 12px; color: var(--muted); }
+footer p { grid-column: 2; text-align: center; font-size: 12px; color: var(--muted); }
 .footer-year { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); }
+.footer-mail {
+  grid-column: 3;
+  justify-self: end;
+  font-size: 12px;
+  color: var(--muted);
+}
+.footer-mail:hover { color: var(--cyan); }
 
 
-/* 9. IMAGE PREVIEW DIALOG =========================================== */
+/* 7. DIALOGS =========================================== */
 
 dialog {
   width: min(1200px, 92vw);
@@ -955,61 +445,73 @@ dialog button {
 }
 dialog p { font-size: 14px; margin-bottom: 0; }
 
+/* The money modal: small, text-only, same panel styling. The class rules
+   must sit after the global dialog rules above so they win. */
+dialog#money { width: min(540px, 92vw); padding: 36px 40px 28px; }
+.money-title { font: 600 34px/1.1 'Space Grotesk', sans-serif; letter-spacing: -1px; margin: 0 0 10px; }
+.money-lede { font-size: 18px; line-height: 1.6; color: var(--ink); margin: 0 0 8px; }
+.money-note { font-size: 14px; color: var(--muted); margin: 0 0 20px; }
 
-/* 10. ANIMATED BACKGROUND =========================================== */
+/* The two cyan phrases in the lede, and the small corner close button
+   (overrides the shared dialog button rule above). */
+.money-hot { color: var(--cyan); }
+.money-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  margin: 0;
+  padding: 4px 8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.money-close:hover { color: var(--cyan); }
 
-.origami-surface {
-  position: fixed;
-  inset: 0;
+/* The playtest modal shares the money modal's box; its question list scrolls
+   inside a fixed header so the corner × never scrolls away. */
+dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
+.test-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+  max-height: min(58vh, 520px); /* header + padding stay visible above it */
+  overflow-y: auto;
+  padding-right: 6px;           /* room for the scrollbar inside the dialog */
+}
+.test-q span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.test-q textarea {
   width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 14px;
+  resize: vertical;
 }
 
-/* Hidden on touch devices and when the visitor prefers reduced motion */
-@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
-  .origami-surface { display: none; }
-}
 
-
-/* 11. SCREEN SIZES ================================================== */
+/* 8. SCREEN SIZES =================================================== */
 
 /* Tablet and small laptop */
 @media (max-width: 1000px) {
   .wrap { width: calc(100% - 56px); }
   .brand { font-size: 22px; }
+  .brand-tag { font-size: 13px; }
 
-  .hero { grid-template-columns: 1fr 1fr; column-gap: 24px; padding-top: 32px; }
-  .hero h1 { font-size: clamp(38px, 6vw, 56px); }
-  .intro { font-size: 16px; }
-  .button { gap: 13px; }
-  .hero-art { margin-right: -12px; }
-
-  .gallery-feature { gap: 28px; }
-  .slide-stage { height: 320px; }
-
-  .workbench-copy { grid-template-columns: 1fr; gap: 32px; }
-  .workbench-list li + li { margin-left: 12%; }
-  .is-scene .workbench-label { left: 28px; }
-
-  .coffee.wrap { padding: 48px 28px; gap: 20px 28px; }
-  .coffee-mug { width: 240px; margin-top: -100px; }
-}
-
-/* Tablet held upright: three coffee columns no longer fit, so the copy takes the
-   full width and the mug and refill label share the row beneath it. */
-@media (max-width: 820px) {
-  .coffee.wrap { grid-template-columns: auto minmax(0, 1fr); row-gap: 24px; }
-  .coffee.wrap > div:first-child { grid-column: 1 / -1; }
-  .coffee-mug { margin-top: 0; align-self: center; }
+  .gallery-feature { gap: 28px; padding: 28px 32px; }
+  .strip { height: 320px; }
 }
 
 /* Phone */
 @media (max-width: 700px) {
   html { scroll-padding-top: 100px; }
   .wrap { width: calc(100% - 36px); }
-  .eyebrow { font-size: 10px; letter-spacing: 1.5px; margin-bottom: 16px; }
 
   /* Header: logo and links can wrap onto two rows if needed */
   .nav {
@@ -1020,79 +522,33 @@ dialog p { font-size: 14px; margin-bottom: 0; }
     padding: 12px 0;
   }
   .brand { font-size: 20px; }
+  .brand-tag { display: none; } /* the wrapped nav needs the room more */
   nav { gap: 16px; font-size: 13px; }
-  .nav-coffee { display: none; }
-  .scope-joke { width: 230px; font-size: 16px; }
 
-  /* Hero stacks: eyebrow, headline, picture, then the intro and buttons */
-  .hero { display: flex; flex-direction: column; padding-top: 28px; }
-  .hero-copy { display: contents; }
-  .hero-copy > .eyebrow { order: 0; font-size: 11px; }
-  .hero h1 { order: 1; font-size: clamp(40px, 9.6vw, 62px); line-height: 1.02; }
-  .hero-art { order: 2; width: 100%; margin: 24px 0 0; }
-  .intro { order: 3; max-width: 100%; margin: 20px 0 0; font-size: 16px; }
-  .actions { order: 4; margin-top: 20px; }
-  .text-link { font-size: 13px; }
-  .micro { order: 5; margin-top: 14px; font-size: 11px; }
-  .hero-bottom { order: 6; margin-top: 20px; }
-  .scope-thought { font-size: 26px; }
-  .scope-small { font-size: 15px; }
-  .scope-echo { font-size: 12px; }
-
-  /* Games: text first, then the easel, then the development images */
+  /* Gallery: the card stacks (copy, then the play button under it) */
   .section { padding: 48px 0; }
-  .gallery-feature { display: flex; flex-direction: column; gap: 20px; }
-  .game-copy { order: 0; max-width: none; }
-  .practice-easel { order: 1; width: 100%; }
-  .easel-stage { aspect-ratio: 1.05; }
-  .easel-bar { margin: 8px 0 0; }
-  .game-copy h2 { font-size: 40px; }
-  .development-heading { display: block; margin-top: 44px; }
-  .development-heading p { margin-top: 6px; }
-  .slide-stage { height: clamp(220px, 60vw, 300px); transform: none; }
-  .autoplay { margin-left: 0; }
+  .gallery-feature { flex-direction: column; align-items: flex-start; gap: 20px; padding: 32px 20px; }
+  .strip { height: clamp(220px, 60vw, 300px); }
+  .strip-arrow { width: 38px; height: 38px; }
+  .strip-arrow--left { left: 10px; }
+  .strip-arrow--right { right: 10px; }
   .thumb { flex-basis: 64px; height: 44px; }
-
-  /* Workbench: a small rocket, then the copy */
-  .workbench { padding: 40px 0 48px; }
-  .workbench-rocket-art { width: min(100%, 360px); }
-  .workbench-copy { grid-template-columns: 1fr; gap: 28px; }
-  .workbench h2 { font-size: 36px; }
-  .workbench-list li { max-width: none; }
-  .workbench-list li + li { max-width: none; margin: 28px 0 0; }
 
   /* The fools */
   .fools { padding: 24px 0 44px; }
-  .team { grid-template-columns: 1fr; gap: 32px; }
-  .team-photo { margin: 0 5px; }
-  .team-photo img { height: 390px; }
-  .team-names h3 { font-size: 36px; }
-  .team-names h3 br:first-child { display: none; }
-
-  /* Coffee: copy, mug, refill, stacked */
-  .coffee.wrap {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-top: 48px;
-    padding: 40px 24px;
-  }
-  .coffee.wrap > div:first-child { grid-column: auto; }
-  .coffee h2 { font-size: 38px; }
-  .coffee-mug { width: min(240px, 100%); margin: 0 auto; align-self: center; }
-  .coffee-action small { max-width: none; margin-top: 12px; }
+  .fools-banner { height: 200px; }
+  .fools-title { margin-top: 24px; }
 
   /* Footer */
-  footer { flex-wrap: wrap; padding-bottom: 25px; }
-  footer p { order: 3; width: 100%; margin: 0; }
+  footer { display: flex; flex-wrap: wrap; padding-bottom: 25px; }
+  footer p { order: 3; width: 100%; margin: 0; text-align: center; }
+  footer .footer-mail { order: 4; width: 100%; text-align: center; }
 }
 
 
-/* 12. REDUCED MOTION ================================================ */
+/* 9. REDUCED MOTION ================================================ */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; animation: none !important; }
-  /* The SCOPE thought becomes one small, faint, still "scope." */
-  .scope-thought, .scope-echo { display: none; }
-  .scope-small { opacity: 0.45; transform: translate(-50%, -50%) rotate(-6deg) scale(1); }
 }

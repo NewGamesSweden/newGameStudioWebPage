@@ -1,43 +1,73 @@
 /* ===================================================================
    NewGameStudio main script
 
-   1. Carousel: builds thumbnails from the slides in index.html,
-      the "Auto-play screenshots" switch, previous/next buttons, keyboard arrows, swipe.
-   2. Image preview dialog (the enlarge button).
-   3. Logo joke tooltip.
-
-   The occasional SCOPE thought over the workshop picture lives in its own
-   file, workshop-scope.js.
+   1. The money modal: works on every page. The nav's "give us money"
+      button opens it; Close, Escape or a click on the dimmed background
+      closes it.
+   2. The playtest modal (index.html only): the help-us-test section's
+      button opens the questionnaire; it closes the same ways.
+   3. The carousel: a filmstrip of every slide that drifts on its own and
+      loops forever, with a round chevron at each end that steps one
+      picture at a time (centre to centre), thumbnail previews, caption
+      labels and a click-to-enlarge dialog. Only index.html has a
+      carousel.
+   4. The image preview dialog.
 
    Settings you might want to change are at the top.
    =================================================================== */
 
-const AUTOPLAY_INTERVAL_MS = 4500; // time between slides
-const SWIPE_DISTANCE_PX = 45;      // how far a finger must travel to count as a swipe
-const LOGO_JOKE_VISIBLE_MS = 3500; // how long the joke stays open after tapping the logo
-
-
-/* 1. CAROUSEL ======================================================= */
+const SWIPE_DISTANCE_PX = 45;    // how far a press may travel and still count as a click
+const AUTO_SCROLL_PX_PER_S = 30; // the idle drift speed of the strip
 
 const carousel = document.querySelector('.carousel');
-const slideStage = carousel.querySelector('.slide-stage');
+
+// Shared by both dialogs: a click on the dark area outside the dialog closes it.
+function closeOnOutsideClick(dialog) {
+  dialog.addEventListener('click', event => {
+    if (event.target !== dialog) return;
+    const box = dialog.getBoundingClientRect();
+    const outside = event.clientX < box.left || event.clientX > box.right ||
+                    event.clientY < box.top || event.clientY > box.bottom;
+    if (outside) dialog.close();
+  });
+}
+
+/* 1. MONEY MODAL (every page) ======================================= */
+
+const moneyDialog = document.querySelector('#money');
+
+if (moneyDialog) {
+  document.querySelector('#open-money').addEventListener('click', () => moneyDialog.showModal());
+  moneyDialog.querySelector('.money-close').addEventListener('click', () => moneyDialog.close());
+  closeOnOutsideClick(moneyDialog);
+}
+
+/* 2. PLAYTEST MODAL (index.html) ===================================== */
+
+const testDialog = document.querySelector('#test');
+
+if (testDialog) {
+  document.querySelector('#open-test').addEventListener('click', () => testDialog.showModal());
+  testDialog.querySelector('.money-close').addEventListener('click', () => testDialog.close());
+  closeOnOutsideClick(testDialog);
+}
+
+/* 3. FILMSTRIP CAROUSEL (index.html) ================================ */
+
+if (carousel) {
+
+const strip = carousel.querySelector('.strip');
+const stage = carousel.querySelector('.slide-stage');
 const slides = [...carousel.querySelectorAll('.slide')];
 const thumbRail = carousel.querySelector('.thumbnails');
-const caption = carousel.querySelector('.slide-caption');
-const slideTitle = document.querySelector('#slide-title');
-const slideCount = document.querySelector('#slide-count');
-const autoplayButton = document.querySelector('#autoplay');
 const preview = document.querySelector('#preview');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-let current = 0;
-let playing = false; // browsing is manual until the auto-play switch is pressed
-let hovering = false;
-let focused = false;
-let visible = true;
-let timer;
+// Images would otherwise start a native drag on mouse-down, which cancels the
+// pointer events the click-to-enlarge handling below relies on.
+slides.forEach(slide => { slide.querySelector('img').draggable = false; });
 
-// Build one thumbnail button per slide and give each slide its accessibility labels.
+// One thumbnail button per slide. Clicking one scrolls the strip to the image.
 const thumbs = slides.map((slide, index) => {
   slide.setAttribute('role', 'group');
   slide.setAttribute('aria-roledescription', 'slide');
@@ -54,159 +84,191 @@ const thumbs = slides.map((slide, index) => {
   image.loading = 'lazy';
   thumb.append(image);
 
-  thumb.addEventListener('click', () => manualSlide(index));
+  thumb.addEventListener('click', () => {
+    steeredAt = performance.now();
+    // Centre the picture, same as a chevron press would.
+    let left = (offsets[index] || 0) + slides[index].offsetWidth / 2 - stage.clientWidth / 2;
+    if (loopW) left = ((left % loopW) + loopW) % loopW; // stay inside one copy of the loop
+    strip.scrollTo({ left, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+  });
   thumbRail.append(thumb);
   return thumb;
 });
 
-// Start or stop the autoplay timer depending on the current situation.
-function schedule() {
-  clearInterval(timer);
-  autoplayButton.textContent = playing ? 'Pause auto-play' : 'Auto-play screenshots';
-  autoplayButton.setAttribute('aria-pressed', String(playing));
-  caption.setAttribute('aria-live', playing && !focused ? 'off' : 'polite');
+/* The seamless loop: one hidden copy of the list is appended, and the scroll
+   position quietly jumps back one copy width each time it crosses the seam.
+   The strip's content at s and at s + loopW is pixel-identical, so the jump
+   is invisible — even in the middle of a trackpad fling. */
+let loopW = 0;    // pixel width of one copy of the list
+let offsets = []; // where each original slide sits inside the strip
 
-  const shouldRun = playing && !hovering && !focused && visible && !document.hidden && !preview.open;
-  if (shouldRun) {
-    timer = setInterval(() => showSlide(current + 1), AUTOPLAY_INTERVAL_MS);
-  }
+function measure() {
+  loopW = strip.scrollWidth / 2;
+  offsets = slides.map(slide => slide.offsetLeft - slides[0].offsetLeft);
+  expectedLeft = strip.scrollLeft;
 }
 
-function showSlide(index) {
-  current = (index + slides.length) % slides.length; // wraps around at both ends
-
-  slides.forEach((slide, i) => {
-    const isCurrent = i === current;
-    slide.classList.toggle('active', isCurrent);
-    slide.setAttribute('aria-hidden', String(!isCurrent));
-    thumbs[i].setAttribute('aria-current', String(isCurrent));
+// Slide widths come from the pictures' natural sizes, so measure only once
+// they are in. A broken file resolves too — one missing image must not stall
+// the strip.
+Promise.all(slides.map(slide => {
+  const image = slide.querySelector('img');
+  return image.complete ? null : new Promise(resolve => {
+    image.addEventListener('load', resolve, { once: true });
+    image.addEventListener('error', resolve, { once: true });
   });
-
-  slideTitle.textContent = slides[current].dataset.title;
-  slideCount.textContent = `${String(current + 1).padStart(2, '0')} / ${slides.length}`;
-
-  // Scroll the thumbnail strip so the current thumbnail is centred.
-  const thumb = thumbs[current];
-  const left = thumb.offsetLeft - thumbRail.offsetLeft - (thumbRail.clientWidth - thumb.clientWidth) / 2;
-  thumbRail.scrollTo({ left, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
-}
-
-// Any manual navigation stops autoplay until the switch is pressed again.
-function manualSlide(index) {
-  playing = false;
-  showSlide(index);
-  schedule();
-}
-
-document.querySelector('#previous-slide').addEventListener('click', () => manualSlide(current - 1));
-document.querySelector('#next-slide').addEventListener('click', () => manualSlide(current + 1));
-autoplayButton.addEventListener('click', () => { playing = !playing; schedule(); });
-
-// Pause while the mouse is over the carousel or something inside it has focus.
-carousel.addEventListener('pointerenter', event => {
-  if (event.pointerType === 'mouse') { hovering = true; schedule(); }
-});
-carousel.addEventListener('pointerleave', () => { hovering = false; schedule(); });
-carousel.addEventListener('focusin', () => { focused = true; schedule(); });
-carousel.addEventListener('focusout', event => {
-  if (!carousel.contains(event.relatedTarget)) { focused = false; schedule(); }
+})).then(() => {
+  slides.forEach(slide => {
+    const clone = slide.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.dataset.clone = 'true';
+    clone.querySelector('img').draggable = false;
+    strip.append(clone);
+  });
+  measure();
+  last = performance.now();
+  requestAnimationFrame(tick);
 });
 
-// Keyboard: left and right arrows.
+window.addEventListener('resize', measure, { passive: true });
+
+/* The drift: the strip advances on its own unless the visitor is on it —
+   pointer over the carousel, keyboard focus inside it, a press on the strip,
+   the preview open — or the carousel is scrolled offscreen, or the visitor
+   prefers reduced motion. */
+let hovering = false;
+let pressing = false;
+let onScreen = true;
+let previewOpen = false;
+let steeredAt = -1e9; // last time the strip was sent somewhere on purpose
+
+const drifting = () => !reducedMotion.matches && !hovering && !pressing && onScreen && !previewOpen &&
+                       performance.now() - steeredAt > 1200;
+
+// Any scroll movement the drift did not cause counts as steering too — a drag's
+// momentum, a wheel or an in-flight smooth scroll — and buys another quiet
+// second before the drift takes over again.
+strip.addEventListener('scroll', () => {
+  if (Math.abs(strip.scrollLeft - expectedLeft) > 1) steeredAt = performance.now();
+}, { passive: true });
+
+carousel.addEventListener('mouseenter', () => { hovering = true; });
+carousel.addEventListener('mouseleave', () => { hovering = false; });
+carousel.addEventListener('focusin', () => { hovering = true; });
+carousel.addEventListener('focusout', () => { hovering = false; });
+carousel.addEventListener('pointerdown', () => { pressing = true; });
+window.addEventListener('pointerup', () => { pressing = false; });
+new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; }).observe(carousel);
+
+let last = 0;
+let active = -1; // which original slide is in view (the thumbnail rail follows it)
+let expectedLeft = 0; // where the drift left the strip, so outside scrolls are recognised
+
+function tick(now) {
+  const dt = Math.min((now - last) / 1000, 0.1); // clamp tab-switch gaps
+  last = now;
+  const s = strip.scrollLeft;
+  if (Math.abs(s - expectedLeft) > 1) {
+    // Something else is scrolling — a drag, a fling's momentum or one of the
+    // smooth scrolls from the arrows and thumbnails. Hands off: writing the
+    // position now would cancel that animation mid-flight. Drift resumes
+    // once the strip settles where it was headed.
+    expectedLeft = s;
+  } else if (drifting()) {
+    expectedLeft = s + AUTO_SCROLL_PX_PER_S * dt;
+    strip.scrollLeft = expectedLeft;
+  }
+
+  // Wrap in both directions to keep the loop endless. The guard is paranoia:
+  // one copy of the list is always far wider than any viewport.
+  if (loopW > stage.clientWidth) {
+    const cur = strip.scrollLeft;
+    if (cur >= loopW) { strip.scrollLeft = cur - loopW; expectedLeft = strip.scrollLeft; }
+    else if (cur < 1) { strip.scrollLeft = cur + loopW; expectedLeft = strip.scrollLeft; }
+  }
+
+  // Track which picture is in view (measured from the centre of the stage,
+  // so "in view" means the same picture the chevrons would centre next) —
+  // this keeps the thumbnails in step with manual scrolling, the drift and
+  // the chevrons alike.
+  const view = (strip.scrollLeft % (loopW || 1)) + stage.clientWidth * 0.5;
+  let index = 0;
+  while (index + 1 < slides.length && offsets[index + 1] <= view) index++;
+  if (index !== active) {
+    active = index;
+    thumbs.forEach((thumb, i) => thumb.setAttribute('aria-current', String(i === active)));
+  }
+
+  requestAnimationFrame(tick);
+}
+
+// The chevrons: one press advances (or rewinds) exactly one picture, from
+// centre of the picture in view to centre of the next — the shortest way
+// around the loop in the pressed direction.
+const slideCenter = i => offsets[i] + slides[i].offsetWidth / 2;
+const scrollByPic = direction => {
+  steeredAt = performance.now();
+  if (!loopW) return;
+  const centre = (strip.scrollLeft + stage.clientWidth / 2) % loopW;
+  const next = (Math.max(active, 0) + direction + slides.length) % slides.length;
+  let delta = (slideCenter(next) - centre) % loopW;
+  if (direction > 0 && delta < 0) delta += loopW;
+  if (direction < 0 && delta > 0) delta -= loopW;
+  strip.scrollBy({ left: delta, behavior: reducedMotion.matches ? 'instant' : 'smooth' });
+};
+document.querySelector('.strip-arrow--left').addEventListener('click', () => scrollByPic(-1));
+document.querySelector('.strip-arrow--right').addEventListener('click', () => scrollByPic(1));
+
+// Keyboard on the focused carousel: arrows scroll, Enter or Space enlarges
+// the picture in view (only when the carousel itself has focus, not a button
+// inside it).
 carousel.addEventListener('keydown', event => {
   if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
     event.preventDefault();
-    manualSlide(current + (event.key === 'ArrowRight' ? 1 : -1));
+    scrollByPic(event.key === 'ArrowRight' ? 1 : -1);
+  } else if ((event.key === 'Enter' || event.key === ' ') && event.target === carousel) {
+    event.preventDefault();
+    openPreview(Math.max(active, 0));
   }
 });
 
-// Touch: swipe left or right on the image.
-let touchStart = null;
-slideStage.addEventListener('pointerdown', event => {
-  if (event.pointerType === 'touch') touchStart = { x: event.clientX, y: event.clientY };
+// A short press on a picture opens the preview; longer drags are the strip's
+// own native scrolling and must not count as a click.
+let pointerStart = null;
+stage.addEventListener('pointerdown', event => {
+  if (event.pointerType === 'mouse' && event.button !== 0) return;
+  pointerStart = { x: event.clientX, y: event.clientY };
 });
-slideStage.addEventListener('pointerup', event => {
-  if (!touchStart) return;
-  const dx = event.clientX - touchStart.x;
-  const dy = event.clientY - touchStart.y;
-  if (Math.abs(dx) > SWIPE_DISTANCE_PX && Math.abs(dx) > Math.abs(dy)) {
-    manualSlide(current + (dx < 0 ? 1 : -1));
-  }
-  touchStart = null;
+stage.addEventListener('pointerup', event => {
+  if (!pointerStart) return;
+  const moved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+  pointerStart = null;
+  if (moved >= SWIPE_DISTANCE_PX) return;
+  // The whole slide counts as the click target, caption label included.
+  const slideEl = event.target.closest('.slide');
+  if (!slideEl) return;
+  const all = [...strip.querySelectorAll('.slide')];
+  openPreview(all.indexOf(slideEl) % slides.length);
 });
-slideStage.addEventListener('pointercancel', () => { touchStart = null; });
-
-// Pause when the tab is hidden, when the carousel is scrolled off screen,
-// or when the visitor turns on reduced motion.
-document.addEventListener('visibilitychange', schedule);
-reducedMotion.addEventListener('change', () => {
-  if (reducedMotion.matches) playing = false;
-  schedule();
-});
-new IntersectionObserver(entries => {
-  visible = entries[0].isIntersecting;
-  schedule();
-}, { threshold: 0.15 }).observe(carousel);
+stage.addEventListener('pointercancel', () => { pointerStart = null; });
 
 
-/* 2. IMAGE PREVIEW DIALOG =========================================== */
+/* 4. IMAGE PREVIEW DIALOG =========================================== */
 
-document.querySelector('#open-preview').addEventListener('click', () => {
-  const source = slides[current].querySelector('img');
+function openPreview(index) {
+  const source = slides[index].querySelector('img');
   const target = preview.querySelector('img');
   target.src = source.src;
   target.alt = source.alt;
-  document.querySelector('#preview-caption').textContent = slides[current].dataset.title;
+  document.querySelector('#preview-caption').textContent = slides[index].dataset.title;
+  previewOpen = true;
   preview.showModal();
-  schedule();
-});
+}
 
 document.querySelector('#close-preview').addEventListener('click', () => preview.close());
-preview.addEventListener('close', schedule);
+preview.addEventListener('close', () => { previewOpen = false; });
 
 // Clicking the dark area outside the dialog closes it.
-preview.addEventListener('click', event => {
-  if (event.target !== preview) return;
-  const box = preview.getBoundingClientRect();
-  const outside = event.clientX < box.left || event.clientX > box.right ||
-                  event.clientY < box.top || event.clientY > box.bottom;
-  if (outside) preview.close();
-});
+closeOnOutsideClick(preview);
 
-
-/* 3. LOGO JOKE ====================================================== */
-// Hover or focus shows the joke (handled in CSS). Tapping the logo shows it
-// for a few seconds. Escape or tapping elsewhere dismisses it until the
-// pointer leaves and comes back.
-
-const logos = [...document.querySelectorAll('.logo-wrap')];
-
-logos.forEach(logo => {
-  let timeout;
-  logo.querySelector('button').addEventListener('click', () => {
-    clearTimeout(timeout);
-    logo.classList.remove('dismissed');
-    logo.classList.add('joke-open');
-    timeout = setTimeout(() => logo.classList.remove('joke-open'), LOGO_JOKE_VISIBLE_MS);
-  });
-  ['pointerenter', 'pointerleave', 'focusin', 'focusout'].forEach(type => {
-    logo.addEventListener(type, () => logo.classList.remove('dismissed'));
-  });
-});
-
-function dismissJokes() {
-  logos.forEach(logo => {
-    logo.classList.remove('joke-open');
-    logo.classList.add('dismissed');
-  });
 }
-document.addEventListener('keydown', event => { if (event.key === 'Escape') dismissJokes(); });
-document.addEventListener('pointerdown', event => {
-  if (!logos.some(logo => logo.contains(event.target))) dismissJokes();
-});
-
-
-/* START ============================================================= */
-
-showSlide(0);
-schedule();

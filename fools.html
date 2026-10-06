@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>the fools | NewGameStudio</title>
+  <meta name="description" content="Daniel, Ahmed and Micky — the three fools behind NewGameStudio.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css?v=16">
+</head>
+<body>
+
+<!--
+  The team page. It shares its header and footer with index.html —
+  edit those in both files.
+-->
+
+<!-- ===================================================================
+     1. HEADER  (also in index.html)
+     =================================================================== -->
+<header class="site-header">
+  <div class="nav wrap">
+    <div class="logo-wrap">
+      <a class="brand" href="index.html">New<span>Game</span>Studio</a>
+      <span class="brand-tag">three fools making games</span>
+    </div>
+    <nav aria-label="Main navigation">
+      <a href="index.html">gallery</a>
+      <a href="fools.html" class="active" aria-current="page">the fools</a>
+      <button type="button" class="nav-money" id="open-money">give us money <span aria-hidden="true">↗</span></button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- =================================================================
+       2. THE FOOLS
+       ================================================================= -->
+  <section class="fools">
+    <div class="wrap">
+      <img class="fools-banner" src="assets/fools-banner.jpg"
+           alt="The three of us around the studio table" width="1041" height="508">
+      <h2 class="fools-title">look how youthful we were before the scope-creep got <span>completely out of control</span></h2>
+      <p class="fools-caption">We met eachother through rock climbing (before it was a thing that devs rock climbed), realised we had very strong and completely opposing opinions on game design, started working on Gallery together</p>
+      <ul class="fools-list">
+        <li class="fool">
+          <img class="fool-avatar" src="assets/avatar-daniel.jpg" alt="" width="248" height="264" loading="lazy">
+          <div class="fool-info">
+            <strong>Daniel</strong>
+            <p>PM, CEO, CTO, tall, and his girlfriend is pissed at him because he has been GRINDING gallery like crazy</p>
+          </div>
+        </li>
+        <li class="fool">
+          <img class="fool-avatar" src="assets/avatar-ahmed.jpg" alt="" width="218" height="232" loading="lazy">
+          <div class="fool-info">
+            <strong>Ahmed</strong>
+            <p>sexy, great voice, hot, and is permanently on-call for us so pls report bugs so he doesn’t get bored</p>
+          </div>
+        </li>
+        <li class="fool">
+          <img class="fool-avatar" src="assets/avatar-micky.jpg" alt="" width="98" height="116" loading="lazy">
+          <div class="fool-info">
+            <strong>Micky</strong>
+            <p>from the jungle somewhere. Give him a job</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================================================================
+     3. FOOTER  (also in index.html)
+     =================================================================== -->
+<footer class="wrap">
+  <div class="logo-wrap">
+    <span class="brand">New<span>Game</span>Studio</span>
+  </div>
+  <p>made with love by daniel, ahmed &amp; micky. <span class="footer-year">© 2026 NewGameStudio</span></p>
+  <a class="footer-mail" href="mailto:contact@newgamestudio.com">contact@newgamestudio.com</a>
+</footer>
+
+<!-- ===================================================================
+     4. MONEY DIALOG (also in index.html; opens from the nav button)
+     =================================================================== -->
+<dialog id="money" aria-labelledby="money-title">
+  <h2 id="money-title" class="money-title">Gallery is free</h2>
+  <p class="money-lede">but if you’re <span class="money-hot">rich as hell</span>,<br>we’d like <span class="money-hot">several million euros</span> please</p>
+  <p class="money-note">donation link coming soon. You can still mail us cash or other valuables</p>
+  <button type="button" class="money-close" aria-label="Close">×</button>
+</dialog>
+
+<!-- The ?v= busts caches: bump it whenever main.js or style.css change,
+     so visitors who kept the old files don't run old script on new HTML.
+     On this page main.js only wires the money modal (there is no carousel). -->
+<script src="main.js?v=14"></script>
+</body>
+</html>
