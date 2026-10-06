@@ -5,8 +5,9 @@ page works, where each piece lives and how to change it. Read `README.md` first 
 want to get it running.
 
 Everything here was checked against the code on 6 October 2026, after the site became two
-pages — the game on `index.html`, the studio on `ngs.html` (the team page, renamed from
-`fools.html` and re-laid-out around a wordmark hero and a cyan connector line) — the coffee
+pages — the studio on `index.html` (the home page; GitHub Pages serves `index.html` at `/`,
+so the studio had to *be* that file) and the game on `gallery.html` (the team page, renamed
+from `fools.html` and re-laid-out around a wordmark hero and two cyan connector lines) — the coffee
 page was folded into
 a "give us money" modal that opens from the nav on either page (and the 3D mug went with it),
 the carousel was rebuilt as an endlessly drifting filmstrip, and a help-us-test section with
@@ -66,10 +67,10 @@ receive.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The front page: the Gallery game text, the development carousel, and the help-us-test section (which opens the playtest questionnaire). |
-| `ngs.html` | The NGS page: the wordmark hero, the team story beside the group photo, and the fools list. |
+| `index.html` | The home page: the NGS hero, the team story beside the group photo, and the fools list. GitHub Pages serves this at `/`. |
+| `gallery.html` | The game page: the Gallery game text, the development carousel, and the help-us-test section (which opens the playtest questionnaire). |
 | `style.css` | All styling for both pages, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
-| `main.js` | The money modal (every page), the playtest modal, the filmstrip carousel and the image preview dialog (the last three on `index.html` only). Each part is guarded on its element existing. Settings at the top. |
+| `main.js` | The money modal (every page), the playtest modal, the filmstrip carousel and the image preview dialog (the last three on `gallery.html` only). Each part is guarded on its element existing. Settings at the top. |
 | `assets/` | Every image on the site: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, three avatar portraits, seventeen carousel images. |
 | `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2). |
 | `README.md` | Short getting-started guide. |
@@ -85,11 +86,11 @@ links busts caches — bump both whenever either file changes, on both pages.
 **Every page**: `main.js` first wires the money modal (section 5.6 below) — the nav button
 and dialog exist on both pages.
 
-**`index.html`**: `main.js` also wires the playtest modal (section 5.5 below), finds the
+**`gallery.html`**: `main.js` also wires the playtest modal (section 5.5 below), finds the
 carousel and starts the filmstrip (section 5.3 below), and wires the image preview dialog.
 No other scripts.
 
-**`ngs.html`**: no carousel, no preview dialog — those parts no-op. No other scripts.
+**`index.html`** (the home page): no carousel, no preview dialog — those parts no-op. No other scripts.
 
 ---
 
@@ -99,8 +100,8 @@ The section numbers below match the comments in the HTML files.
 
 ### 5.1 Header (both pages)
 
-Sticky bar with the wordmark and the navigation: "NGS" (to `ngs.html`), "gallery"
-(to `index.html`), and "give us money ↗" — a bordered `<button>` that opens the money modal
+Sticky bar with the wordmark and the navigation: "NGS" (to `index.html`, the home page),
+"gallery" (to `gallery.html`), and "give us money ↗" — a bordered `<button>` that opens the money modal
 (section 5.6), not a link. The nav item for the page you're on is pinned cyan
 (`class="active"` + `aria-current="page"`, hard-coded per page) and wears a small cyan dot
 centred under its text (`nav a.active::after`) — so exactly one dot shows per page, always
@@ -108,13 +109,14 @@ naming the page you're on. On phones the nav wraps to a
 second row under the logo; all three items stay visible.
 
 **The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a link to
-`index.html` on every page. Beside it sits the studio's one-liner, "three fools making games",
+`index.html` on every page — the wordmark is the way home, and home is the studio page.
+Beside it sits the studio's one-liner, "three fools making games",
 in the small secondary style (`--muted`, 14px); hidden on phones. There is no hide-and-swap
 behaviour — the wordmark is always visible.
 
 Where: both HTML files section 1, `style.css` section 3.
 
-### 5.2 The Gallery card (`index.html` section 2)
+### 5.2 The Gallery card (`gallery.html` section 2)
 
 One row on the card: the game's name and its one-line pitch on the left, the "Play for free"
 button on the right, all centred vertically. The card sits a 16px slide-gap under the nav's
@@ -151,9 +153,9 @@ in the title's white (`--ink`), and carries a soft two-layer navy
 **The joint with the carousel.** The card and the strip are two separate rounded panels with
 one slide-gap (16px, the same space as between pictures) between them.
 
-Where: `index.html` section 2, `style.css` section 4, `tools/` for the title bake.
+Where: `gallery.html` section 2, `style.css` section 4, `tools/` for the title bake.
 
-### 5.3 The development carousel (`index.html` section 2)
+### 5.3 The development carousel (`gallery.html` section 2)
 
 An endless filmstrip: all seventeen images in one row — the latest in-game screenshots first,
 then development studies and older builds — one slide-gap below the card. The strip's viewport
@@ -185,38 +187,48 @@ the page showing through rather than a lighter panel.
   scrolling. Keyboard: arrows on the focused carousel step one picture like the chevrons,
   Enter or Space opens the preview of the picture in view.
 
-Where: `index.html` section 2, `style.css` section 4, `main.js` part 3.
+Where: `gallery.html` section 2, `style.css` section 4, `main.js` part 3.
 
-### 5.4 The NGS page (`ngs.html`)
+### 5.4 The NGS page (`index.html`)
 
 The studio itself, in three beats, all inside `.wrap`:
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
   phone) — centred, with "three fools making games" in the grey secondary style under it.
-- **The connector line.** A decorative inline SVG (`aria-hidden`, `pointer-events: none`)
-  drawn over the intro grid: down from the page's centre, a leftward jog, then down to end
-  exactly at the heading's top edge. It works at every width because of two paired
-  contracts: the intro's two `1fr` columns have **no grid gap** (the photo column's
-  `padding-left` is the gutter), so the line's 50%/25% endpoints are exactly the column
-  boundary and the story column's centre; and the svg's 88px height equals the story
-  column's `padding-top`, with the heading's top margin zeroed, so the final descent lands
-  on the heading. **Change those numbers together or the line stops reaching the text.**
-  The stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
+- **The two connector lines.** Identical decorative inline SVGs (`aria-hidden`,
+  `pointer-events: none`), the same snake mirrored, each living in a 264px band (3× the
+  original 88px). The **in-line** is drawn over the top of the intro grid: down from the
+  page's centre, a curved leftward jog, then down to end exactly at the heading's top edge.
+  The **out-line** is anchored at the intro's bottom edge (`top: 100%`): down from below the
+  caption, a curved rightward jog, then down onto the fools list's centre. The corners are
+  real quadratic arcs in the path with per-axis radii (1.3 x-units, 6 y-units ≈ a 16px
+  corner at full width) because the stretched viewBox scales x and y differently.
+  They work at every width because of three paired contracts: the intro's two `1fr` columns
+  have **no grid gap** (the gutter lives on the img's `left: 32px`), so the percentage
+  endpoints are exactly the column boundary and the story column's centre; the svg heights
+  equal the story column's `padding-top` **and** the photo wrapper's `margin-top` (both
+  264px), with the heading's top margin zeroed, so the in-line lands on the heading and the
+  photo spans exactly the text block; and the list's `max-width: 60%` pairs with the
+  out-line's 30% landing x (60/2 = 30) while its `margin-top: 264px` carves out the
+  out-line's band. **Change those numbers together or the lines stop landing on their
+  targets.** The stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
 - **The intro.** The heading ("look how youthful we were before the scope-creep got
   *completely out of control*", the span in cyan) and the rock-climbing caption on the left;
-  the group photo (`assets/fools-banner.jpg`, name unchanged) on the right, stretched to the
-  row the text sets (`height: 100%` + `object-fit: cover`, `object-position: 50% 20%` keeps
-  the faces in frame). Below the intro the three names — small round avatar portrait and a
-  grey one-liner bio each, separated by the same row rules the old name list used — as a
-  full-width block. On phones (≤700px) the connector is hidden and everything stacks: story,
-  photo (200px tall), list.
+  the group photo (`assets/fools-banner.jpg`, name unchanged) on the right. The wrapper's
+  only child is absolutely positioned, so the wrapper adds no height of its own — the text
+  alone sizes the row and the photo stretches from the heading's top to the caption's bottom
+  exactly (`object-fit: cover`, `object-position: 50% 20%` keeps the faces in frame). Below
+  the intro (after the out-line's 264px band) the three names — small round avatar portrait
+  and a grey one-liner bio each, separated by the same row rules the old name list used — at
+  60% width so the out-line lands on their centre. On phones (≤700px) both connectors are
+  hidden and everything stacks: story, photo (200px tall), list (full width, 40px gap).
 
 `main.js` only wires the money modal here.
 
-Where: `ngs.html` section 2, `style.css` section 5.
+Where: `index.html` section 2, `style.css` section 5.
 
-### 5.5 Help us test + the playtest modal (`index.html`)
+### 5.5 Help us test + the playtest modal (`gallery.html`)
 
 Below the carousel, styled exactly like the NGS page content: the heading "help us *test*"
 (the span in cyan), the caption "we've just sort of 'released' an open beta for Gallery, so
@@ -229,7 +241,7 @@ inside a fixed-height `.test-form`, so the header and the × stay visible while 
 scrolls. The "send it" button is a deliberate no-op (`type="button"`, no handler): responses
 will be wired to somewhere real later. Closes the same three ways as the money modal.
 
-Where: `index.html` sections 3 and 7, `style.css` sections 5 (`.help-test`) and 7
+Where: `gallery.html` sections 3 and 7, `style.css` sections 5 (`.help-test`) and 7
 (`dialog#test`, `.test-form`, `.test-q`), `main.js` part 2.
 
 ### 5.6 The money modal (both pages)
@@ -257,14 +269,14 @@ phones they stack centred: logo, then credit, then address.
 
 Where: both HTML files, `style.css` section 6.
 
-### 5.8 Image preview dialog (`index.html`)
+### 5.8 Image preview dialog (`gallery.html`)
 
 A native `<dialog>` that opens on a short press on any picture in the strip (or Enter/Space
 on the focused carousel). Shows the picture full size with its `data-title` caption. Closes
 with the Close button, Escape, or a click outside the box. While it is open the strip's drift
 pauses.
 
-Where: `index.html` section 5, `style.css` section 7, `main.js` part 4.
+Where: `gallery.html` section 5, `style.css` section 7, `main.js` part 4.
 
 ---
 
@@ -317,11 +329,11 @@ scrolling still works).
 **Change any text.** Edit the HTML file the text lives on. Sections are numbered and
 commented. The header, footer and money dialog exist in both files — change them in each.
 
-**Add a carousel image.** Drop the file in `assets/`. In `index.html`, inside the block marked
+**Add a carousel image.** Drop the file in `assets/`. In `gallery.html`, inside the block marked
 `SLIDES`, copy one `<div class="slide">` block and change `src`, `alt` and `data-title`.
 The loop and the thumbnails pick it up automatically.
 
-**Change the Play Gallery link.** Edit the `href` on the `play-gallery` button in `index.html`
+**Change the Play Gallery link.** Edit the `href` on the `play-gallery` button in `gallery.html`
 section 2.
 
 **Re-bake the Gallery title.** The wordmark is generated, never hand-edited: edit the
@@ -329,7 +341,7 @@ section 2.
 (it needs the machine-local headless Chrome the path at its top points to, plus network for
 the font), and it overwrites `assets/gallery-title-ink.svg` and prints the CSS sizing
 numbers — paste those into `.game-title img` and the img's `width`/`height` attributes in
-`index.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
+`gallery.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
 links if those changed too).
 
 **Make the donation link real.** The money modal's "donation link coming soon" sentence lives
@@ -341,7 +353,7 @@ somewhere new) in both.
 are the `.strip-arrow` rules in `style.css` section 4.
 
 **Wire up the questionnaire.** The playtest form's sixteen questions live in the `#test`
-dialog in `index.html` section 7 (one `label.test-q` per question, `name="q01"`…`q16`). The
+dialog in `gallery.html` section 7 (one `label.test-q` per question, `name="q01"`…`q16`). The
 "send it" button is a `type="button"` no-op; when a destination exists, give the form a
 handler in `main.js` part 2 (or a real `action`) and flip the button to
 `type="submit"`.

@@ -348,23 +348,28 @@ nav a.active::after {
 .ngs-logo > span { color: var(--cyan); }
 .ngs-tag { margin: 6px 0 0; font-size: 18px; color: var(--muted); }
 
-/* The intro: story on the left, photo on the right. No grid gap — the photo
-   column's padding IS the gutter, so the connector's 50%/25% endpoints stay
-   exact at every width. The connector svg and the copy's padding-top are the
-   same 88px on purpose; the line's final descent ends at the heading's top. */
+/* The intro: story on the left, photo on the right. No grid gap — the gutter
+   lives on the img's left offset, so the connectors' percentage endpoints stay
+   exact at every width. Two connector svgs, the same snake mirrored: one comes
+   down from the hero onto the heading's top edge, one runs from below the
+   caption down onto the list's centre. All the bands are the same 264px on
+   purpose — both svg heights, .ngs-copy padding-top, .ngs-media margin-top and
+   .fools-list margin-top below; change them together or the lines stop
+   landing on their targets. */
 .ngs-intro { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
-.ngs-copy { min-width: 0; padding-top: 88px; } /* the connector's reserved band */
-.ngs-copy .fools-title { margin-top: 0; }      /* the line supplies the gap (help-test precedent) */
+.ngs-copy { min-width: 0; padding-top: 264px; } /* the in-line's reserved band */
+.ngs-copy .fools-title { margin-top: 0; }       /* the line supplies the gap (help-test precedent) */
 .ngs-copy .fools-caption { margin-bottom: 0; }
 
 .ngs-connector {
   position: absolute;
-  top: 0;
   left: 0;
   width: 100%;
-  height: 88px;
+  height: 264px;
   pointer-events: none;
 }
+.ngs-connector--in  { top: 0; }     /* hero → heading */
+.ngs-connector--out { top: 100%; }  /* caption → list; hangs over the list's band */
 .ngs-connector path {
   stroke: var(--cyan);
   stroke-width: 2;
@@ -372,11 +377,17 @@ nav a.active::after {
   stroke-linejoin: round;
 }
 
-.ngs-media { padding-left: 32px; min-height: 240px; }
+/* The photo spans exactly the text block: the wrapper's only child is
+   absolute, so the wrapper adds no height of its own — the copy column alone
+   sizes the row, and the img stretches from the heading's top to the
+   caption's bottom. */
+.ngs-media { position: relative; margin-top: 264px; min-height: 240px; }
 .ngs-media img {
-  display: block;
-  width: 100%;
-  height: 100%; /* stretches to the row the copy column sets */
+  position: absolute;
+  top: 0;
+  left: 32px;                  /* the column gutter */
+  width: calc(100% - 32px);
+  height: 100%;
   object-fit: cover;
   object-position: 50% 20%; /* anchors the crop near the top so all three faces stay in frame */
   border-radius: 10px;
@@ -398,7 +409,9 @@ nav a.active::after {
   color: var(--muted);
 }
 
-.fools-list { list-style: none; margin: 40px 0 0; padding: 0; max-width: 700px; }
+/* max-width 60% is paired with the out-line's 30% landing x: 60/2 = 30,
+   so the line comes down on the list's centre at every width. */
+.fools-list { list-style: none; margin: 264px 0 0; padding: 0; max-width: 60%; }
 
 .fool {
   display: flex;
@@ -567,15 +580,16 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .strip-arrow--right { right: 10px; }
   .thumb { flex-basis: 64px; height: 44px; }
 
-  /* NGS: the intro stacks (story, photo, list) and the connector line has
-     nowhere to jog when there is no second column */
+  /* NGS: the intro stacks (story, photo, list) and both connector lines
+     have nowhere to jog when there is no second column */
   .ngs { padding: 40px 0 44px; }
   .ngs-intro { grid-template-columns: 1fr; }
   .ngs-copy { padding-top: 0; }
   .ngs-connector { display: none; }
-  .ngs-media { padding-left: 0; min-height: 0; }
-  .ngs-media img { height: 200px; }
+  .ngs-media { margin-top: 0; min-height: 0; }
+  .ngs-media img { position: static; width: 100%; height: 200px; }
   .fools-title { margin-top: 24px; }
+  .fools-list { margin-top: 40px; max-width: 100%; }
 
   /* Footer */
   footer { display: flex; flex-wrap: wrap; padding-bottom: 25px; }
