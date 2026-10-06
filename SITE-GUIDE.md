@@ -5,7 +5,9 @@ page works, where each piece lives and how to change it. Read `README.md` first 
 want to get it running.
 
 Everything here was checked against the code on 6 October 2026, after the site became two
-pages — the game on `index.html`, the team on `fools.html` — the coffee page was folded into
+pages — the game on `index.html`, the studio on `ngs.html` (the team page, renamed from
+`fools.html` and re-laid-out around a wordmark hero and a cyan connector line) — the coffee
+page was folded into
 a "give us money" modal that opens from the nav on either page (and the 3D mug went with it),
 the carousel was rebuilt as an endlessly drifting filmstrip, and a help-us-test section with
 a playtest questionnaire modal joined the front page.
@@ -16,7 +18,7 @@ a playtest questionnaire modal joined the front page.
 
 A small static website for NewGameStudio, the studio run by Daniel, Ahmed and Micky. Two
 pages: the first game (Gallery) with its development carousel and a help-us-test section, and
-the team (the fools). "give us money" in the nav opens a donation modal on either page; the
+the studio page (NGS). "give us money" in the nav opens a donation modal on either page; the
 front page's "fill it out" opens a playtest questionnaire modal. The header and footer are
 shared by both pages (duplicated in each HTML file — there is no build step to include them
 from one place).
@@ -65,7 +67,7 @@ receive.
 | Path | What it is |
 | --- | --- |
 | `index.html` | The front page: the Gallery game text, the development carousel, and the help-us-test section (which opens the playtest questionnaire). |
-| `fools.html` | The team page. |
+| `ngs.html` | The NGS page: the wordmark hero, the team story beside the group photo, and the fools list. |
 | `style.css` | All styling for both pages, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
 | `main.js` | The money modal (every page), the playtest modal, the filmstrip carousel and the image preview dialog (the last three on `index.html` only). Each part is guarded on its element existing. Settings at the top. |
 | `assets/` | Every image on the site: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, three avatar portraits, seventeen carousel images. |
@@ -87,7 +89,7 @@ and dialog exist on both pages.
 carousel and starts the filmstrip (section 5.3 below), and wires the image preview dialog.
 No other scripts.
 
-**`fools.html`**: no carousel, no preview dialog — those parts no-op. No other scripts.
+**`ngs.html`**: no carousel, no preview dialog — those parts no-op. No other scripts.
 
 ---
 
@@ -97,8 +99,8 @@ The section numbers below match the comments in the HTML files.
 
 ### 5.1 Header (both pages)
 
-Sticky bar with the wordmark and the navigation: "gallery" (to `index.html`), "the fools"
-(to `fools.html`), and "give us money ↗" — a bordered `<button>` that opens the money modal
+Sticky bar with the wordmark and the navigation: "NGS" (to `ngs.html`), "gallery"
+(to `index.html`), and "give us money ↗" — a bordered `<button>` that opens the money modal
 (section 5.6), not a link. The nav item for the page you're on is pinned cyan
 (`class="active"` + `aria-current="page"`, hard-coded per page) and wears a small cyan dot
 centred under its text (`nav a.active::after`) — so exactly one dot shows per page, always
@@ -185,22 +187,38 @@ the page showing through rather than a lighter panel.
 
 Where: `index.html` section 2, `style.css` section 4, `main.js` part 3.
 
-### 5.4 The fools page (`fools.html`)
+### 5.4 The NGS page (`ngs.html`)
 
-The group photo as a banner (`assets/fools-banner.jpg`): full column width, cropped to a
-~320px-tall strip with the top of the picture anchored in frame (`object-fit: cover`,
-`object-position: 50% 20%`) and shown as-is — no dimming, tint or blur, unlike the Gallery
-card's backdrop. Below it, all left-aligned: the heading ("look how youthful we were before
-the scope-creep got *completely out of control*", the span in cyan), the rock-climbing
-caption, and the three names — each with a small round avatar portrait and a grey one-liner
-bio, separated by the same row rules the old name list used. No box or band around the
-section. `main.js` only wires the money modal here.
+The studio itself, in three beats, all inside `.wrap`:
 
-Where: `fools.html` section 2, `style.css` section 5.
+- **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
+  700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
+  phone) — centred, with "three fools making games" in the grey secondary style under it.
+- **The connector line.** A decorative inline SVG (`aria-hidden`, `pointer-events: none`)
+  drawn over the intro grid: down from the page's centre, a leftward jog, then down to end
+  exactly at the heading's top edge. It works at every width because of two paired
+  contracts: the intro's two `1fr` columns have **no grid gap** (the photo column's
+  `padding-left` is the gutter), so the line's 50%/25% endpoints are exactly the column
+  boundary and the story column's centre; and the svg's 88px height equals the story
+  column's `padding-top`, with the heading's top margin zeroed, so the final descent lands
+  on the heading. **Change those numbers together or the line stops reaching the text.**
+  The stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
+- **The intro.** The heading ("look how youthful we were before the scope-creep got
+  *completely out of control*", the span in cyan) and the rock-climbing caption on the left;
+  the group photo (`assets/fools-banner.jpg`, name unchanged) on the right, stretched to the
+  row the text sets (`height: 100%` + `object-fit: cover`, `object-position: 50% 20%` keeps
+  the faces in frame). Below the intro the three names — small round avatar portrait and a
+  grey one-liner bio each, separated by the same row rules the old name list used — as a
+  full-width block. On phones (≤700px) the connector is hidden and everything stacks: story,
+  photo (200px tall), list.
+
+`main.js` only wires the money modal here.
+
+Where: `ngs.html` section 2, `style.css` section 5.
 
 ### 5.5 Help us test + the playtest modal (`index.html`)
 
-Below the carousel, styled exactly like the fools page content: the heading "help us *test*"
+Below the carousel, styled exactly like the NGS page content: the heading "help us *test*"
 (the span in cyan), the caption "we've just sort of 'released' an open beta for Gallery, so
 play the shit out of it and fill this thing out:", then a "questionnaire ↗" button reusing
 the nav button's `.nav-money` class (its hover rule was un-scoped from the nav for this). The

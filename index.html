@@ -6,7 +6,7 @@
   <title>NewGameStudio | One more late night.</title>
   <meta name="description" content="We're Daniel, Ahmed and Micky. Three friends making games, chasing ideas, and occasionally remembering the word scope.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 
@@ -16,14 +16,14 @@
   3. Help us test (opens the playtest questionnaire)   4. Footer
   5. Image preview dialog   6. Money dialog
 
-  The team page is fools.html — the two pages share this header and footer,
+  The studio page is ngs.html — the two pages share this header and footer,
   so edit those in both files.
   All text lives here. Colours are at the top of style.css.
   To add a carousel image, copy one "slide" block in section 2.
 -->
 
 <!-- ===================================================================
-     1. HEADER  (also in fools.html)
+     1. HEADER  (also in ngs.html)
      =================================================================== -->
 <header class="site-header">
   <div class="nav wrap">
@@ -32,8 +32,8 @@
       <span class="brand-tag">three fools making games</span>
     </div>
     <nav aria-label="Main navigation">
+      <a href="ngs.html">NGS</a>
       <a href="index.html" class="active" aria-current="page">gallery</a>
-      <a href="fools.html">the fools</a>
       <button type="button" class="nav-money" id="open-money">give us money <span aria-hidden="true">↗</span></button>
     </nav>
   </div>
@@ -150,7 +150,7 @@
 </main>
 
 <!-- ===================================================================
-     4. FOOTER  (also in fools.html)
+     4. FOOTER  (also in ngs.html)
      =================================================================== -->
 <footer class="wrap">
   <div class="logo-wrap">
@@ -170,7 +170,7 @@
 </dialog>
 
 <!-- ===================================================================
-     6. MONEY DIALOG (also in fools.html; opens from the nav button)
+     6. MONEY DIALOG (also in ngs.html; opens from the nav button)
      =================================================================== -->
 <dialog id="money" aria-labelledby="money-title">
   <h2 id="money-title" class="money-title">Gallery is free</h2>
@@ -209,6 +209,6 @@
 
 <!-- The ?v= busts caches: bump it whenever main.js or style.css change,
      so visitors who kept the old files don't run old script on new HTML. -->
-<script src="main.js?v=14"></script>
+<script src="main.js?v=15"></script>
 </body>
 </html>
