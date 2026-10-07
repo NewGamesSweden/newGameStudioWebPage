@@ -20,7 +20,7 @@
 
 /* 1. FONTS AND COLOURS ============================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap');
 
 :root {
   --bg: #0b1422;       /* page background */
@@ -336,10 +336,11 @@ nav a.active::after {
 
 /* 5. NGS (THE STUDIO PAGE) ========================================== */
 
-.ngs { padding: 56px 0 64px; }
+.ngs { padding: 120px 0 64px; } /* the hero sits low; the timeline hangs below it */
 
-/* Hero: the wordmark itself, centred, with the one-liner under it. */
-.ngs-hero { text-align: center; margin-bottom: 24px; }
+/* Hero: the wordmark itself, centred, with the one-liner under it.
+   The drop line below is the gap — no hero margin. */
+.ngs-hero { text-align: center; margin-bottom: 0; }
 .ngs-logo {
   margin: 0;
   font: 700 clamp(34px, 7vw, 88px) / 1.1 'Space Grotesk', sans-serif;
@@ -348,28 +349,15 @@ nav a.active::after {
 .ngs-logo > span { color: var(--cyan); }
 .ngs-tag { margin: 6px 0 0; font-size: 18px; color: var(--muted); }
 
-/* The intro: story on the left, photo on the right. No grid gap — the gutter
-   lives on the img's left offset, so the connectors' percentage endpoints stay
-   exact at every width. Two connector svgs, the same snake mirrored: one comes
-   down from the hero onto the heading's top edge, one runs from below the
-   caption down onto the list's centre. All the bands are the same 264px on
-   purpose — both svg heights, .ngs-copy padding-top, .ngs-media margin-top and
-   .fools-list margin-top below; change them together or the lines stop
-   landing on their targets. */
-.ngs-intro { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
-.ngs-copy { min-width: 0; padding-top: 264px; } /* the in-line's reserved band */
-.ngs-copy .fools-title { margin-top: 0; }       /* the line supplies the gap (help-test precedent) */
-.ngs-copy .fools-caption { margin-bottom: 0; }
-
-.ngs-connector {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 264px;
-  pointer-events: none;
-}
-.ngs-connector--in  { top: 0; }     /* hero → heading */
-.ngs-connector--out { top: 100%; }  /* caption → list; hangs over the list's band */
+/* The timeline: connector svgs are normal-flow blocks (an svg with a height IS
+   the band), so every line lands on whatever the flow puts under it — the
+   list, then the image-topped entries. Drop 264; snake 203 + date ~33 + tail
+   28 keeps every band on the same 264px rhythm. A date's margin-left must
+   equal its snake's landing x (25% june, 75% august); change them together. */
+.ngs-connector { display: block; width: 100%; pointer-events: none; }
+.ngs-connector--drop  { height: 264px; }
+.ngs-connector--snake { height: 203px; }
+.ngs-connector--tail  { height: 28px; }
 .ngs-connector path {
   stroke: var(--cyan);
   stroke-width: 2;
@@ -377,21 +365,39 @@ nav a.active::after {
   stroke-linejoin: round;
 }
 
-/* The photo spans exactly the text block: the wrapper's only child is
-   absolute, so the wrapper adds no height of its own — the copy column alone
-   sizes the row, and the img stretches from the heading's top to the
-   caption's bottom. */
-.ngs-media { position: relative; margin-top: 264px; min-height: 240px; }
+/* The date sits ON the line: centred on its snake's landing x. */
+.ngs-date {
+  width: max-content;
+  margin: 10px 0;
+  transform: translateX(-50%);
+  font: 500 13px/1 'Space Grotesk', sans-serif;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}
+.ngs-date--left  { margin-left: 25%; }
+.ngs-date--right { margin-left: 75%; }
+
+/* Entries: text and photo side by side, no grid gap (the gutter is the image
+   column's padding). Both photos share the 1041:508 aspect, so at full width
+   each is the tallest thing in its row: the row height IS the image height,
+   and the bands above and below land on it — never on the shorter text. */
+.ngs-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+.ngs-copy { min-width: 0; }
+.ngs-copy .fools-title { margin-top: 0; }
+.ngs-copy .fools-caption { margin-bottom: 0; }
+.ngs-media { padding-left: 32px; }
+.ngs-intro--flip .ngs-media { padding-left: 0; padding-right: 32px; }
 .ngs-media img {
-  position: absolute;
-  top: 0;
-  left: 32px;                  /* the column gutter */
-  width: calc(100% - 32px);
-  height: 100%;
+  display: block;
+  width: 100%;
+  height: 100%; /* fills the row — whichever column sets it (the image, at full width) */
   object-fit: cover;
-  object-position: 50% 20%; /* anchors the crop near the top so all three faces stay in frame */
+  object-position: 50% 20%; /* anchors the crop near the top so faces stay in frame */
   border-radius: 10px;
 }
+
+/* The wordmark's own blackletter, one word of it, inside grey caption text. */
+.gallery-word { font: 700 1.4em/1 'UnifrakturCook', serif; }
 
 .fools-title {
   font: 500 clamp(28px, 3.2vw, 42px) / 1.25 'Space Grotesk', sans-serif;
@@ -411,7 +417,9 @@ nav a.active::after {
 
 /* max-width 60% is paired with the out-line's 30% landing x: 60/2 = 30,
    so the line comes down on the list's centre at every width. */
-.fools-list { list-style: none; margin: 264px 0 0; padding: 0; max-width: 60%; }
+/* the list: centred under the hero — the drop line lands on its centre, and
+   the snake below resumes from it. The bands supply all vertical gaps. */
+.fools-list { list-style: none; margin: 0 auto; padding: 0; max-width: 700px; }
 
 .fool {
   display: flex;
@@ -580,16 +588,20 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .strip-arrow--right { right: 10px; }
   .thumb { flex-basis: 64px; height: 44px; }
 
-  /* NGS: the intro stacks (story, photo, list) and both connector lines
-     have nowhere to jog when there is no second column */
+  /* NGS: the lines hide (no second column to jog across) but the dates stay
+     as plain labels above their entries; both entries read text-then-photo */
   .ngs { padding: 40px 0 44px; }
-  .ngs-intro { grid-template-columns: 1fr; }
-  .ngs-copy { padding-top: 0; }
   .ngs-connector { display: none; }
-  .ngs-media { margin-top: 0; min-height: 0; }
-  .ngs-media img { position: static; width: 100%; height: 200px; }
+  .ngs-date,
+  .ngs-date--left,
+  .ngs-date--right { transform: none; margin: 24px 0 12px; margin-left: 0; }
+  .ngs-intro { grid-template-columns: 1fr; }
+  .ngs-intro--flip .ngs-copy { order: 0; }
+  .ngs-intro--flip .ngs-media { order: 1; padding: 0; }
+  .ngs-media { padding: 0; }
+  .ngs-media img { height: 200px; }
   .fools-title { margin-top: 24px; }
-  .fools-list { margin-top: 40px; max-width: 100%; }
+  .fools-list { margin: 40px auto 0; max-width: 100%; }
 
   /* Footer */
   footer { display: flex; flex-wrap: wrap; padding-bottom: 25px; }

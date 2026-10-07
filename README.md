@@ -6,7 +6,7 @@ A small static website: the studio on `index.html` (the home page), the game on 
 
 | File | What it is |
 | --- | --- |
-| `index.html` | The home page: the NGS hero, the team story with its connector lines, and the fools list. GitHub Pages serves this at `/`. |
+| `index.html` | The home page: the NGS hero, the centred fools list, and the dated studio timeline. GitHub Pages serves this at `/`. |
 | `gallery.html` | The game page: the Gallery game text, the development carousel, and the help-us-test section with its questionnaire modal. |
 | `style.css` | All the styling for both pages. Colours are at the top. Phone and tablet rules are at the bottom. |
 | `main.js` | The money modal on every page, plus the playtest modal, the filmstrip carousel and the enlarge dialog on `gallery.html`. Settings are at the top. |

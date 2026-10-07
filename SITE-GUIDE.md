@@ -7,7 +7,7 @@ want to get it running.
 Everything here was checked against the code on 6 October 2026, after the site became two
 pages — the studio on `index.html` (the home page; GitHub Pages serves `index.html` at `/`,
 so the studio had to *be* that file) and the game on `gallery.html` (the team page, renamed
-from `fools.html` and re-laid-out around a wordmark hero and two cyan connector lines) — the coffee
+from `fools.html` and re-laid-out around a wordmark hero and a cyan timeline line) — the coffee
 page was folded into
 a "give us money" modal that opens from the nav on either page (and the 3D mug went with it),
 the carousel was rebuilt as an endlessly drifting filmstrip, and a help-us-test section with
@@ -191,38 +191,50 @@ Where: `gallery.html` section 2, `style.css` section 4, `main.js` part 3.
 
 ### 5.4 The NGS page (`index.html`)
 
-The studio itself, in three beats, all inside `.wrap`:
+The studio itself, told as a **timeline**: hero → straight drop → the fools list → dated
+entries strung on one continuous cyan line, all inside `.wrap`:
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
   phone) — centred, with "three fools making games" in the grey secondary style under it.
-- **The two connector lines.** Identical decorative inline SVGs (`aria-hidden`,
-  `pointer-events: none`), the same snake mirrored, each living in a 264px band (3× the
-  original 88px). The **in-line** is drawn over the top of the intro grid: down from the
-  page's centre, a curved leftward jog, then down to end exactly at the heading's top edge.
-  The **out-line** is anchored at the intro's bottom edge (`top: 100%`): down from below the
-  caption, a curved rightward jog, then down onto the fools list's centre. The corners are
-  real quadratic arcs in the path with per-axis radii (1.3 x-units, 6 y-units ≈ a 16px
-  corner at full width) because the stretched viewBox scales x and y differently.
-  They work at every width because of three paired contracts: the intro's two `1fr` columns
-  have **no grid gap** (the gutter lives on the img's `left: 32px`), so the percentage
-  endpoints are exactly the column boundary and the story column's centre; the svg heights
-  equal the story column's `padding-top` **and** the photo wrapper's `margin-top` (both
-  264px), with the heading's top margin zeroed, so the in-line lands on the heading and the
-  photo spans exactly the text block; and the list's `max-width: 60%` pairs with the
-  out-line's 30% landing x (60/2 = 30) while its `margin-top: 264px` carves out the
-  out-line's band. **Change those numbers together or the lines stop landing on their
-  targets.** The stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
-- **The intro.** The heading ("look how youthful we were before the scope-creep got
-  *completely out of control*", the span in cyan) and the rock-climbing caption on the left;
-  the group photo (`assets/fools-banner.jpg`, name unchanged) on the right. The wrapper's
-  only child is absolutely positioned, so the wrapper adds no height of its own — the text
-  alone sizes the row and the photo stretches from the heading's top to the caption's bottom
-  exactly (`object-fit: cover`, `object-position: 50% 20%` keeps the faces in frame). Below
-  the intro (after the out-line's 264px band) the three names — small round avatar portrait
-  and a grey one-liner bio each, separated by the same row rules the old name list used — at
-  60% width so the out-line lands on their centre. On phones (≤700px) both connectors are
-  hidden and everything stacks: story, photo (200px tall), list (full width, 40px gap).
+  The section's 120px top padding is the "hero sits low" dial. No hero bottom margin: the
+  drop line below is the gap.
+- **The line.** Decorative inline SVGs (`aria-hidden`, `pointer-events: none`) that are
+  **normal-flow blocks** — an svg with `display: block; width: 100%; height: Xpx` simply IS
+  a band in the page flow, so every line lands on whatever the flow puts under it. No
+  absolute positioning, no paired padding/margin contract. Three shapes: the `--drop`
+  (264px, straight down the centre from the hero onto the centred list — the list itself
+  interrupts the line, which resumes at its bottom edge), the `--snake` (203px: down, a
+  curved turn, down into an entry — into the left column's centre at 25% for june, the
+  right's at 75% for august), and the `--tail` (28px vertical that continues below the
+  date to the entry's heading). Corners are quadratic arcs with per-axis radii (1.3 x-units,
+  8 y-units ≈ a 16px corner) because the stretched viewBox scales x and y differently. The
+  stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
+- **The dates.** Small grey lowercase labels ("june 2026", "august 2026") that sit ON the
+  line: `width: max-content; transform: translateX(-50%)` with `margin-left` equal to the
+  snake's landing x — **25% (`--left`) or 75% (`--right`); change them together.** Each
+  band totals the 264px rhythm: 203 snake + ~33 date + 28 tail. On phones the svgs hide
+  and the dates stay as plain left-aligned labels above their entries.
+- **The fools list.** Directly under the hero, centred (`margin: 0 auto; max-width:
+  700px`) — the drop line lands on its centre. Three names, small round avatar portrait
+  and a grey one-liner bio each.
+- **The entries.** Each is `.ngs-intro` (the `1fr 1fr`, no-gap grid) with `.ngs-copy`
+  (heading + caption) and `.ngs-media` (photo) side by side; `.ngs-intro--flip` puts the
+  photo left (the gutter padding moves to its right side). Both photos share the 1041:508
+  aspect (`assets/fools-banner.jpg`, `assets/open-beta.jpg`), so at full width each photo
+  is the tallest thing in its row: the row height IS the image height, and the bands above
+  and below land on it — never on the (shorter) text. `height: 100%` + `object-fit: cover`
+  lets the img fill the row at narrower widths too. Entries so far: **june 2026** ("over
+  some drinks…" with "make games" in cyan; caption ends on "Gallery" set in
+  `.gallery-word` — UnifrakturCook 700, the wordmark's own blackletter, at 1.4em) and
+  **august 2026** ("hey guys, open beta in october?" with "open beta" in cyan). On phones
+  everything stacks text-first (the flip entry reorders with `order`), photos 200px tall.
+
+**Add a timeline entry:** copy one "snake svg + date + tail svg + `.ngs-intro`" group in
+`index.html` section 2, alternating the copy/photo sides; a new photo must be cropped to
+the 1041:508 aspect (that's what makes the row image-height); pick the date's `--left`/
+`--right` to match the column the line lands on, and extend a snake's path to a new x if
+you ever move it off 25%/75%.
 
 `main.js` only wires the money modal here.
 

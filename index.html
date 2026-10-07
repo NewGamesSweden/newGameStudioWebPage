@@ -6,14 +6,14 @@
   <title>NGS | NewGameStudio</title>
   <meta name="description" content="NewGameStudio — Daniel, Ahmed and Micky. Three fools making games.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=18">
+  <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 
 <!--
   The NGS page — also the site's home page (GitHub Pages serves index.html
-  at "/"): the wordmark hero, the team story and the fools list. It shares
-  its header and footer with gallery.html — edit those in both files.
+  at "/"): the wordmark hero, the fools list, and the studio timeline. It
+  shares its header and footer with gallery.html — edit those in both files.
 -->
 
 <!-- ===================================================================
@@ -47,31 +47,19 @@
         <p class="ngs-tag">three fools making games</p>
       </div>
 
-      <!-- Story on the left, photo on the right. Two connector svgs, the
-           same snake mirrored: one runs down from the page centre, left,
-           then down onto the heading's top edge; the other runs down from
-           below the caption, right, then down onto the list's centre
-           (the list is max-width 60% on purpose, so its centre is exactly
-           the 30% the second line lands on). All the bands are the same
-           264px on purpose — the svg heights, .ngs-copy padding-top,
-           .ngs-media margin-top and .fools-list margin-top; change them
-           together. The columns have no grid gap (the gutter lives on the
-           img's left offset) so the percentage endpoints stay exact. -->
-      <div class="ngs-intro">
-        <svg class="ngs-connector ngs-connector--in" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M50 0 V44 Q50 50 48.7 50 H26.3 Q25 50 25 56 V100" vector-effect="non-scaling-stroke"/>
-        </svg>
-        <svg class="ngs-connector ngs-connector--out" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M25 0 V44 Q25 50 26.3 50 H28.7 Q30 50 30 56 V100" vector-effect="non-scaling-stroke"/>
-        </svg>
-        <div class="ngs-copy">
-          <h2 id="ngs-heading" class="fools-title">look how youthful we were before the scope-creep got <span>completely out of control</span></h2>
-          <p class="fools-caption">We met eachother through rock climbing (before it was a thing that devs rock climbed), realised we had very strong and completely opposing opinions on game design, started working on Gallery together</p>
-        </div>
-        <div class="ngs-media">
-          <img src="assets/fools-banner.jpg" alt="The three of us around the studio table" width="1041" height="508">
-        </div>
-      </div>
+      <!-- The timeline: connector svgs are normal-flow blocks (an svg with a
+           height IS the band), so every line lands on whatever the flow puts
+           under it. Drop: straight down from the hero onto the centred list —
+           the list interrupts the line, it resumes at the list's bottom edge.
+           Snakes: down, turn, down into each entry, with the date sitting ON
+           the line — a date's margin-left must equal its snake's landing x
+           (25% june, 75% august); change them together. Both photos share the
+           1041:508 aspect, so each is the tallest thing in its row: the row
+           height is the image height, which is what the lines land on — not
+           the (shorter) text. -->
+      <svg class="ngs-connector ngs-connector--drop" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M50 0 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
 
       <ul class="fools-list">
         <li class="fool">
@@ -96,6 +84,42 @@
           </div>
         </li>
       </ul>
+
+      <!-- june 2026: the drinks decision. Text left, photo right. -->
+      <svg class="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M50 0 V42 Q50 50 48.7 50 H26.3 Q25 50 25 58 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <p class="ngs-date ngs-date--left">june 2026</p>
+      <svg class="ngs-connector ngs-connector--tail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M25 0 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <div class="ngs-intro">
+        <div class="ngs-copy">
+          <h2 id="ngs-heading" class="fools-title">over some drinks, the three fools decided to <span>make games</span> together</h2>
+          <p class="fools-caption">Daniel had some game ideas ready to go, so we picked the one that had the smallest scope in order to not stress ourselves out: <span class="gallery-word">Gallery</span></p>
+        </div>
+        <div class="ngs-media">
+          <img src="assets/fools-banner.jpg" alt="The three of us around the studio table" width="1041" height="508">
+        </div>
+      </div>
+
+      <!-- august 2026: the open beta call. Photo left, text right. -->
+      <svg class="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M25 0 V42 Q25 50 26.3 50 H73.7 Q75 50 75 58 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <p class="ngs-date ngs-date--right">august 2026</p>
+      <svg class="ngs-connector ngs-connector--tail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M75 0 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <div class="ngs-intro ngs-intro--flip">
+        <div class="ngs-media">
+          <img src="assets/open-beta.jpg" alt="two thumbs up at the desk during the open-beta grind" width="1041" height="508">
+        </div>
+        <div class="ngs-copy">
+          <h2 class="fools-title">“hey guys, <span>open beta</span> in october?”</h2>
+          <p class="fools-caption">because suffering is good for the soul or whatever</p>
+        </div>
+      </div>
 
     </div>
   </section>
@@ -126,6 +150,6 @@
 <!-- The ?v= busts caches: bump it whenever main.js or style.css change,
      so visitors who kept the old files don't run old script on new HTML.
      On this page main.js only wires the money modal (there is no carousel). -->
-<script src="main.js?v=16"></script>
+<script src="main.js?v=17"></script>
 </body>
 </html>
