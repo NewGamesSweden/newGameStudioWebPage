@@ -284,7 +284,7 @@ closeOnOutsideClick(preview);
 // MOMENT_MS. Reduced motion keeps the first frame (it ships visible in the
 // HTML), like the carousel keeping its drift off.
 
-const MOMENT_MS = 350; // how long each image is on screen
+const MOMENT_MS = 160; // how long each image is on screen
 
 const momentBox = document.querySelector('.ngs-moment');
 if (momentBox && !reducedMotion.matches) {
