@@ -8,7 +8,7 @@ A small static website, one page: the studio hero, a dated studio timeline, and 
 | --- | --- |
 | `index.html` | The whole site: the hero, the fools intro (title, caption, roster), the july–october studio timeline, and the Gallery game finale with its carousel and help-us-test section. GitHub Pages serves this at `/`. |
 | `style.css` | All the styling. Colours are at the top. Phone and tablet rules are at the bottom. |
-| `main.js` | The money modal, the playtest questionnaire modal, the filmstrip carousel and the enlarge dialog. Settings are at the top. |
+| `main.js` | The money modal, the playtest questionnaire modal, the filmstrip carousel and the enlarge dialog, the header-brand fade over the hero. Settings are at the top. |
 | `assets/` | All images, including `gallery-title-ink.svg` — the baked Gallery title wordmark — and the baked `moment-*.jpg` frames of the september moments section. |
 | `tools/` | One-off build tools (not shipped): `bake-title-ink.py` regenerates the Gallery title wordmark; `bake-moment-frames.py` rebuilds the september moments frames from the source screenshots folder. |
 | `SITE-GUIDE.md` | The long guide: every section, how it works, how to change it. |

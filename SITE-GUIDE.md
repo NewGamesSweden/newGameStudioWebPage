@@ -93,20 +93,25 @@ The section numbers below match the comments in the HTML files.
 
 ### 5.1 Header
 
-Sticky bar with the wordmark and the navigation: "NGS" (the home, `class="active"`),
-"gallery" (an anchor to `#gallery` at the end of the timeline — it smooth-scrolls there, and
-`scroll-padding-top` keeps the heading clear of the sticky bar), and "give us money ↗" — a
-bordered `<button>` that opens the money modal
-(section 5.6), not a link. The active item is pinned cyan
-(`class="active"` + `aria-current="page"`) and wears a small cyan dot
-centred under its text (`nav a.active::after`). On phones the nav wraps to a
-second row under the logo; all three items stay visible.
+Sticky bar with the wordmark and the navigation: "gallery" (an anchor to `#gallery` at the
+end of the timeline — it smooth-scrolls there, and `scroll-padding-top` keeps the heading
+clear of the sticky bar), and "give us money ↗" — a bordered `<button>` that opens the
+money modal (section 5.6), not a link. The site is one page, so there is no home item and
+no active-page dot; the wordmark is the way home. On phones the nav wraps to a
+second row under the logo; both items stay visible.
 
 **The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a link to
 `index.html` — the wordmark is the way home.
 Beside it sits the studio's one-liner, "three fools making games",
-in the small secondary style (`--muted`, 14px); hidden on phones. There is no hide-and-swap
-behaviour — the wordmark is always visible.
+in the small secondary style (`--muted`, 14px); hidden on phones.
+
+**The brand yields to the hero.** While the page hero (wordmark + one-liner) is on screen,
+the header's own wordmark and one-liner fade out — the same words twice on one screen
+looks like a bug. main.js §6 toggles `.at-hero` on the header with an IntersectionObserver
+on `.ngs-hero`; CSS transitions opacity + visibility over .25s and keeps the layout space,
+so the nav links never shift (visibility also drops the hidden brand from the tab/a11y
+order). Under reduced motion the global transition kill makes the swap instant. With no
+JS, the class is never added and the brand simply stays.
 
 Where: `index.html` section 1, `style.css` section 3.
 
@@ -198,7 +203,9 @@ ever extends past the wrap.
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
-  phone) — centred, alone under the header, with 56px of margin under it before the drop.
+  phone) — centred under the header, with the one-liner "three fools making games"
+  (`.ngs-tag`, 18px `--muted`) 16px below it. The hero's 56px margin sits under the whole
+  block — the air is between the one-liner and the drop, not between the two text lines.
   The section's 120px top padding is the "hero sits low" dial. On phones the margin resets
   to 0 (the drop is hidden there; the intro title's own top margin is the gap).
 - **The line.** Decorative inline SVGs (`aria-hidden`, `pointer-events: none`) that are
@@ -318,7 +325,7 @@ Defined once as variables in the `:root` block at the top of `style.css`:
 | `--panel` | The dialogs and buttons |
 | `--ink` | Main text, warm off-white |
 | `--muted` | Secondary text (the header tagline, captions) |
-| `--cyan` | Accent 1: links, highlights, buttons, the active nav item, list rules |
+| `--cyan` | Accent 1: links, highlights, buttons, list rules |
 | `--orange` | Accent 2: the keyboard focus ring |
 | `--line` | Borders |
 

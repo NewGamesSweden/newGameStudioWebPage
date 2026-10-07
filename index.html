@@ -6,7 +6,7 @@
   <title>NewGameStudio</title>
   <meta name="description" content="We're Daniel, Ahmed and Micky. Three friends making games, chasing ideas, and occasionally remembering the word scope.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=24">
 </head>
 <body>
 
@@ -26,7 +26,6 @@
       <span class="brand-tag">three fools making games</span>
     </div>
     <nav aria-label="Main navigation">
-      <a href="index.html" class="active" aria-current="page">NGS</a>
       <a href="#gallery">gallery</a>
       <button type="button" class="nav-money" id="open-money">give us money <span aria-hidden="true">↗</span></button>
     </nav>
@@ -41,9 +40,12 @@
   <section class="ngs" aria-labelledby="fools-heading">
     <div class="wrap">
 
-      <!-- The wordmark itself as the hero. -->
+      <!-- The wordmark itself as the hero, with the studio's one-liner under
+           it. The tagline lives inside .ngs-hero so the hero's under-gap
+           stays below the caption, not between the two lines. -->
       <div class="ngs-hero">
         <h1 class="ngs-logo">New<span>Game</span>Studio</h1>
+        <p class="ngs-tag">three fools making games</p>
       </div>
 
       <!-- The timeline: connector svgs are normal-flow blocks (an svg with a
@@ -67,7 +69,7 @@
            the drop lands on, with the roster back under the hero. -->
       <div class="fools-intro">
         <h2 id="fools-heading" class="fools-title">the <span>fools</span></h2>
-        <p class="fools-caption">basically Daniel approached Ahmed and Micky and expressed how he had always wanted to make games. Turns out, Ahmed and Micky also always wanted to make games. So now they’re making games</p>
+        <p class="fools-caption">Daniel approached Ahmed and Micky and expressed how he had always wanted to make games. Turns out, Ahmed and Micky also always wanted to make games. So now they’re making games</p>
         <ul class="fools-list">
           <li class="fool">
             <img class="fool-avatar" src="assets/avatar-daniel.jpg" alt="" width="248" height="264" loading="lazy">
@@ -341,7 +343,7 @@
         <!-- Help us test: opens the playtest questionnaire. -->
         <div class="help-test">
           <h2 class="fools-title">help us <span>test</span></h2>
-          <p class="fools-caption">we’ve just sort of ‘released’ an open beta for Gallery, so play the shit out of it and fill this thing out:</p>
+          <p class="fools-caption">we need people to play it and fill this thing out:</p>
           <button type="button" class="nav-money" id="open-test">questionnaire <span aria-hidden="true">↗</span></button>
         </div>
       </div>
@@ -413,6 +415,6 @@
      so visitors who kept the old files don't run old script on new HTML.
      main.js wires the money modal, the carousel, the preview and the
      playtest questionnaire. -->
-<script src="main.js?v=20"></script>
+<script src="main.js?v=21"></script>
 </body>
 </html>

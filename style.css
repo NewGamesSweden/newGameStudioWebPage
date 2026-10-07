@@ -115,21 +115,6 @@ nav {
 }
 
 nav a:hover { color: var(--cyan); }
-nav a.active { position: relative; color: var(--cyan); }
-/* The current page's own item wears a small dot, centred under its text.
-   Each page hard-codes class="active" on its own item, so exactly one dot
-   shows per page. */
-nav a.active::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -7px;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--cyan);
-}
 
 /* "give us money": a <button> that opens the money dialog. Buttons don't
    inherit colour or lose their default background, so set both. The help-us
@@ -145,13 +130,20 @@ nav a.active::after {
 .nav-money span { margin-left: 18px; }
 
 /* The wordmark is the way home (all pages link their logo to index.html),
-   with the studio's one-liner beside it in the small secondary style. */
+   with the studio's one-liner beside it in the small secondary style.
+   While the page hero is on screen it yields to the hero (main.js toggles
+   .at-hero on the header): it fades both ways and keeps its layout space, so
+   the nav links never shift; visibility also takes the hidden brand out of
+   the tab/a11y order, and pointer-events go with it. Under reduced motion
+   section 9's transition kill makes the swap instant, like everything else. */
 .logo-wrap {
   flex-shrink: 0;
   display: flex;
   align-items: baseline;
   gap: 12px;
+  transition: opacity .25s ease, visibility .25s ease;
 }
+.site-header.at-hero .logo-wrap { opacity: 0; visibility: hidden; pointer-events: none; }
 
 .brand {
   display: flex;
@@ -337,14 +329,16 @@ nav a.active::after {
 .ngs { padding: 120px 0 64px; } /* the hero sits low; the timeline hangs below it */
 
 /* Hero: the wordmark itself, centred, with the one-liner under it.
-   The drop line below is the gap — no hero margin. */
-.ngs-hero { text-align: center; margin-bottom: 56px; } /* a little air under the wordmark */
+   The 56px margin sits under the whole block — the air is between the
+   one-liner and the drop line, not between the two text lines. */
+.ngs-hero { text-align: center; margin-bottom: 56px; }
 .ngs-logo {
   margin: 0;
   font: 700 clamp(34px, 7vw, 88px) / 1.1 'Space Grotesk', sans-serif;
   letter-spacing: -0.03em;
 }
 .ngs-logo > span { color: var(--cyan); }
+.ngs-tag { margin: 16px 0 0; font-size: 18px; color: var(--muted); }
 
 /* The timeline: connector svgs are normal-flow blocks (an svg with a height IS
    the band), so every line lands on whatever the flow puts under it — the
@@ -480,7 +474,11 @@ nav a.active::after {
 .fool:last-child { border-bottom: 0; } /* nobody follows the last name */
 
 /* 2b. HELP US TEST — same content styling as the fools page */
-.help-test .fools-title { margin-top: 0; }
+/* centre the 820px title box itself — flush-left it reads 20px off-axis here
+   (the only .fools-title whose container is wider than 820px) */
+.help-test .fools-title { margin: 0 auto 12px; }
+/* the caption is a 700px block: centre the box itself, not just its text */
+.help-test .fools-caption { margin-left: auto; margin-right: auto; }
 
 
 /* 6. FOOTER ========================================================= */

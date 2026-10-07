@@ -14,6 +14,8 @@
    4. The image preview dialog.
    5. The september moments frame: cycles the baked timeline images
       (index.html only).
+   6. The header brand fade (index.html): while the page hero is on screen
+      the header's own wordmark fades out and returns once it scrolls past.
 
    Settings you might want to change are at the top.
    =================================================================== */
@@ -295,4 +297,19 @@ if (momentBox && !reducedMotion.matches) {
     on = (on + 1) % frames.length;
     frames[on].classList.add('moment-on');
   }, MOMENT_MS);
+}
+
+
+/* 6. HEADER BRAND FADE (index.html) ================================== */
+
+// While the page hero (wordmark + one-liner) is on screen, the header hides
+// its own wordmark — same words twice looks like a bug. main.js only toggles
+// the class; the fade itself is CSS. Reduced motion gets an instant swap via
+// the global transition kill.
+const heroMark = document.querySelector('.ngs-hero');
+const headerBar = document.querySelector('.site-header');
+if (heroMark && headerBar) {
+  new IntersectionObserver(([entry]) => {
+    headerBar.classList.toggle('at-hero', entry.isIntersecting);
+  }).observe(heroMark);
 }
