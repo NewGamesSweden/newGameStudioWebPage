@@ -345,7 +345,6 @@ nav a.active::after {
   letter-spacing: -0.03em;
 }
 .ngs-logo > span { color: var(--cyan); }
-.ngs-tag { margin: 6px 0 0; font-size: 18px; color: var(--muted); }
 
 /* The timeline: connector svgs are normal-flow blocks (an svg with a height IS
    the band), so every line lands on whatever the flow puts under it — the
@@ -395,11 +394,12 @@ nav a.active::after {
 }
 
 /* the fools: a date section's content without the date — centred under the
-   hero; the drop lands on it and the snake below resumes the line. */
-.fools-intro { max-width: 700px; margin: 0 auto; text-align: center; }
-.fools-intro .fools-title   { margin-top: 0; }     /* the drop is the gap */
+   hero; the drop lands on it and the snake below resumes the line. The title
+   is centred like every date-section title; the caption reads like a normal
+   left-aligned caption, bound inside the intro box. */
+.fools-intro { max-width: 700px; margin: 0 auto; }
+.fools-intro .fools-title   { margin-top: 0; text-align: center; } /* the drop is the gap */
 .fools-intro .fools-caption { margin-bottom: 8px; } /* the list follows */
-.fools-intro .fools-list    { text-align: left; }   /* rows keep their own alignment */
 
 /* september: no words, just the picture at roughly native size. */
 .ngs-sept { margin: 0; }

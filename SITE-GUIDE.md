@@ -198,7 +198,7 @@ ever extends past the wrap.
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
-  phone) — centred, with "three fools making games" in the grey secondary style under it.
+  phone) — centred, alone under the header.
   The section's 120px top padding is the "hero sits low" dial. No hero bottom margin: the
   drop line below is the gap.
 - **The line.** Decorative inline SVGs (`aria-hidden`, `pointer-events: none`) that are
