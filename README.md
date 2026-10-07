@@ -6,7 +6,7 @@ A small static website, one page: the studio hero, a dated studio timeline, and 
 
 | File | What it is |
 | --- | --- |
-| `index.html` | The whole site: the hero, the july–october studio timeline, and the Gallery game finale with its carousel and help-us-test section. GitHub Pages serves this at `/`. |
+| `index.html` | The whole site: the hero, the fools intro (title, caption, roster), the july–october studio timeline, and the Gallery game finale with its carousel and help-us-test section. GitHub Pages serves this at `/`. |
 | `style.css` | All the styling. Colours are at the top. Phone and tablet rules are at the bottom. |
 | `main.js` | The money modal, the playtest questionnaire modal, the filmstrip carousel and the enlarge dialog. Settings are at the top. |
 | `assets/` | All images, including `gallery-title-ink.svg` — the baked Gallery title wordmark. |

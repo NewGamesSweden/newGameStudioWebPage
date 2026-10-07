@@ -378,17 +378,13 @@ nav a.active::after {
 .ngs-date--right  { margin-left: 62.5%; }
 .ngs-date--centre { margin-left: 50%; }
 
-/* Entries: a 1fr/1fr grid; every content block is pulled into the
-   centre-facing half of its column (50% of the column = a quarter of the
-   wrap), text centred — the line lands on the block's centre, so the outer
-   quarters of the screen stay dark and the eye doesn't jerk while scrolling. */
-.ngs-entry { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+/* Entries: the content block is explicitly half the wrap — twice the old
+   quarter — offset by a quarter-column so its centre sits on the line's
+   landing (37.5% / 62.5%): the line meets the middle of every block. Plain
+   margins, so nothing ever extends past the wrap. */
 .ngs-block { width: 50%; text-align: center; }
-.ngs-entry--left  .ngs-block { grid-column: 1; justify-self: end; }
-.ngs-entry--right .ngs-block { grid-column: 2; justify-self: start; }
-/* the list is a second block in the july entry: it lives in the other column,
-   pulled toward the centre like every block */
-.ngs-entry--left .fools-list { grid-column: 2; justify-self: start; }
+.ngs-entry--left  .ngs-block { margin-left: 12.5%; }
+.ngs-entry--right .ngs-block { margin-left: 37.5%; }
 .ngs-block .fools-title { margin-top: 0; }
 .ngs-photo {
   display: block;
@@ -397,8 +393,13 @@ nav a.active::after {
   margin-top: 16px;
   border-radius: 10px;
 }
-/* The fools list keeps its own left-aligned rows inside its centred slot. */
-.ngs-entry .fools-list { margin: 0; max-width: 100%; text-align: left; }
+
+/* the fools: a date section's content without the date — centred under the
+   hero; the drop lands on it and the snake below resumes the line. */
+.fools-intro { max-width: 700px; margin: 0 auto; text-align: center; }
+.fools-intro .fools-title   { margin-top: 0; }     /* the drop is the gap */
+.fools-intro .fools-caption { margin-bottom: 8px; } /* the list follows */
+.fools-intro .fools-list    { text-align: left; }   /* rows keep their own alignment */
 
 /* september: no words, just the picture at roughly native size. */
 .ngs-sept { margin: 0; }
@@ -434,10 +435,8 @@ nav a.active::after {
   color: var(--muted);
 }
 
-/* max-width 60% is paired with the out-line's 30% landing x: 60/2 = 30,
-   so the line comes down on the list's centre at every width. */
-/* the list: centred under the hero — the drop line lands on its centre, and
-   the snake below resumes from it. The bands supply all vertical gaps. */
+/* the list: centred inside the fools intro (700px, like the caption box);
+   the intro supplies the centring, the rows keep their own alignment. */
 .fools-list { list-style: none; margin: 0 auto; padding: 0; max-width: 700px; }
 
 .fool {
@@ -614,14 +613,14 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .ngs-date--left,
   .ngs-date--right,
   .ngs-date--centre { transform: none; margin: 24px 0 12px; margin-left: 0; }
-  .ngs-entry { grid-template-columns: 1fr; }
   .ngs-block { width: 100%; }
   .ngs-entry--left .ngs-block,
-  .ngs-entry--right .ngs-block { grid-column: auto; justify-self: stretch; }
+  .ngs-entry--right .ngs-block { margin-left: 0; }
   .ngs-gallery { max-width: 100%; }
   .ngs-gallery .help-test { text-align: left; margin-top: 40px; }
+  .fools-intro { max-width: 100%; }
+  .fools-intro .fools-title { margin-top: 24px; } /* the drop is hidden here */
   .fools-title { margin-top: 24px; }
-  .ngs-entry .fools-list { margin: 24px 0 0; }
 
   /* Footer */
   footer { display: flex; flex-wrap: wrap; padding-bottom: 25px; }

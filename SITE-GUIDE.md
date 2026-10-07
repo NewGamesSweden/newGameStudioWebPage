@@ -185,11 +185,16 @@ Where: `index.html` (the `#gallery` block), `style.css` section 4, `main.js` par
 
 ### 5.4 The NGS timeline (`index.html` section 2)
 
-The studio itself, told as a **timeline**: hero → straight drop → four dated entries → the
-gallery finale, strung on one continuous cyan line, all inside `.wrap`. Every entry's
-content block is pulled into the **centre-facing half of its column** (a quarter of the wrap
-wide, text centred), so the line lands on the block's centre and the outer quarters of the
-screen stay dark — the eye doesn't jerk left and right while scrolling.
+The studio itself, told as a **timeline**: hero → straight drop → the fools intro → four
+dated entries → the gallery finale, strung on one continuous cyan line, all inside `.wrap`.
+The drop lands on the **fools intro** — a date section's content without the date, centred
+under the hero: the heading "the *fools*" ("fools" cyan), the bubble-boy caption, and the
+**fools list** (three names, round avatar portrait and grey one-liner each; the rows keep
+their own left alignment inside the centred 700px intro). Every entry's content block is
+explicitly **half the wrap** wide — twice the old quarter — offset by a quarter-column
+(`margin-left: 12.5%` on `--left` entries, `37.5%` on `--right`), so the block stays centred
+on its landing: the line meets the middle of every block, and plain margins mean nothing
+ever extends past the wrap.
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
@@ -212,15 +217,14 @@ screen stay dark — the eye doesn't jerk left and right while scrolling.
   (`--right`) or 50% (`--centre`); change them together.** Each band totals the 264px
   rhythm: 203 snake + ~33 date + 28 tail. On phones the svgs hide and the dates stay as
   plain left-aligned labels above their entries.
-- **The entries.** Each is `.ngs-entry` (a `1fr 1fr` grid). Its content is one or two
-  `.ngs-block` elements: 50% of the column wide, centred text, `justify-self` pulling it to
-  the centre-facing side (`--left` entries: grid-column 1, right edge; `--right` entries:
-  grid-column 2, left edge). Entries:
+- **The entries.** Each holds one `.ngs-block`: half the wrap wide, centred text, offset by
+  `margin-left: 12.5%` (`--left` entries) or `37.5%` (`--right` entries) so its centre sits
+  on the line's landing. On phones the block goes full width and the offset resets to 0.
+  Entries:
   - **july 2026** (left): the heading "the *blood pact* is signed. We begin with *Gallery*"
     ("blood pact" cyan, "Gallery" in `.gallery-word` — UnifrakturCook 700, the wordmark's own
     blackletter, at 1em of the title) with the group photo under it
-    (`assets/fools-banner.jpg`), and the **fools list** in the right half (the same
-    `.ngs-block` pull applies) — three names, round avatar portrait and grey one-liner each.
+    (`assets/fools-banner.jpg`).
   - **august 2026** (right): "october 12 becomes the *deadline* for Gallery going live"
     ("deadline" cyan) with the thumbs-up photo under it (`assets/open-beta.jpg`).
   - **september 2026** (left): no words — just the lantern picture

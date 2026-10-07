@@ -6,7 +6,7 @@
   <title>NewGameStudio</title>
   <meta name="description" content="We're Daniel, Ahmed and Micky. Three friends making games, chasing ideas, and occasionally remembering the word scope.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=20">
+  <link rel="stylesheet" href="style.css?v=21">
 </head>
 <body>
 
@@ -38,7 +38,7 @@
   <!-- =================================================================
        2. NGS — hero, timeline, gallery finale
        ================================================================= -->
-  <section class="ngs" aria-labelledby="ngs-heading">
+  <section class="ngs" aria-labelledby="fools-heading">
     <div class="wrap">
 
       <!-- The wordmark itself as the hero, with the one-liner under it. -->
@@ -53,30 +53,22 @@
            on the same 264px rhythm. All x values are wrap-relative %, and the
            one contract is: a date's margin-left must equal its snake's
            landing x — 37.5% july, 62.5% august, 37.5% september, 50% october;
-           change them together. Each entry's content block is pulled into the
-           centre-facing half of its column (width 50% of the column, text
-           centred), so the line lands on the block's centre: the outer
-           quarters of the screen stay dark and the eye doesn't jerk while
-           scrolling. -->
+           change them together. The drop lands on the centred fools intro,
+           then the line snakes down to each entry. Each entry's content block
+           is explicitly half the wrap — twice the old quarter — offset by a
+           quarter-column, so the block stays centred on its landing: the
+           line meets the middle of every block and the eye doesn't jerk
+           while scrolling. -->
       <svg class="ngs-connector ngs-connector--drop" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <path d="M50 0 V100" vector-effect="non-scaling-stroke"/>
       </svg>
 
-      <!-- july 2026: the blood pact. Heading + photo on the left, the fools
-           list on the right. -->
-      <svg class="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M50 0 V42 Q50 50 48.7 50 H38.8 Q37.5 50 37.5 58 V100" vector-effect="non-scaling-stroke"/>
-      </svg>
-      <p class="ngs-date ngs-date--left">july 2026</p>
-      <svg class="ngs-connector ngs-connector--tail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M37.5 0 V100" vector-effect="non-scaling-stroke"/>
-      </svg>
-      <div class="ngs-entry ngs-entry--left">
-        <div class="ngs-block">
-          <h2 id="ngs-heading" class="fools-title">the <span>blood pact</span> is signed. We begin with <span class="gallery-word">Gallery</span></h2>
-          <img class="ngs-photo" src="assets/fools-banner.jpg" alt="The three of us around the studio table" width="1041" height="508">
-        </div>
-        <ul class="fools-list ngs-block">
+      <!-- the fools: a date section's content without the date — the intro
+           the drop lands on, with the roster back under the hero. -->
+      <div class="fools-intro">
+        <h2 id="fools-heading" class="fools-title">the <span>fools</span></h2>
+        <p class="fools-caption">basically bubble boy Daniel approached Ahmed and I and expressed how he had always wanted to make games. Turns out, Ahmed and I also always wanted to make games. So now we’re making games</p>
+        <ul class="fools-list">
           <li class="fool">
             <img class="fool-avatar" src="assets/avatar-daniel.jpg" alt="" width="248" height="264" loading="lazy">
             <div class="fool-info">
@@ -99,6 +91,21 @@
             </div>
           </li>
         </ul>
+      </div>
+
+      <!-- july 2026: the blood pact. Heading + photo on the left. -->
+      <svg class="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M50 0 V42 Q50 50 48.7 50 H38.8 Q37.5 50 37.5 58 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <p class="ngs-date ngs-date--left">july 2026</p>
+      <svg class="ngs-connector ngs-connector--tail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M37.5 0 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <div class="ngs-entry ngs-entry--left">
+        <div class="ngs-block">
+          <h2 class="fools-title">the <span>blood pact</span> is signed. We begin with <span class="gallery-word">Gallery</span></h2>
+          <img class="ngs-photo" src="assets/fools-banner.jpg" alt="The three of us around the studio table" width="1041" height="508">
+        </div>
       </div>
 
       <!-- august 2026: the deadline. Heading + photo on the right. -->
