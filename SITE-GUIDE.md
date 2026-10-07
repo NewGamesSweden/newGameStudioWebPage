@@ -68,7 +68,7 @@ receive.
 | --- | --- |
 | `index.html` | The whole site: the hero, the july–october studio timeline, and the Gallery game finale (game card, carousel, help-us-test). GitHub Pages serves this at `/`. |
 | `style.css` | All styling, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
-| `main.js` | The money modal, the playtest modal, the filmstrip carousel and the image preview dialog. Each part is guarded on its element existing. Settings at the top. |
+| `main.js` | The money modal, the playtest modal, the filmstrip carousel, the image preview dialog and the september moments cycle. Each part is guarded on its element existing. Settings at the top. |
 | `assets/` | Every image on the site: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, seventeen carousel images. |
 | `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2). |
 | `README.md` | Short getting-started guide. |
@@ -185,10 +185,10 @@ Where: `index.html` (the `#gallery` block), `style.css` section 4, `main.js` par
 
 ### 5.4 The NGS timeline (`index.html` section 2)
 
-The studio itself, told as a **timeline**: hero → straight drop → the fools intro → four
+The studio itself, told as a **timeline**: hero → straight drop → the fools intro → five
 dated entries → the gallery finale, strung on one continuous cyan line, all inside `.wrap`.
 The drop lands on the **fools intro** — a date section's content without the date, centred
-under the hero: the heading "the *fools*" ("fools" cyan), the bubble-boy caption, and the
+under the hero: the heading "the *fools*" ("fools" cyan), the third-person caption, and the
 **fools list** (three names, round avatar portrait and grey one-liner each; the rows keep
 their own left alignment inside the centred 700px intro). Every entry's content block is
 explicitly **half the wrap** wide — twice the old quarter — offset by a quarter-column
@@ -198,9 +198,9 @@ ever extends past the wrap.
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
-  phone) — centred, alone under the header.
-  The section's 120px top padding is the "hero sits low" dial. No hero bottom margin: the
-  drop line below is the gap.
+  phone) — centred, alone under the header, with 56px of margin under it before the drop.
+  The section's 120px top padding is the "hero sits low" dial. On phones the margin resets
+  to 0 (the drop is hidden there; the intro title's own top margin is the gap).
 - **The line.** Decorative inline SVGs (`aria-hidden`, `pointer-events: none`) that are
   **normal-flow blocks** — an svg with `display: block; width: 100%; height: Xpx` simply IS
   a band in the page flow, so every line lands on whatever the flow puts under it. No
@@ -211,8 +211,9 @@ ever extends past the wrap.
   the date to the entry's top). Corners are quadratic arcs with per-axis radii (1.3 x-units,
   8 y-units ≈ a 16px corner) because the stretched viewBox scales x and y differently. The
   stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
-- **The dates.** Small grey lowercase labels ("july 2026", "august 2026", "september 2026",
-  "october 2026") that sit ON the line: `width: max-content; transform: translateX(-50%)`
+- **The dates.** Small grey lowercase labels ("july 2026", "august 2026", "the following
+  moment 2026", "september 2026", "october 2026") that sit ON the line:
+  `width: max-content; transform: translateX(-50%)`
   with `margin-left` equal to the snake's landing x — **37.5% (`--left`), 62.5%
   (`--right`) or 50% (`--centre`); change them together.** Each band totals the 264px
   rhythm: 203 snake + ~33 date + 28 tail. On phones the svgs hide and the dates stay as
@@ -225,11 +226,20 @@ ever extends past the wrap.
     ("blood pact" cyan, "Gallery" in `.gallery-word` — UnifrakturCook 700, the wordmark's own
     blackletter, at 1em of the title) with the group photo under it
     (`assets/fools-banner.jpg`).
-  - **august 2026** (right): "october 12 becomes the *deadline* for Gallery going live"
-    ("deadline" cyan) with the thumbs-up photo under it (`assets/open-beta.jpg`).
-  - **september 2026** (left): no words — just the lantern picture
+  - **august 2026** (right): the quotation ""I think by *early October* we should be able
+    to post it somewhere"" ("early October" cyan) with the thumbs-up photo under it
+    (`assets/open-beta.jpg`).
+  - **the following moment 2026** (left): no words — just the lantern picture
     (`assets/september-lantern.jpg`), capped at 300px tall so the section matches the
     others.
+  - **september 2026** (right): no words either — the **moments frame** (`.ngs-moment`): a
+    fixed-height 300px box (260 on phones) that cycles quickly through the baked
+    `assets/moment-01…86.jpg` frames, one visible at a time (`.moment-on`), each capped to
+    the frame (never cropped or upscaled, so different shapes read as the same size). The
+    frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder
+    (edit its `EXCLUDE` list to drop more); the cycle runs in main.js (`MOMENT_MS`) and
+    honours reduced motion by keeping the first frame static. The frame's fixed height
+    means the cycle can never reflow the bands.
   - **october 2026** (centre): the gallery finale — `.ngs-gallery` (`#gallery`), a centred
     860px column holding the whole game: the card, the carousel and help-us-test (5.2, 5.3,
     5.5).

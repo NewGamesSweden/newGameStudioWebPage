@@ -12,6 +12,8 @@
       labels and a click-to-enlarge dialog. Only index.html has a
       carousel.
    4. The image preview dialog.
+   5. The september moments frame: cycles the baked timeline images
+      (index.html only).
 
    Settings you might want to change are at the top.
    =================================================================== */
@@ -20,6 +22,9 @@ const SWIPE_DISTANCE_PX = 45;    // how far a press may travel and still count a
 const AUTO_SCROLL_PX_PER_S = 30; // the idle drift speed of the strip
 
 const carousel = document.querySelector('.carousel');
+
+// Shared by every self-driven animation: reduce motion means none.
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 // Shared by both dialogs: a click on the dark area outside the dialog closes it.
 function closeOnOutsideClick(dialog) {
@@ -61,7 +66,6 @@ const stage = carousel.querySelector('.slide-stage');
 const slides = [...carousel.querySelectorAll('.slide')];
 const thumbRail = carousel.querySelector('.thumbnails');
 const preview = document.querySelector('#preview');
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 // Images would otherwise start a native drag on mouse-down, which cancels the
 // pointer events the click-to-enlarge handling below relies on.
@@ -271,4 +275,24 @@ preview.addEventListener('close', () => { previewOpen = false; });
 // Clicking the dark area outside the dialog closes it.
 closeOnOutsideClick(preview);
 
+}
+
+
+/* 5. SEPTEMBER MOMENTS ============================================== */
+
+// The timeline's moments frame: swap which baked image is visible every
+// MOMENT_MS. Reduced motion keeps the first frame (it ships visible in the
+// HTML), like the carousel keeping its drift off.
+
+const MOMENT_MS = 350; // how long each image is on screen
+
+const momentBox = document.querySelector('.ngs-moment');
+if (momentBox && !reducedMotion.matches) {
+  const frames = [...momentBox.querySelectorAll('img')];
+  let on = 0;
+  setInterval(() => {
+    frames[on].classList.remove('moment-on');
+    on = (on + 1) % frames.length;
+    frames[on].classList.add('moment-on');
+  }, MOMENT_MS);
 }

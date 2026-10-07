@@ -338,7 +338,7 @@ nav a.active::after {
 
 /* Hero: the wordmark itself, centred, with the one-liner under it.
    The drop line below is the gap — no hero margin. */
-.ngs-hero { text-align: center; margin-bottom: 0; }
+.ngs-hero { text-align: center; margin-bottom: 56px; } /* a little air under the wordmark */
 .ngs-logo {
   margin: 0;
   font: 700 clamp(34px, 7vw, 88px) / 1.1 'Space Grotesk', sans-serif;
@@ -398,7 +398,7 @@ nav a.active::after {
    is centred like every date-section title; the caption reads like a normal
    left-aligned caption, bound inside the intro box. */
 .fools-intro { max-width: 700px; margin: 0 auto; }
-.fools-intro .fools-title   { margin-top: 0; text-align: center; } /* the drop is the gap */
+.fools-intro .fools-title   { margin-top: 24px; text-align: center; } /* a bit of padding above */
 .fools-intro .fools-caption { margin-bottom: 8px; } /* the list follows */
 
 /* september: no words, just the picture at roughly native size. */
@@ -410,6 +410,25 @@ nav a.active::after {
   margin: 0 auto;
   border-radius: 10px;
 }
+
+/* september moments: one fixed-height frame; every image capped to the same
+   visual box (never cropped or upscaled) and centred in it. The frame never
+   changes size, so the cycle can't reflow the bands. main.js toggles
+   .moment-on to pick the visible frame. */
+.ngs-moment {
+  margin: 0;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ngs-moment img {
+  display: none;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+}
+.ngs-moment img.moment-on { display: block; }
 
 /* october: the whole Gallery game, one comfortable column, dead centre. */
 .ngs-gallery { max-width: 860px; margin: 0 auto; }
@@ -620,6 +639,8 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .ngs-gallery .help-test { text-align: left; margin-top: 40px; }
   .fools-intro { max-width: 100%; }
   .fools-intro .fools-title { margin-top: 24px; } /* the drop is hidden here */
+  .ngs-hero { margin-bottom: 0; } /* the intro title's margin is the gap here */
+  .ngs-moment { height: 260px; }
   .fools-title { margin-top: 24px; }
 
   /* Footer */
