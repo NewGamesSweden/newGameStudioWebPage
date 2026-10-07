@@ -4,15 +4,16 @@
    Sections:
    1.  Fonts and colours (change the look here)
    2.  Base styles
-   3.  Header and navigation (shared by both pages)
-   4.  Gallery section (game text beside the menu backdrop, filmstrip carousel)
-   5.  NGS (the studio page)
+   3.  Header and navigation
+   4.  Gallery (the game card and filmstrip carousel — they live at the end of
+       the NGS timeline on the single page)
+   5.  NGS (the whole page: hero, studio timeline, gallery finale)
 
    Spacing scale: 8, 16, 24, 32, 40, 56, 64. Inside a section things sit 8 to 32
    apart; 56 and 64 are for the gaps between sections (the first card under the
    header is the one exception — it sits a 16px slide-gap down).
    6.  Footer
-   7.  Dialogs (image preview, money modal)
+   7.  Dialogs (image preview, money modal, playtest questionnaire)
    8.  Screen sizes: large desktop, tablet (1000px and below), phone (700px and below)
    9.  Reduced motion
    =================================================================== */
@@ -165,13 +166,10 @@ nav a.active::after {
 .brand-tag { color: var(--muted); font-size: 14px; }
 
 
-/* 4. GALLERY SECTION ================================================ */
+/* 4. GALLERY (game card + carousel, at the end of the NGS timeline) == */
 
-.section { padding: 64px 0; }
-/* The Gallery card is the page's first section; it belongs to the header above
-   it, so it sits one slide-gap down instead of a full section gap. (The ID
-   also out-ranks the phone media query's .section shorthand below.) */
-#games { padding-top: 16px; }
+/* Spacing above the game card comes from the timeline bands, not section
+   padding — only the carousel's slide-gap below it. */
 
 /* One composition: the game named on the left, the play button on the right,
    the menu backdrop behind. No border; the strip below is a separate panel,
@@ -351,9 +349,11 @@ nav a.active::after {
 
 /* The timeline: connector svgs are normal-flow blocks (an svg with a height IS
    the band), so every line lands on whatever the flow puts under it — the
-   list, then the image-topped entries. Drop 264; snake 203 + date ~33 + tail
-   28 keeps every band on the same 264px rhythm. A date's margin-left must
-   equal its snake's landing x (25% june, 75% august); change them together. */
+   entries, then the gallery finale. Drop 264; snake 203 + date ~33 + tail 28
+   keeps every band on the same 264px rhythm. All x values are wrap-relative
+   %, and the one contract is: a date's margin-left must equal its snake's
+   landing x (37.5% july, 62.5% august, 37.5% september, 50% october); change
+   them together. */
 .ngs-connector { display: block; width: 100%; pointer-events: none; }
 .ngs-connector--drop  { height: 264px; }
 .ngs-connector--snake { height: 203px; }
@@ -374,30 +374,49 @@ nav a.active::after {
   letter-spacing: 0.22em;
   color: var(--muted);
 }
-.ngs-date--left  { margin-left: 25%; }
-.ngs-date--right { margin-left: 75%; }
+.ngs-date--left   { margin-left: 37.5%; }
+.ngs-date--right  { margin-left: 62.5%; }
+.ngs-date--centre { margin-left: 50%; }
 
-/* Entries: text and photo side by side, no grid gap (the gutter is the image
-   column's padding). Both photos share the 1041:508 aspect, so at full width
-   each is the tallest thing in its row: the row height IS the image height,
-   and the bands above and below land on it — never on the shorter text. */
-.ngs-intro { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
-.ngs-copy { min-width: 0; }
-.ngs-copy .fools-title { margin-top: 0; }
-.ngs-copy .fools-caption { margin-bottom: 0; }
-.ngs-media { padding-left: 32px; }
-.ngs-intro--flip .ngs-media { padding-left: 0; padding-right: 32px; }
-.ngs-media img {
+/* Entries: a 1fr/1fr grid; every content block is pulled into the
+   centre-facing half of its column (50% of the column = a quarter of the
+   wrap), text centred — the line lands on the block's centre, so the outer
+   quarters of the screen stay dark and the eye doesn't jerk while scrolling. */
+.ngs-entry { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+.ngs-block { width: 50%; text-align: center; }
+.ngs-entry--left  .ngs-block { grid-column: 1; justify-self: end; }
+.ngs-entry--right .ngs-block { grid-column: 2; justify-self: start; }
+/* the list is a second block in the july entry: it lives in the other column,
+   pulled toward the centre like every block */
+.ngs-entry--left .fools-list { grid-column: 2; justify-self: start; }
+.ngs-block .fools-title { margin-top: 0; }
+.ngs-photo {
   display: block;
   width: 100%;
-  height: 100%; /* fills the row — whichever column sets it (the image, at full width) */
-  object-fit: cover;
-  object-position: 50% 20%; /* anchors the crop near the top so faces stay in frame */
+  height: auto;
+  margin-top: 16px;
+  border-radius: 10px;
+}
+/* The fools list keeps its own left-aligned rows inside its centred slot. */
+.ngs-entry .fools-list { margin: 0; max-width: 100%; text-align: left; }
+
+/* september: no words, just the picture at roughly native size. */
+.ngs-sept { margin: 0; }
+.ngs-sept img {
+  display: block;
+  max-height: 300px;
+  width: auto;
+  margin: 0 auto;
   border-radius: 10px;
 }
 
-/* The wordmark's own blackletter, one word of it, inside grey caption text. */
-.gallery-word { font: 700 1.4em/1 'UnifrakturCook', serif; }
+/* october: the whole Gallery game, one comfortable column, dead centre. */
+.ngs-gallery { max-width: 860px; margin: 0 auto; }
+.ngs-gallery .help-test { text-align: center; margin-top: 56px; }
+
+/* The wordmark's own blackletter, one word of it, in the july heading —
+   1em of the title's size (blackletter reads small, tune here). */
+.gallery-word { font: 700 1em/1 'UnifrakturCook', serif; }
 
 .fools-title {
   font: 500 clamp(28px, 3.2vw, 42px) / 1.25 'Space Grotesk', sans-serif;
@@ -580,7 +599,6 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   nav { gap: 16px; font-size: 13px; }
 
   /* Gallery: the card stacks (copy, then the play button under it) */
-  .section { padding: 48px 0; }
   .gallery-feature { flex-direction: column; align-items: flex-start; gap: 20px; padding: 32px 20px; }
   .strip { height: clamp(220px, 60vw, 300px); }
   .strip-arrow { width: 38px; height: 38px; }
@@ -589,19 +607,21 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .thumb { flex-basis: 64px; height: 44px; }
 
   /* NGS: the lines hide (no second column to jog across) but the dates stay
-     as plain labels above their entries; both entries read text-then-photo */
+     as plain labels above their entries; every block goes full width */
   .ngs { padding: 40px 0 44px; }
   .ngs-connector { display: none; }
   .ngs-date,
   .ngs-date--left,
-  .ngs-date--right { transform: none; margin: 24px 0 12px; margin-left: 0; }
-  .ngs-intro { grid-template-columns: 1fr; }
-  .ngs-intro--flip .ngs-copy { order: 0; }
-  .ngs-intro--flip .ngs-media { order: 1; padding: 0; }
-  .ngs-media { padding: 0; }
-  .ngs-media img { height: 200px; }
+  .ngs-date--right,
+  .ngs-date--centre { transform: none; margin: 24px 0 12px; margin-left: 0; }
+  .ngs-entry { grid-template-columns: 1fr; }
+  .ngs-block { width: 100%; }
+  .ngs-entry--left .ngs-block,
+  .ngs-entry--right .ngs-block { grid-column: auto; justify-self: stretch; }
+  .ngs-gallery { max-width: 100%; }
+  .ngs-gallery .help-test { text-align: left; margin-top: 40px; }
   .fools-title { margin-top: 24px; }
-  .fools-list { margin: 40px auto 0; max-width: 100%; }
+  .ngs-entry .fools-list { margin: 24px 0 0; }
 
   /* Footer */
   footer { display: flex; flex-wrap: wrap; padding-bottom: 25px; }

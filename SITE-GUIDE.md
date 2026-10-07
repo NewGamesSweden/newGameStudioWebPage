@@ -4,30 +4,29 @@ This is the long version of `README.md`. It explains what the site is made of, h
 page works, where each piece lives and how to change it. Read `README.md` first if you only
 want to get it running.
 
-Everything here was checked against the code on 6 October 2026, after the site became two
-pages — the studio on `index.html` (the home page; GitHub Pages serves `index.html` at `/`,
-so the studio had to *be* that file) and the game on `gallery.html` (the team page, renamed
-from `fools.html` and re-laid-out around a wordmark hero and a cyan timeline line) — the coffee
-page was folded into
-a "give us money" modal that opens from the nav on either page (and the 3D mug went with it),
+Everything here was checked against the code on 7 October 2026, after the site became one
+page — the studio timeline on `index.html` (GitHub Pages serves `index.html` at `/`, so the
+site had to *be* that file), with the Gallery game folded into the end of the timeline and
+`gallery.html` retired — the coffee
+page had earlier been folded into
+a "give us money" modal that opens from the nav (and the 3D mug went with it),
 the carousel was rebuilt as an endlessly drifting filmstrip, and a help-us-test section with
-a playtest questionnaire modal joined the front page.
+a playtest questionnaire modal joined the page.
 
 ---
 
 ## 1. What this is
 
-A small static website for NewGameStudio, the studio run by Daniel, Ahmed and Micky. Two
-pages: the first game (Gallery) with its development carousel and a help-us-test section, and
-the studio page (NGS). "give us money" in the nav opens a donation modal on either page; the
-front page's "fill it out" opens a playtest questionnaire modal. The header and footer are
-shared by both pages (duplicated in each HTML file — there is no build step to include them
-from one place).
+A small static website for NewGameStudio, the studio run by Daniel, Ahmed and Micky. One
+page: the studio hero, a dated timeline of the studio's story (july → october 2026), and the
+first game (Gallery) at the end of it with its development carousel and a help-us-test
+section. "give us money" in the nav opens a donation modal; the nav's "gallery" link scrolls
+down to the game; its questionnaire button opens a playtest modal.
 
 Technical shape:
 
 - Plain HTML, CSS and JavaScript. No framework, no bundler, no package manager, no build step.
-- Two HTML files, one stylesheet, one ordinary script. That's all.
+- One HTML file, one stylesheet, one ordinary script. That's all.
 - Fonts come from Google Fonts and fall back to system fonts offline.
 - Hosted as static files. GitHub Pages is the intended host, but any static host works.
 
@@ -67,30 +66,24 @@ receive.
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The home page: the NGS hero, the team story beside the group photo, and the fools list. GitHub Pages serves this at `/`. |
-| `gallery.html` | The game page: the Gallery game text, the development carousel, and the help-us-test section (which opens the playtest questionnaire). |
-| `style.css` | All styling for both pages, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
-| `main.js` | The money modal (every page), the playtest modal, the filmstrip carousel and the image preview dialog (the last three on `gallery.html` only). Each part is guarded on its element existing. Settings at the top. |
-| `assets/` | Every image on the site: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, three avatar portraits, seventeen carousel images. |
+| `index.html` | The whole site: the hero, the july–october studio timeline, and the Gallery game finale (game card, carousel, help-us-test). GitHub Pages serves this at `/`. |
+| `style.css` | All styling, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
+| `main.js` | The money modal, the playtest modal, the filmstrip carousel and the image preview dialog. Each part is guarded on its element existing. Settings at the top. |
+| `assets/` | Every image on the site: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, seventeen carousel images. |
 | `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2). |
 | `README.md` | Short getting-started guide. |
 | `NewGameStudio.code-workspace` | VS Code workspace shortcut. Optional. |
 
 ---
 
-## 4. How the pages load
+## 4. How the page loads
 
-**Every page** links `style.css` and loads `main.js` just before `</body>`. The `?v=` on both
-links busts caches — bump both whenever either file changes, on both pages.
+The page links `style.css` and loads `main.js` just before `</body>`. The `?v=` on both
+links busts caches — bump them whenever either file changes.
 
-**Every page**: `main.js` first wires the money modal (section 5.6 below) — the nav button
-and dialog exist on both pages.
-
-**`gallery.html`**: `main.js` also wires the playtest modal (section 5.5 below), finds the
-carousel and starts the filmstrip (section 5.3 below), and wires the image preview dialog.
-No other scripts.
-
-**`index.html`** (the home page): no carousel, no preview dialog — those parts no-op. No other scripts.
+`main.js` wires the money modal (section 5.6 below), the playtest modal (section 5.5), the
+carousel and the image preview dialog (sections 5.3 and 5.8). Each part is guarded on its
+element existing, so a missing piece just no-ops. No other scripts.
 
 ---
 
@@ -98,30 +91,31 @@ No other scripts.
 
 The section numbers below match the comments in the HTML files.
 
-### 5.1 Header (both pages)
+### 5.1 Header
 
-Sticky bar with the wordmark and the navigation: "NGS" (to `index.html`, the home page),
-"gallery" (to `gallery.html`), and "give us money ↗" — a bordered `<button>` that opens the money modal
-(section 5.6), not a link. The nav item for the page you're on is pinned cyan
-(`class="active"` + `aria-current="page"`, hard-coded per page) and wears a small cyan dot
-centred under its text (`nav a.active::after`) — so exactly one dot shows per page, always
-naming the page you're on. On phones the nav wraps to a
+Sticky bar with the wordmark and the navigation: "NGS" (the home, `class="active"`),
+"gallery" (an anchor to `#gallery` at the end of the timeline — it smooth-scrolls there, and
+`scroll-padding-top` keeps the heading clear of the sticky bar), and "give us money ↗" — a
+bordered `<button>` that opens the money modal
+(section 5.6), not a link. The active item is pinned cyan
+(`class="active"` + `aria-current="page"`) and wears a small cyan dot
+centred under its text (`nav a.active::after`). On phones the nav wraps to a
 second row under the logo; all three items stay visible.
 
 **The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a link to
-`index.html` on every page — the wordmark is the way home, and home is the studio page.
+`index.html` — the wordmark is the way home.
 Beside it sits the studio's one-liner, "three fools making games",
 in the small secondary style (`--muted`, 14px); hidden on phones. There is no hide-and-swap
 behaviour — the wordmark is always visible.
 
-Where: both HTML files section 1, `style.css` section 3.
+Where: `index.html` section 1, `style.css` section 3.
 
-### 5.2 The Gallery card (`gallery.html` section 2)
+### 5.2 The Gallery card (`index.html`, the `#gallery` block)
 
 One row on the card: the game's name and its one-line pitch on the left, the "Play for free"
-button on the right, all centred vertically. The card sits a 16px slide-gap under the nav's
-underline (`#games { padding-top: 16px }` — the one exception to the section-gap rhythm; the
-ID out-ranks the phone media query's `.section` shorthand, so it holds at every width). The
+button on the right, all centred vertically. The card opens the gallery finale — a centred
+860px column (`.ngs-gallery`) at the end of the timeline; spacing above it comes from the
+timeline bands, not section padding. The
 button links to https://gallery.newgamestudio.com/ and opens in a new tab. The card is
 content-driven, about 250px tall.
 
@@ -153,9 +147,9 @@ in the title's white (`--ink`), and carries a soft two-layer navy
 **The joint with the carousel.** The card and the strip are two separate rounded panels with
 one slide-gap (16px, the same space as between pictures) between them.
 
-Where: `gallery.html` section 2, `style.css` section 4, `tools/` for the title bake.
+Where: `index.html` (the `#gallery` block), `style.css` section 4, `tools/` for the title bake.
 
-### 5.3 The development carousel (`gallery.html` section 2)
+### 5.3 The development carousel (`index.html`, the `#gallery` block)
 
 An endless filmstrip: all seventeen images in one row — the latest in-game screenshots first,
 then development studies and older builds — one slide-gap below the card. The strip's viewport
@@ -187,12 +181,15 @@ the page showing through rather than a lighter panel.
   scrolling. Keyboard: arrows on the focused carousel step one picture like the chevrons,
   Enter or Space opens the preview of the picture in view.
 
-Where: `gallery.html` section 2, `style.css` section 4, `main.js` part 3.
+Where: `index.html` (the `#gallery` block), `style.css` section 4, `main.js` part 3.
 
-### 5.4 The NGS page (`index.html`)
+### 5.4 The NGS timeline (`index.html` section 2)
 
-The studio itself, told as a **timeline**: hero → straight drop → the fools list → dated
-entries strung on one continuous cyan line, all inside `.wrap`:
+The studio itself, told as a **timeline**: hero → straight drop → four dated entries → the
+gallery finale, strung on one continuous cyan line, all inside `.wrap`. Every entry's
+content block is pulled into the **centre-facing half of its column** (a quarter of the wrap
+wide, text centred), so the line lands on the block's centre and the outer quarters of the
+screen stay dark — the eye doesn't jerk left and right while scrolling.
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
@@ -203,44 +200,47 @@ entries strung on one continuous cyan line, all inside `.wrap`:
   **normal-flow blocks** — an svg with `display: block; width: 100%; height: Xpx` simply IS
   a band in the page flow, so every line lands on whatever the flow puts under it. No
   absolute positioning, no paired padding/margin contract. Three shapes: the `--drop`
-  (264px, straight down the centre from the hero onto the centred list — the list itself
-  interrupts the line, which resumes at its bottom edge), the `--snake` (203px: down, a
-  curved turn, down into an entry — into the left column's centre at 25% for june, the
-  right's at 75% for august), and the `--tail` (28px vertical that continues below the
-  date to the entry's heading). Corners are quadratic arcs with per-axis radii (1.3 x-units,
+  (264px, straight down the centre from the hero), the `--snake` (203px: down, a curved
+  turn, down into an entry — landing at 37.5% (left entries) or 62.5% (right entries) of the
+  wrap, or back to 50% for the finale), and the `--tail` (28px vertical that continues below
+  the date to the entry's top). Corners are quadratic arcs with per-axis radii (1.3 x-units,
   8 y-units ≈ a 16px corner) because the stretched viewBox scales x and y differently. The
   stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
-- **The dates.** Small grey lowercase labels ("june 2026", "august 2026") that sit ON the
-  line: `width: max-content; transform: translateX(-50%)` with `margin-left` equal to the
-  snake's landing x — **25% (`--left`) or 75% (`--right`); change them together.** Each
-  band totals the 264px rhythm: 203 snake + ~33 date + 28 tail. On phones the svgs hide
-  and the dates stay as plain left-aligned labels above their entries.
-- **The fools list.** Directly under the hero, centred (`margin: 0 auto; max-width:
-  700px`) — the drop line lands on its centre. Three names, small round avatar portrait
-  and a grey one-liner bio each.
-- **The entries.** Each is `.ngs-intro` (the `1fr 1fr`, no-gap grid) with `.ngs-copy`
-  (heading + caption) and `.ngs-media` (photo) side by side; `.ngs-intro--flip` puts the
-  photo left (the gutter padding moves to its right side). Both photos share the 1041:508
-  aspect (`assets/fools-banner.jpg`, `assets/open-beta.jpg`), so at full width each photo
-  is the tallest thing in its row: the row height IS the image height, and the bands above
-  and below land on it — never on the (shorter) text. `height: 100%` + `object-fit: cover`
-  lets the img fill the row at narrower widths too. Entries so far: **june 2026** ("over
-  some drinks…" with "make games" in cyan; caption ends on "Gallery" set in
-  `.gallery-word` — UnifrakturCook 700, the wordmark's own blackletter, at 1.4em) and
-  **august 2026** ("hey guys, open beta in october?" with "open beta" in cyan). On phones
-  everything stacks text-first (the flip entry reorders with `order`), photos 200px tall.
+- **The dates.** Small grey lowercase labels ("july 2026", "august 2026", "september 2026",
+  "october 2026") that sit ON the line: `width: max-content; transform: translateX(-50%)`
+  with `margin-left` equal to the snake's landing x — **37.5% (`--left`), 62.5%
+  (`--right`) or 50% (`--centre`); change them together.** Each band totals the 264px
+  rhythm: 203 snake + ~33 date + 28 tail. On phones the svgs hide and the dates stay as
+  plain left-aligned labels above their entries.
+- **The entries.** Each is `.ngs-entry` (a `1fr 1fr` grid). Its content is one or two
+  `.ngs-block` elements: 50% of the column wide, centred text, `justify-self` pulling it to
+  the centre-facing side (`--left` entries: grid-column 1, right edge; `--right` entries:
+  grid-column 2, left edge). Entries:
+  - **july 2026** (left): the heading "the *blood pact* is signed. We begin with *Gallery*"
+    ("blood pact" cyan, "Gallery" in `.gallery-word` — UnifrakturCook 700, the wordmark's own
+    blackletter, at 1em of the title) with the group photo under it
+    (`assets/fools-banner.jpg`), and the **fools list** in the right half (the same
+    `.ngs-block` pull applies) — three names, round avatar portrait and grey one-liner each.
+  - **august 2026** (right): "october 12 becomes the *deadline* for Gallery going live"
+    ("deadline" cyan) with the thumbs-up photo under it (`assets/open-beta.jpg`).
+  - **september 2026** (left): no words — just the lantern picture
+    (`assets/september-lantern.jpg`), capped at 300px tall so the section matches the
+    others.
+  - **october 2026** (centre): the gallery finale — `.ngs-gallery` (`#gallery`), a centred
+    860px column holding the whole game: the card, the carousel and help-us-test (5.2, 5.3,
+    5.5).
+  - Photos sit in-flow under their headings (`.ngs-photo`, `height: auto`), so each row's
+    height is whatever its content needs and the bands above and below land on the entry's
+    flow edges — nothing to hand-tune.
 
-**Add a timeline entry:** copy one "snake svg + date + tail svg + `.ngs-intro`" group in
-`index.html` section 2, alternating the copy/photo sides; a new photo must be cropped to
-the 1041:508 aspect (that's what makes the row image-height); pick the date's `--left`/
-`--right` to match the column the line lands on, and extend a snake's path to a new x if
-you ever move it off 25%/75%.
-
-`main.js` only wires the money modal here.
+**Add a timeline entry:** copy one "snake svg + date + tail svg + `.ngs-entry`" group in
+`index.html` section 2, alternating `--left`/`--right` (or `--centre`); pick the date's
+modifier to match the side the line lands on, and extend a snake's path if you need a new
+landing x (keep the date's `margin-left` equal to it).
 
 Where: `index.html` section 2, `style.css` section 5.
 
-### 5.5 Help us test + the playtest modal (`gallery.html`)
+### 5.5 Help us test + the playtest modal (`index.html`, the `#gallery` block)
 
 Below the carousel, styled exactly like the NGS page content: the heading "help us *test*"
 (the span in cyan), the caption "we've just sort of 'released' an open beta for Gallery, so
@@ -253,10 +253,10 @@ inside a fixed-height `.test-form`, so the header and the × stay visible while 
 scrolls. The "send it" button is a deliberate no-op (`type="button"`, no handler): responses
 will be wired to somewhere real later. Closes the same three ways as the money modal.
 
-Where: `gallery.html` sections 3 and 7, `style.css` sections 5 (`.help-test`) and 7
+Where: `index.html` (the `#gallery` block and `#test`), `style.css` sections 5 (`.help-test`) and 7
 (`dialog#test`, `.test-form`, `.test-q`), `main.js` part 2.
 
-### 5.6 The money modal (both pages)
+### 5.6 The money modal
 
 The nav's "give us money ↗" is a button, not a link. Clicking it opens a small native
 `<dialog>` (`#money`) in the browser's top layer, above everything including the sticky
@@ -267,11 +267,11 @@ million euros" in cyan (`.money-hot`), then "donation link coming soon. You can 
 cash or other valuables" (14px, muted). Closing is a small × in the dialog's top-right corner
 (`.money-close`, grey, cyan on hover — it overrides the shared dialog-button rule). It closes
 on the ×, Escape, or a click on the dimmed background (the shared `closeOnOutsideClick` helper
-in `main.js`). The dialog markup is duplicated in both HTML files, like the header and footer.
+in `main.js`).
 
-Where: both HTML files, `style.css` section 7, `main.js` part 1.
+Where: `index.html`, `style.css` section 7, `main.js` part 1.
 
-### 5.7 Footer (both pages)
+### 5.7 Footer
 
 Three parts on one grid row: the wordmark at the left edge, the credit dead-centre
 ("made with love by daniel, ahmed & micky." with the year under it — `1fr auto 1fr` columns
@@ -279,16 +279,16 @@ make the middle truly centred however wide the sides are), and the contact addre
 (`contact@newgamestudio.com`, a `mailto:` link, muted, cyan on hover) at the right edge. On
 phones they stack centred: logo, then credit, then address.
 
-Where: both HTML files, `style.css` section 6.
+Where: `index.html`, `style.css` section 6.
 
-### 5.8 Image preview dialog (`gallery.html`)
+### 5.8 Image preview dialog
 
 A native `<dialog>` that opens on a short press on any picture in the strip (or Enter/Space
 on the focused carousel). Shows the picture full size with its `data-title` caption. Closes
 with the Close button, Escape, or a click outside the box. While it is open the strip's drift
 pauses.
 
-Where: `gallery.html` section 5, `style.css` section 7, `main.js` part 4.
+Where: `index.html`, `style.css` section 7, `main.js` part 4.
 
 ---
 
@@ -326,7 +326,7 @@ One scale: 8, 16, 24, 32, 40, 56, 64px. Things that belong together sit 8 to 32p
 | --- | --- |
 | Desktop | Content is limited to a 1280px column. |
 | 1000px and below (tablet) | Tighter page margins, smaller Gallery title, shorter carousel strip |
-| 700px and below (phone) | Everything stacks: the Gallery card (copy, then button), the carousel, and the team content. The header tagline hides; the nav wraps to a second row under the logo, all three items visible. |
+| 700px and below (phone) | Everything stacks: the timeline entries go full width, the Gallery card (copy, then button), the carousel. The header tagline hides; the nav wraps to a second row under the logo, all three items visible. |
 
 ### Reduced motion
 
@@ -338,54 +338,52 @@ scrolling still works).
 
 ## 7. Common tasks
 
-**Change any text.** Edit the HTML file the text lives on. Sections are numbered and
-commented. The header, footer and money dialog exist in both files — change them in each.
+**Change any text.** Edit `index.html`. Sections are numbered and commented.
 
-**Add a carousel image.** Drop the file in `assets/`. In `gallery.html`, inside the block marked
+**Add a carousel image.** Drop the file in `assets/`. In `index.html`, inside the block marked
 `SLIDES`, copy one `<div class="slide">` block and change `src`, `alt` and `data-title`.
 The loop and the thumbnails pick it up automatically.
 
-**Change the Play Gallery link.** Edit the `href` on the `play-gallery` button in `gallery.html`
-section 2.
+**Change the Play Gallery link.** Edit the `href` on the `play-gallery` button in `index.html`'s
+`#gallery` block.
 
 **Re-bake the Gallery title.** The wordmark is generated, never hand-edited: edit the
 `fillText` call in `tools/bake-title-ink.html`, run `python3 tools/bake-title-ink.py`
 (it needs the machine-local headless Chrome the path at its top points to, plus network for
 the font), and it overwrites `assets/gallery-title-ink.svg` and prints the CSS sizing
 numbers — paste those into `.game-title img` and the img's `width`/`height` attributes in
-`gallery.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
+`index.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
 links if those changed too).
 
 **Make the donation link real.** The money modal's "donation link coming soon" sentence lives
-in the money dialog in both HTML files. Replace the sentence with a link (or point it
-somewhere new) in both.
+in the money dialog in `index.html`. Replace the sentence with a link (or point it
+somewhere new).
 
 **Tune the carousel.** `AUTO_SCROLL_PX_PER_S` (the drift speed) and `SWIPE_DISTANCE_PX`
 (click threshold) sit at the top of `main.js`; the chevron buttons' size, inset and colours
 are the `.strip-arrow` rules in `style.css` section 4.
 
 **Wire up the questionnaire.** The playtest form's sixteen questions live in the `#test`
-dialog in `gallery.html` section 7 (one `label.test-q` per question, `name="q01"`…`q16`). The
+dialog in `index.html` (one `label.test-q` per question, `name="q01"`…`q16`). The
 "send it" button is a `type="button"` no-op; when a destination exists, give the form a
 handler in `main.js` part 2 (or a real `action`) and flip the button to
 `type="submit"`.
 
-**Add a contact channel.** The footer's address is the `.footer-mail` link in both HTML
-files; change the `href` and text in each.
+**Add a contact channel.** The footer's address is the `.footer-mail` link in `index.html`;
+change the `href` and text.
 
 ---
 
 ## 8. Checklist before pushing
 
-1. Serve the site locally and load **both pages**: navigation works both ways, the current
-   page's nav item is cyan, "give us money" opens the modal and it closes from the corner ×,
+1. Serve the site locally and load the page: the nav's "gallery" link scrolls to the game,
+   "give us money" opens the modal and it closes from the corner ×,
    Escape and a click outside, the strip drifts and loops, hover pauses it, the chevrons
    step one picture at a time, the thumbnails centre their picture, and a short click on a
-   picture (or its label) opens the preview. On the front page, "fill it out" opens the
-   questionnaire and its × closes it.
+   picture (or its label) opens the preview. The "questionnaire" button opens the
+   playtest modal and its × closes it.
 2. Resize the window down to phone width. Confirm everything stacks, the nav wraps onto its
    own row, and nothing is clipped or scrolls sideways.
 3. If you touched a script, run `node --check` on it to catch syntax slips.
-4. If you changed `style.css` or `main.js`, bump the `?v=` on both links in **both**
-   HTML files.
+4. If you changed `style.css` or `main.js`, bump the `?v=` on both links.
 5. Commit and push. GitHub Pages redeploys on its own.
