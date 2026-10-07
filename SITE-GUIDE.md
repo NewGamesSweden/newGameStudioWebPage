@@ -167,8 +167,15 @@ the page showing through rather than a lighter panel.
   focus inside, no press on the strip, preview closed, carousel on screen — it advances on
   its own at a slow, constant rate (`AUTO_SCROLL_PX_PER_S`, at the top of `main.js`).
 - **It loops.** `main.js` appends one hidden copy of the slide list and quietly pulls the
-  scroll position back one copy width each time it crosses the seam. Content at `s` and at
-  `s + loopWidth` is pixel-identical, so the wrap is invisible, in either direction.
+  scroll position back one copy width each time it crosses the seam (the strip's home
+  range is `[0, loopWidth)`; only a rubber-band overscroll can leave it, and that gets
+  folded back in). Content at `s` and at `s + loopWidth` is pixel-identical, so the wrap
+  is invisible, in either direction.
+- **It boots immediately.** The slide images wear `width`/`height` attributes (aspect-ratio
+  boxes, like every other image on the page), so the strip's geometry is exact before any
+  pixels arrive — the carousel, its drift and its chevrons never wait on the network. The
+  strip sits below the browser's lazy-load line, so at page open no slide has even been
+  requested; loading them later only triggers a re-measure.
 - **The chevron buttons.** A round button in the page's own background colour floats over
   each end of the strip (46px circle, 18px in from the edge; 38px and 10px on phones), with
   an inline-SVG chevron that turns cyan and grows slightly on hover. One press moves exactly

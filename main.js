@@ -114,27 +114,16 @@ function measure() {
   expectedLeft = strip.scrollLeft;
 }
 
-// Slide widths come from the pictures' natural sizes, so measure only once
-// they are in. A broken file resolves too — one missing image must not stall
-// the strip.
+// When the pictures do land (or fail), refine the geometry — widths are
+// attribute-exact already, so this is a belt-and-braces re-measure. A broken
+// file resolves too — one missing image must not stall the strip.
 Promise.all(slides.map(slide => {
   const image = slide.querySelector('img');
   return image.complete ? null : new Promise(resolve => {
     image.addEventListener('load', resolve, { once: true });
     image.addEventListener('error', resolve, { once: true });
   });
-})).then(() => {
-  slides.forEach(slide => {
-    const clone = slide.cloneNode(true);
-    clone.setAttribute('aria-hidden', 'true');
-    clone.dataset.clone = 'true';
-    clone.querySelector('img').draggable = false;
-    strip.append(clone);
-  });
-  measure();
-  last = performance.now();
-  requestAnimationFrame(tick);
-});
+})).then(measure);
 
 window.addEventListener('resize', measure, { passive: true });
 
@@ -170,6 +159,23 @@ let last = 0;
 let active = -1; // which original slide is in view (the thumbnail rail follows it)
 let expectedLeft = 0; // where the drift left the strip, so outside scrolls are recognised
 
+// Boot now: the slide imgs wear width/height attributes, so the strip's
+// geometry is real before any pixels arrive. Waiting for the images used to
+// starve the whole carousel — the strip sits below the lazy-load line, so at
+// page open no slide had even been requested: no clones, no drift, dead
+// chevrons. (This must run after the drift state above is declared; the old
+// boot hid inside a promise callback and never noticed.)
+slides.forEach(slide => {
+  const clone = slide.cloneNode(true);
+  clone.setAttribute('aria-hidden', 'true');
+  clone.dataset.clone = 'true';
+  clone.querySelector('img').draggable = false;
+  strip.append(clone);
+});
+measure();
+last = performance.now();
+requestAnimationFrame(tick);
+
 function tick(now) {
   const dt = Math.min((now - last) / 1000, 0.1); // clamp tab-switch gaps
   last = now;
@@ -185,12 +191,17 @@ function tick(now) {
     strip.scrollLeft = expectedLeft;
   }
 
-  // Wrap in both directions to keep the loop endless. The guard is paranoia:
-  // one copy of the list is always far wider than any viewport.
+  // Wrap in both directions to keep the loop endless: the strip's home range
+  // is [0, loopW). The upper bound alone does the work — 0 is a fine resting
+  // place (same pixels as loopW), and folding it into the wrap made the boot
+  // ping-pong 0 <-> loopW every frame while the drift sat offscreen. The lower
+  // bound only catches rubber-band overscroll, which can report a negative
+  // scrollLeft. The guard is paranoia beyond that: one copy of the list is
+  // always far wider than any viewport.
   if (loopW > stage.clientWidth) {
     const cur = strip.scrollLeft;
     if (cur >= loopW) { strip.scrollLeft = cur - loopW; expectedLeft = strip.scrollLeft; }
-    else if (cur < 1) { strip.scrollLeft = cur + loopW; expectedLeft = strip.scrollLeft; }
+    else if (cur < 0) { strip.scrollLeft = cur + loopW; expectedLeft = strip.scrollLeft; }
   }
 
   // Track which picture is in view (measured from the centre of the stage,
