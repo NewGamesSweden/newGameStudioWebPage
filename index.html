@@ -6,7 +6,7 @@
   <title>NewGameStudio</title>
   <meta name="description" content="We're Daniel, Ahmed and Micky. Three friends making games, chasing ideas, and occasionally remembering the word scope.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=25">
+  <link rel="stylesheet" href="style.css?v=26">
 </head>
 <body>
 
@@ -54,44 +54,49 @@
            doesn't jerk while scrolling. -->
 
       <!-- the fools: the intro, boxed in the same cyan line the timeline is
-           drawn with. The surround svg is absolutely positioned over the box
-           and stretches with it (same viewBox language as the connectors);
-           its bottom centre funnels into the single point snake-1 starts
-           from, so the line reads as one continuous stroke through the
-           junction. The gap at the top-left is where the tilted wordmark
-           sits — the line stops short of it on both sides.
+           drawn with. The box is min(960px, the wrap), centred, so its x=50%
+           still meets every connector's 50%. The surround svg is absolutely
+           positioned over the box and stretches with it (same viewBox
+           language as the connectors); its bottom centre funnels into the
+           single point snake-1 starts from, so the line reads as one
+           continuous stroke through the junction. The gap at the top-left is
+           where the tilted wordmark sits — the line stops short of it on
+           both sides (75%/16% gap ends clear the wordmark at every width;
+           the text run fills ~71% of the box when the font clamp caps).
            Contract: .fools-intro's margin-bottom must equal the surround's
            tail depth (48px) and snake-1 must start at M50 0; change them
            together. -->
       <div class="fools-intro">
         <svg class="ngs-surround" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M62 2 H97.8 Q99 2 99 4 V84 Q99 86 97.8 86 H56 Q50 86 50 100 M1 16 V84 Q1 86 2.2 86 H44 Q50 86 50 100" vector-effect="non-scaling-stroke"/>
+          <path d="M75 2 H97.8 Q99 2 99 4 V86 Q99 88 97.8 88 H56 Q50 88 50 100 M1 16 V86 Q1 88 2.2 88 H44 Q50 88 50 100" vector-effect="non-scaling-stroke"/>
         </svg>
         <div class="ngs-hero">
           <h1 class="ngs-logo">New<span>Game</span>Studio</h1>
         </div>
         <h2 id="fools-heading" class="fools-title">three <span>fools</span> making games</h2>
         <p class="fools-caption">Daniel approached Ahmed and Micky and expressed how he had always wanted to make games. Turns out, Ahmed and Micky also always wanted to make games. So now they’re making games</p>
+        <p class="fools-caption">We’ve naturally fallen into a fast iteration way of working. Sometimes this is really helpful, and sometimes it isn’t. Either way, we believe in try-before-you-buy. If someone has an idea, an implementation is made and a discussion is had. The discussion is usually:</p>
+        <p class="fools-caption">“why are you even showing this to me? Just IMPLEMENT”</p>
         <ul class="fools-list">
           <li class="fool">
             <img class="fool-avatar" src="assets/avatar-daniel.jpg" alt="" width="248" height="264" loading="lazy">
             <div class="fool-info">
               <strong>Daniel</strong>
-              <p>PM, CEO, CTO, tall, and his girlfriend is pissed at him because he has been GRINDING gallery like crazy</p>
+              <p>leads art direction and has also become de-facto PM. Allergic to cats and almost everything else</p>
             </div>
           </li>
           <li class="fool">
             <img class="fool-avatar" src="assets/avatar-ahmed.jpg" alt="" width="218" height="232" loading="lazy">
             <div class="fool-info">
               <strong>Ahmed</strong>
-              <p>sexy, great voice, hot, and is permanently on-call for us so pls report bugs so he doesn’t get bored</p>
+              <p>leads DevOps and infra. Please DDoS us to keep him on his toes</p>
             </div>
           </li>
           <li class="fool">
             <img class="fool-avatar" src="assets/avatar-micky.jpg" alt="" width="98" height="116" loading="lazy">
             <div class="fool-info">
               <strong>Micky</strong>
-              <p>from the jungle somewhere. Give him a job</p>
+              <p>leads software development. Not allergic to cats or basically anything else</p>
             </div>
           </li>
         </ul>

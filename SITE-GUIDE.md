@@ -202,7 +202,9 @@ The studio itself, told as a **timeline**: the fools box → five dated entries 
 finale, strung on one continuous cyan line, all inside `.wrap`. The line grows out of the
 **fools box** — a date section's content without the date, surrounded by the line itself:
 the tilted wordmark in the box's top-left corner, the heading "three *fools* making games"
-("fools" cyan), the third-person caption, and the
+("fools" cyan), the third-person caption, the iteration paragraph ("we've naturally fallen
+into a fast iteration way of working…") with the quoted "Just IMPLEMENT" line on its own,
+and the
 **fools list** (three names, round avatar portrait and grey one-liner each; the rows keep
 their own left alignment inside the centred 700px content column). Every entry's content block is
 explicitly **half the wrap** wide — twice the old quarter — offset by a quarter-column
@@ -213,13 +215,14 @@ ever extends past the wrap.
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
   phone) — tilted −4° into the fools box's top-left corner (absolute, `top: -18px`,
-  `left: 2%`, rotation about the top-left origin so nothing overflows left). The box's
-  surround stops short of the text on both sides — the path's gap ends (top edge at 62%,
-  left edge at 16%) clear the wordmark at every width; the text run measures 52–58% of the
-  wrap. The section's 120px top padding keeps the tilted hero clear of the sticky header.
+  `left: 24px`, rotation about the top-left origin so nothing overflows left). The box's
+  surround stops short of the text on both sides — the path's gap ends (top edge at 75%,
+  left edge at 16%) clear the wordmark at every width; when the font clamp caps, the text
+  run fills ~71% of the box. The section's 120px top padding keeps the tilted hero clear of
+  the sticky header.
   On phones the surround hides (like every line) and the smaller hero stays tilted.
-- **The fools box.** `.fools-intro` spans the full wrap (so the surround's x-% line up
-  edge-to-edge with every connector) while the caption/list stay a centred 700px column.
+- **The fools box.** `.fools-intro` is `min(960px, the wrap)`, centred — so its x=50% still
+  lines up with every connector's 50% — while the captions/list stay a centred 700px column.
   The **surround** (`.ngs-surround`) is an absolutely positioned svg in the connectors'
   stretched-viewBox language, `height: calc(100% + 48px)`: three rounded sides, and a
   bottom centre that **funnels** — both halves of the bottom edge curve down and meet at

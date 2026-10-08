@@ -329,13 +329,14 @@ nav a:hover { color: var(--cyan); }
 .ngs { padding: 120px 0 64px; } /* the hero sits low; the timeline hangs below it */
 
 /* Hero: the wordmark, tilted into the fools box's top-left corner. Rotation
-   is about the top-left origin, so nothing swings left of its 2% offset and
-   the -18px top stays inside .ngs's 120px padding (clear of the sticky
+   is about the top-left origin, so nothing swings left of its 24px offset
+   (which keeps ~14px of air past the surround's left-edge line) and the
+   -18px top stays inside .ngs's 120px padding (clear of the sticky
    header). The brand fade in main.js watches .ngs-hero — keep the class. */
 .ngs-hero {
   position: absolute;
   top: -18px;
-  left: 2%;
+  left: 24px;
   margin: 0;
   transform: rotate(-4deg);
   transform-origin: top left;
@@ -397,12 +398,12 @@ nav a:hover { color: var(--cyan); }
    tip on the point snake-1 starts from — intro margin-bottom, the surround's
    +48px and snake-1's M50 0 are one contract; change them together. The
    wordmark sits in the top-left corner and the surround's gap stops short of
-   it (the path's 62%/16% gap ends clear the wordmark at every width; the
-   text run measures 52–58% of the wrap). Content stays a centred 700px
-   column inside the wide box. */
+   it (the path's 75%/16% gap ends clear the wordmark at every width; the
+   text run fills ~71% of the box when the font clamp caps). Content stays a
+   centred 700px column inside the box. */
 .fools-intro {
   position: relative;
-  max-width: 1280px;          /* the wrap's cap: connector x-% line up edge-to-edge */
+  max-width: 960px;           /* min(960px, the wrap): centred, so x=50% still meets the connectors */
   margin: 0 auto 48px;
   padding: 128px 40px 88px;   /* top clears the tilted hero; bottom clears the edge */
 }
@@ -423,6 +424,7 @@ nav a:hover { color: var(--cyan); }
 }
 .fools-intro .fools-title   { margin: 0 auto 12px; text-align: center; } /* auto: the box is wider than the 820px title */
 .fools-intro .fools-caption { margin: 0 auto 8px; } /* centred 700px column, like the list below it */
+.fools-intro .fools-caption + .fools-caption { margin-top: 26px; } /* one line of air between the caption, the iteration paragraph and the quote */
 
 /* september: no words, just the picture at roughly native size. */
 .ngs-sept { margin: 0; }
