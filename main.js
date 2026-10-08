@@ -12,8 +12,8 @@
       labels and a click-to-enlarge dialog. Only index.html has a
       carousel.
    4. The image preview dialog.
-   5. The september moments frame: cycles the baked timeline images
-      (index.html only).
+   5. The september moments frame: cycles the baked timeline images (index.html
+      only), once its frames are all fetched and decoded.
    6. The header brand fade (index.html): while the page hero is on screen
       the header's own wordmark fades out and returns once it scrolls past.
 
@@ -302,12 +302,29 @@ const MOMENT_MS = 160; // how long each image is on screen
 const momentBox = document.querySelector('.ngs-moment');
 if (momentBox && !reducedMotion.matches) {
   const frames = [...momentBox.querySelectorAll('img')];
-  let on = 0;
-  setInterval(() => {
-    frames[on].classList.remove('moment-on');
-    on = (on + 1) % frames.length;
-    frames[on].classList.add('moment-on');
-  }, MOMENT_MS);
+
+  // An unloaded frame paints an empty box, and at 160ms a lap is ~14s of
+  // flicker while the frames trickle in — fine on localhost, a light show on
+  // a deployed site. So the cycle waits for its pictures: as the reader
+  // approaches, force every frame's fetch (lazy images with no box are a
+  // browser mood, and setting loading=eager is the documented way to pull
+  // them all at once), then start flipping only once every frame is fetched
+  // AND decoded. Until then the first frame just sits there, like reduced
+  // motion. A broken frame rejects decode() — allSettled keeps one missing
+  // picture from stalling the other 85.
+  new IntersectionObserver(([entry], observer) => {
+    if (!entry.isIntersecting) return;
+    observer.disconnect();
+    frames.forEach(frame => { frame.loading = 'eager'; });
+    Promise.allSettled(frames.map(frame => frame.decode())).then(() => {
+      let on = 0;
+      setInterval(() => {
+        frames[on].classList.remove('moment-on');
+        on = (on + 1) % frames.length;
+        frames[on].classList.add('moment-on');
+      }, MOMENT_MS);
+    });
+  }, { rootMargin: '100% 0px' }).observe(momentBox);
 }
 
 

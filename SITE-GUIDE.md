@@ -252,7 +252,11 @@ ever extends past the wrap.
     the frame (never cropped or upscaled, so different shapes read as the same size). The
     frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder
     (edit its `EXCLUDE` list to drop more); the cycle runs in main.js (`MOMENT_MS`) and
-    honours reduced motion by keeping the first frame static. The frame's fixed height
+    honours reduced motion by keeping the first frame static. The cycle also waits for
+    its pictures: an unloaded frame would paint an empty box, so main.js only starts
+    flipping once every frame is fetched and decoded (it forces the fetches as the
+    reader approaches the section). Until then the first frame sits still, exactly like
+    reduced motion. The frame's fixed height
     means the cycle can never reflow the bands.
   - **october 2026** (centre): the gallery finale — `.ngs-gallery` (`#gallery`), a centred
     860px column holding the whole game: the card, the carousel and help-us-test (5.2, 5.3,
