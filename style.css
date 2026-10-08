@@ -328,27 +328,32 @@ nav a:hover { color: var(--cyan); }
 
 .ngs { padding: 120px 0 64px; } /* the hero sits low; the timeline hangs below it */
 
-/* Hero: the wordmark itself, centred, with the one-liner under it.
-   The 56px margin sits under the whole block — the air is between the
-   one-liner and the drop line, not between the two text lines. */
-.ngs-hero { text-align: center; margin-bottom: 56px; }
+/* Hero: the wordmark, tilted into the fools box's top-left corner. Rotation
+   is about the top-left origin, so nothing swings left of its 2% offset and
+   the -18px top stays inside .ngs's 120px padding (clear of the sticky
+   header). The brand fade in main.js watches .ngs-hero — keep the class. */
+.ngs-hero {
+  position: absolute;
+  top: -18px;
+  left: 2%;
+  margin: 0;
+  transform: rotate(-4deg);
+  transform-origin: top left;
+}
 .ngs-logo {
   margin: 0;
   font: 700 clamp(34px, 7vw, 88px) / 1.1 'Space Grotesk', sans-serif;
   letter-spacing: -0.03em;
 }
 .ngs-logo > span { color: var(--cyan); }
-.ngs-tag { margin: 16px 0 0; font-size: 18px; color: var(--muted); }
 
 /* The timeline: connector svgs are normal-flow blocks (an svg with a height IS
    the band), so every line lands on whatever the flow puts under it — the
-   entries, then the gallery finale. Drop 264; snake 203 + date ~33 + tail 28
-   keeps every band on the same 264px rhythm. All x values are wrap-relative
-   %, and the one contract is: a date's margin-left must equal its snake's
-   landing x (37.5% july, 62.5% august, 37.5% september, 50% october); change
-   them together. */
+   entries, then the gallery finale. Snake 203 + date ~33 + tail 28 keeps every
+   band on the same 264px rhythm. All x values are wrap-relative %, and the one
+   contract is: a date's margin-left must equal its snake's landing x (37.5%
+   july, 62.5% august, 37.5% september, 50% october); change them together. */
 .ngs-connector { display: block; width: 100%; pointer-events: none; }
-.ngs-connector--drop  { height: 264px; }
 .ngs-connector--snake { height: 203px; }
 .ngs-connector--tail  { height: 28px; }
 .ngs-connector path {
@@ -387,13 +392,37 @@ nav a:hover { color: var(--cyan); }
   border-radius: 10px;
 }
 
-/* the fools: a date section's content without the date — centred under the
-   hero; the drop lands on it and the snake below resumes the line. The title
-   is centred like every date-section title; the caption reads like a normal
-   left-aligned caption, bound inside the intro box. */
-.fools-intro { max-width: 700px; margin: 0 auto; }
-.fools-intro .fools-title   { margin-top: 24px; text-align: center; } /* a bit of padding above */
-.fools-intro .fools-caption { margin-bottom: 8px; } /* the list follows */
+/* the fools box: the intro, boxed in the timeline's own line. The surround
+   stretches over the box and dips 48px into the margin below it, funnel
+   tip on the point snake-1 starts from — intro margin-bottom, the surround's
+   +48px and snake-1's M50 0 are one contract; change them together. The
+   wordmark sits in the top-left corner and the surround's gap stops short of
+   it (the path's 62%/16% gap ends clear the wordmark at every width; the
+   text run measures 52–58% of the wrap). Content stays a centred 700px
+   column inside the wide box. */
+.fools-intro {
+  position: relative;
+  max-width: 1280px;          /* the wrap's cap: connector x-% line up edge-to-edge */
+  margin: 0 auto 48px;
+  padding: 128px 40px 88px;   /* top clears the tilted hero; bottom clears the edge */
+}
+.ngs-surround {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: calc(100% + 48px);  /* the +48 is the funnel tail */
+  pointer-events: none;
+}
+.ngs-surround path {
+  stroke: var(--cyan);
+  stroke-width: 2;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-linecap: round;      /* the gap's free ends */
+}
+.fools-intro .fools-title   { margin: 0 auto 12px; text-align: center; } /* auto: the box is wider than the 820px title */
+.fools-intro .fools-caption { margin: 0 auto 8px; } /* centred 700px column, like the list below it */
 
 /* september: no words, just the picture at roughly native size. */
 .ngs-sept { margin: 0; }
@@ -635,9 +664,10 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .ngs-entry--right .ngs-block { margin-left: 0; }
   .ngs-gallery { max-width: 100%; }
   .ngs-gallery .help-test { text-align: left; margin-top: 40px; }
-  .fools-intro { max-width: 100%; }
-  .fools-intro .fools-title { margin-top: 24px; } /* the drop is hidden here */
-  .ngs-hero { margin-bottom: 0; } /* the intro title's margin is the gap here */
+  .fools-intro { max-width: 100%; padding: 84px 4px 0; margin-bottom: 0; }
+  .ngs-surround { display: none; } /* every line hides here; the box is a line too */
+  .ngs-hero { top: 0; }
+  .fools-intro .fools-title { margin-top: 8px; } /* the small hero is the only gap above */
   .ngs-moment { height: 260px; }
   .fools-title { margin-top: 24px; }
 

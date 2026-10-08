@@ -105,10 +105,11 @@ second row under the logo; both items stay visible.
 Beside it sits the studio's one-liner, "three fools making games",
 in the small secondary style (`--muted`, 14px); hidden on phones.
 
-**The brand yields to the hero.** While the page hero (wordmark + one-liner) is on screen,
+**The brand yields to the hero.** While the page hero (the tilted wordmark) is on screen,
 the header's own wordmark and one-liner fade out — the same words twice on one screen
 looks like a bug. main.js §6 toggles `.at-hero` on the header with an IntersectionObserver
-on `.ngs-hero`; CSS transitions opacity + visibility over .25s and keeps the layout space,
+on `.ngs-hero` (the hero moved into the fools box but kept its class, so the fade follows
+it); CSS transitions opacity + visibility over .25s and keeps the layout space,
 so the nav links never shift (visibility also drops the hidden brand from the tab/a11y
 order). Under reduced motion the global transition kill makes the swap instant. With no
 JS, the class is never added and the brand simply stays.
@@ -197,12 +198,13 @@ Where: `index.html` (the `#gallery` block), `style.css` section 4, `main.js` par
 
 ### 5.4 The NGS timeline (`index.html` section 2)
 
-The studio itself, told as a **timeline**: hero → straight drop → the fools intro → five
-dated entries → the gallery finale, strung on one continuous cyan line, all inside `.wrap`.
-The drop lands on the **fools intro** — a date section's content without the date, centred
-under the hero: the heading "the *fools*" ("fools" cyan), the third-person caption, and the
+The studio itself, told as a **timeline**: the fools box → five dated entries → the gallery
+finale, strung on one continuous cyan line, all inside `.wrap`. The line grows out of the
+**fools box** — a date section's content without the date, surrounded by the line itself:
+the tilted wordmark in the box's top-left corner, the heading "three *fools* making games"
+("fools" cyan), the third-person caption, and the
 **fools list** (three names, round avatar portrait and grey one-liner each; the rows keep
-their own left alignment inside the centred 700px intro). Every entry's content block is
+their own left alignment inside the centred 700px content column). Every entry's content block is
 explicitly **half the wrap** wide — twice the old quarter — offset by a quarter-column
 (`margin-left: 12.5%` on `--left` entries, `37.5%` on `--right`), so the block stays centred
 on its landing: the line meets the middle of every block, and plain margins mean nothing
@@ -210,18 +212,28 @@ ever extends past the wrap.
 
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
-  phone) — centred under the header, with the one-liner "three fools making games"
-  (`.ngs-tag`, 18px `--muted`) 16px below it. The hero's 56px margin sits under the whole
-  block — the air is between the one-liner and the drop, not between the two text lines.
-  The section's 120px top padding is the "hero sits low" dial. On phones the margin resets
-  to 0 (the drop is hidden there; the intro title's own top margin is the gap).
+  phone) — tilted −4° into the fools box's top-left corner (absolute, `top: -18px`,
+  `left: 2%`, rotation about the top-left origin so nothing overflows left). The box's
+  surround stops short of the text on both sides — the path's gap ends (top edge at 62%,
+  left edge at 16%) clear the wordmark at every width; the text run measures 52–58% of the
+  wrap. The section's 120px top padding keeps the tilted hero clear of the sticky header.
+  On phones the surround hides (like every line) and the smaller hero stays tilted.
+- **The fools box.** `.fools-intro` spans the full wrap (so the surround's x-% line up
+  edge-to-edge with every connector) while the caption/list stay a centred 700px column.
+  The **surround** (`.ngs-surround`) is an absolutely positioned svg in the connectors'
+  stretched-viewBox language, `height: calc(100% + 48px)`: three rounded sides, and a
+  bottom centre that **funnels** — both halves of the bottom edge curve down and meet at
+  one point, no perpendicular junction — into the tip snake-1 starts from. The contract:
+  the intro's `margin-bottom`, the surround's `+48px` and snake-1's `M50 0` are one
+  agreement; change them together.
 - **The line.** Decorative inline SVGs (`aria-hidden`, `pointer-events: none`) that are
   **normal-flow blocks** — an svg with `display: block; width: 100%; height: Xpx` simply IS
   a band in the page flow, so every line lands on whatever the flow puts under it. No
-  absolute positioning, no paired padding/margin contract. Three shapes: the `--drop`
-  (264px, straight down the centre from the hero), the `--snake` (203px: down, a curved
-  turn, down into an entry — landing at 37.5% (left entries) or 62.5% (right entries) of the
-  wrap, or back to 50% for the finale), and the `--tail` (28px vertical that continues below
+  absolute positioning, no paired padding/margin contract — the surround is the one
+  exception (it must wrap fluid content, so it stretches over the box instead). Two
+  shapes: the `--snake` (203px: down, a curved turn, down into an entry — landing at 37.5%
+  (left entries) or 62.5% (right entries) of the wrap, or back to 50% for the finale), and
+  the `--tail` (28px vertical that continues below
   the date to the entry's top). Corners are quadratic arcs with per-axis radii (1.3 x-units,
   8 y-units ≈ a 16px corner) because the stretched viewBox scales x and y differently. The
   stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
