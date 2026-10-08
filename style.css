@@ -329,14 +329,14 @@ nav a:hover { color: var(--cyan); }
 .ngs { padding: 120px 0 64px; } /* the hero sits low; the timeline hangs below it */
 
 /* Hero: the wordmark, tilted into the fools box's top-left corner. Rotation
-   is about the top-left origin, so nothing swings left of its 24px offset
-   (which keeps ~14px of air past the surround's left-edge line) and the
+   is about the top-left origin, so nothing swings left of its 18px offset
+   (which keeps ~7px of air past the surround's left-edge line) and the
    -18px top stays inside .ngs's 120px padding (clear of the sticky
    header). The brand fade in main.js watches .ngs-hero — keep the class. */
 .ngs-hero {
   position: absolute;
   top: -18px;
-  left: 24px;
+  left: 18px;
   margin: 0;
   transform: rotate(-4deg);
   transform-origin: top left;
@@ -502,7 +502,7 @@ nav a:hover { color: var(--cyan); }
 }
 
 .fool-info strong { font: 500 24px 'Space Grotesk', sans-serif; line-height: 1.2; }
-.fool-info p { margin: 2px 0 0; font-size: 13px; line-height: 1.6; color: var(--muted); }
+.fool-info p { margin: 2px 0 0; font-size: 16px; line-height: 1.7; color: var(--muted); } /* same grey-caption recipe as .fools-caption */
 .fool:last-child { border-bottom: 0; } /* nobody follows the last name */
 
 /* 2b. HELP US TEST — same content styling as the fools page */

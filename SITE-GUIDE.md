@@ -215,8 +215,8 @@ ever extends past the wrap.
 - **The hero.** The wordmark itself — "NewGameStudio" with "Game" in cyan, in Space Grotesk
   700 at `clamp(34px, 7vw, 88px)` (the 34px floor is the smallest that still fits a 390px
   phone) — tilted −4° into the fools box's top-left corner (absolute, `top: -18px`,
-  `left: 24px`, rotation about the top-left origin so nothing overflows left). The box's
-  surround stops short of the text on both sides — the path's gap ends (top edge at 75%,
+  `left: 18px`, rotation about the top-left origin so nothing overflows left). The box's
+  surround stops short of the text on both sides — the path's gap ends (top edge at 74.5%,
   left edge at 16%) clear the wordmark at every width; when the font clamp caps, the text
   run fills ~71% of the box. The section's 120px top padding keeps the tilted hero clear of
   the sticky header.
