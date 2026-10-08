@@ -425,6 +425,7 @@ nav a:hover { color: var(--cyan); }
 .fools-intro .fools-title   { margin: 0 auto 12px; text-align: center; } /* auto: the box is wider than the 820px title */
 .fools-intro .fools-caption { margin: 0 auto 8px; } /* centred 700px column, like the list below it */
 .fools-intro .fools-caption + .fools-caption { margin-top: 26px; } /* one line of air between the caption, the iteration paragraph and the quote */
+.fools-intro .fools-caption:last-of-type { margin-bottom: 32px; } /* extra breath before the list */
 
 /* september: no words, just the picture at roughly native size. */
 .ngs-sept { margin: 0; }
