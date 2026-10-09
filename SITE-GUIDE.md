@@ -4,14 +4,11 @@ This is the long version of `README.md`. It explains what the site is made of, h
 page works, where each piece lives and how to change it. Read `README.md` first if you only
 want to get it running.
 
-Everything here was checked against the code on 7 October 2026, after the site became one
-page — the studio timeline on `index.html` (GitHub Pages serves `index.html` at `/`, so the
-site had to *be* that file), with the Gallery game folded into the end of the timeline and
-`gallery.html` retired — the coffee
-page had earlier been folded into
-a "give us money" modal that opens from the nav (and the 3D mug went with it),
-the carousel was rebuilt as an endlessly drifting filmstrip, and a help-us-test section with
-a playtest questionnaire modal joined the page.
+Everything here was checked against the code on 9 October 2026, after the site was converted
+from plain HTML/CSS/JS into a TypeScript React app (Vite). The behaviour and the styling are
+unchanged — the old `index.html` + `style.css` + `main.js` became components, a copied
+stylesheet and a set of effects; the `main.js` references below now point at the component
+that carries each behaviour.
 
 ---
 
@@ -25,10 +22,20 @@ down to the game; its questionnaire button opens a playtest modal.
 
 Technical shape:
 
-- Plain HTML, CSS and JavaScript. No framework, no bundler, no package manager, no build step.
-- One HTML file, one stylesheet, one ordinary script. That's all.
+- TypeScript React (React 19), built with Vite. `npm run build` compiles `src/` plus the
+  Vite entry `index.html` into a static `dist/` folder — the deployable artefact is pure
+  static files, no server needed.
+- Styling is the old stylesheet copied verbatim into `src/styles/site.css` (one edit: the
+  gallery backdrop's `url()` is root-absolute, because the built CSS no longer sits at the
+  site root).
+- The old `main.js` behaviour now lives in React components under `src/components/` and one
+  shared dialog hook (`src/hooks/useDialog.ts`); the carousel and the moments cycle are
+  imperative ports — same rAF loop, same observers, same timings.
+- Data tables (the 17 slides, the 86 moments, the fools, the questionnaire's questions) live
+  in `src/data/site.ts`.
 - Fonts come from Google Fonts and fall back to system fonts offline.
-- Hosted as static files. GitHub Pages is the intended host, but any static host works.
+- Hosted as static files. Caddy on the studio's server is the intended host (`deploy/`); any
+  static host works.
 
 ---
 
@@ -36,20 +43,27 @@ Technical shape:
 
 ### Run it locally
 
-Open a terminal in the project folder and start any small web server, then open
-http://127.0.0.1:8080 in a browser:
-
-```powershell
-py -m http.server 8080 --bind 127.0.0.1
+```bash
+npm install   # once
+npm run dev   # dev server with hot reload, prints its URL
 ```
 
-Double-clicking `index.html` also works — every feature runs straight from disk.
+To check the production build (what visitors receive):
+
+```bash
+npm run build   # typechecks via tsc, then bundles into dist/
+npm run preview # serves dist/ locally
+```
+
+`npm run typecheck` runs `tsc --noEmit` on its own.
 
 ### Publish
 
-The repository is `NewGamesSweden/newGameStudioWebPage` on GitHub, branch `main`. Once GitHub
-Pages is set to deploy from the root of `main`, every push updates the live site within a minute
-or two.
+The repository is `NewGamesSweden/newGameStudioWebPage` on GitHub, branch `main`. Pushing
+main is the deploy signal: on the server, the operator pulls, runs `npm ci && npm run build`,
+and Caddy serves the resulting `dist/`. `deploy/Caddyfile` is the site's Caddy block (the
+two lines marked EDIT are the address and the checkout root — the devops setup owns the
+rest); `.github/workflows/ci.yml` typechecks and builds every push.
 
 ```powershell
 git add -A
@@ -57,20 +71,24 @@ git commit -m "Describe the change"
 git push
 ```
 
-Nothing needs to be compiled before pushing. What is in the repository is exactly what visitors
-receive.
-
 ---
 
 ## 3. Folder map
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | The whole site: the hero, the july–october studio timeline, and the Gallery game finale (game card, carousel, help-us-test). GitHub Pages serves this at `/`. |
-| `style.css` | All styling, in numbered sections. Colours and fonts at the top, screen-size rules near the bottom. |
-| `main.js` | The money modal, the playtest modal, the filmstrip carousel, the image preview dialog and the september moments cycle. Each part is guarded on its element existing. Settings at the top. |
-| `assets/` | Every image on the site: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, seventeen carousel images. |
-| `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2). |
+| `index.html` | The Vite entry point: head metadata, the `#root` div, and the script tag that boots `src/main.tsx`. |
+| `src/main.tsx` | Boot: mounts `<App />` in StrictMode and imports the stylesheet. |
+| `src/App.tsx` | The page shell: header, timeline section, footer, the two modal states, and the header brand-fade observer. |
+| `src/components/` | One component per site section: `SiteHeader`, `FoolsIntro`, `Timeline`, `MomentsEntry`, `GallerySection`, `Carousel`, `PreviewDialog`, `MoneyDialog`, `TestDialog`, `SiteFooter`. |
+| `src/hooks/useDialog.ts` | Shared native `<dialog>` wiring: showModal/close from a prop, outside-click close. |
+| `src/lib/media.ts` | The `prefers-reduced-motion` media query, shared by the carousel and the moments cycle. |
+| `src/data/site.ts` | The data tables: 17 slides, 86 moments, 3 fools, 16 questionnaire questions. |
+| `src/styles/site.css` | All styling, in numbered sections — the old stylesheet, copied verbatim. Colours and fonts at the top, screen-size rules near the bottom. |
+| `public/assets/` | Every image on the site, copied verbatim into the build: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, seventeen carousel images, 86 moment frames. |
+| `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2); `bake-moment-frames.py` rebuilds the september moments frames. |
+| `deploy/Caddyfile` | The production Caddy site block (one page, security headers, immutable caching for the hashed bundles). |
+| `.github/workflows/ci.yml` | CI: typecheck + build on every push. |
 | `README.md` | Short getting-started guide. |
 | `NewGameStudio.code-workspace` | VS Code workspace shortcut. Optional. |
 
@@ -78,18 +96,21 @@ receive.
 
 ## 4. How the page loads
 
-The page links `style.css` and loads `main.js` just before `</body>`. The `?v=` on both
-links busts caches — bump them whenever either file changes.
+The built `dist/index.html` links one hashed CSS bundle and one hashed JS bundle (Vite names
+them `index-<hash>.css/js`; a new build is always a new name, so caching is safe forever on
+the bundles). `public/assets/` is copied in as-is under `/assets/` with stable names.
 
-`main.js` wires the money modal (section 5.6 below), the playtest modal (section 5.5), the
-carousel and the image preview dialog (sections 5.3 and 5.8). Each part is guarded on its
-element existing, so a missing piece just no-ops. No other scripts.
+At boot `src/main.tsx` mounts `App`, which renders the whole page and wires the dialogs
+(sections 5.5, 5.6, 5.8 below), the carousel (5.3) and the moments cycle (5.4) in mount
+effects — the same code paths the old `main.js` ran, now cleaned up on unmount. The
+`?v=` cache-busting query strings are gone; hashed bundle names replaced them.
 
 ---
 
 ## 5. The pages, section by section
 
-The section numbers below match the comments in the HTML files.
+The section numbers below match the numbered sections in `src/styles/site.css`; behaviour
+references point at the component that carries it.
 
 ### 5.1 Header
 
@@ -102,23 +123,23 @@ there is no home item and
 no active-page dot; the wordmark is the way home. On phones the nav wraps to a
 second row under the logo; all three items stay visible.
 
-**The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a link to
-`index.html` — the wordmark is the way home.
+**The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a plain
+link to the site root — the wordmark is the way home.
 Beside it sits the studio's one-liner, "three fools making games",
 in the small secondary style (`--muted`, 14px); hidden on phones.
 
 **The brand yields to the hero.** While the page hero (the tilted wordmark) is on screen,
 the header's own wordmark and one-liner fade out — the same words twice on one screen
-looks like a bug. main.js §6 toggles `.at-hero` on the header with an IntersectionObserver
+looks like a bug. `App.tsx` toggles `.at-hero` on the header with an IntersectionObserver
 on `.ngs-hero` (the hero moved into the fools box but kept its class, so the fade follows
 it); CSS transitions opacity + visibility over .25s and keeps the layout space,
 so the nav links never shift (visibility also drops the hidden brand from the tab/a11y
 order). Under reduced motion the global transition kill makes the swap instant. With no
 JS, the class is never added and the brand simply stays.
 
-Where: `index.html` section 1, `style.css` section 3.
+Where: `src/components/SiteHeader.tsx` and `src/App.tsx`, `src/styles/site.css` section 3.
 
-### 5.2 The Gallery card (`index.html`, the `#gallery` block)
+### 5.2 The Gallery card (`GallerySection.tsx`, the `#gallery` block)
 
 One row on the card: the game's name and its one-line pitch on the left, the "Play for free"
 button on the right, all centred vertically. The card opens the gallery finale — a centred
@@ -140,8 +161,8 @@ semantics survive via its `alt` ("Gallery"). Its CSS width repeats the old
 `clamp(64px, 7.5vw, 108px)` font rule with every term scaled by the lockup's width, so it
 scales exactly like the font did. To change the title copy: edit the `fillText` call in
 the bake page, re-run the driver, and paste its printed numbers into `.game-title img` and
-the img's `width`/`height` attributes — and bump the `?v=` on the img's `src` (the bake
-changes content at the same path).
+the img's `width`/`height` attributes in `src/components/GallerySection.tsx` — and bump the
+`?v=` on the img's `src` (the bake changes content at the same path).
 
 **The backdrop.** One copy of the menu picture (`assets/menu-backdrop.jpg`, captured from the
 game) on the card's `::before` (`z-index: -1` inside the card's own stacking context),
@@ -155,9 +176,9 @@ in the title's white (`--ink`), and carries a soft two-layer navy
 **The joint with the carousel.** The card and the strip are two separate rounded panels with
 one slide-gap (16px, the same space as between pictures) between them.
 
-Where: `index.html` (the `#gallery` block), `style.css` section 4, `tools/` for the title bake.
+Where: `src/components/GallerySection.tsx`, `src/styles/site.css` section 4, `tools/` for the title bake.
 
-### 5.3 The development carousel (`index.html`, the `#gallery` block)
+### 5.3 The development carousel (`Carousel.tsx`)
 
 An endless filmstrip: all seventeen images in one row — the latest in-game screenshots first,
 then development studies and older builds — one slide-gap below the card. The strip's viewport
@@ -168,8 +189,8 @@ the page showing through rather than a lighter panel.
   trackpad swipes, touch drags and shift-plus-wheel all work with no JavaScript.
 - **It drifts.** When the visitor is not on it — no pointer over the carousel, no keyboard
   focus inside, no press on the strip, preview closed, carousel on screen — it advances on
-  its own at a slow, constant rate (`AUTO_SCROLL_PX_PER_S`, at the top of `main.js`).
-- **It loops.** `main.js` appends one hidden copy of the slide list and quietly pulls the
+  its own at a slow, constant rate (`AUTO_SCROLL_PX_PER_S`, at the top of `src/components/Carousel.tsx`).
+- **It loops.** `Carousel.tsx` appends one hidden copy of the slide list and quietly pulls the
   scroll position back one copy width each time it crosses the seam (the strip's home
   range is `[0, loopWidth)`; only a rubber-band overscroll can leave it, and that gets
   folded back in). Content at `s` and at `s + loopWidth` is pixel-identical, so the wrap
@@ -188,17 +209,17 @@ the page showing through rather than a lighter panel.
   bottom-right corner — page-background chip, rounded top-left corner — via a `.slide::after`
   pseudo-element (`content: attr(data-title)`), so the loop's clones label themselves for
   free and adding a slide needs no extra markup.
-- **Thumbnails.** The clickable preview rail sits under the panel, still built by `main.js`.
-  It follows whatever is in view — manual scroll, drift or chevrons — and clicking a thumb
-  centres that image, exactly as a chevron press would.
+- **Thumbnails.** The clickable preview rail sits under the panel. It follows whatever is in
+  view — manual scroll, drift or chevrons — and clicking a thumb centres that image, exactly
+  as a chevron press would.
 - **Click a picture to enlarge it.** A short press (under 45px of movement) anywhere on a
   slide — picture or caption label — opens the preview dialog; drags are the strip's own
   scrolling. Keyboard: arrows on the focused carousel step one picture like the chevrons,
   Enter or Space opens the preview of the picture in view.
 
-Where: `index.html` (the `#gallery` block), `style.css` section 4, `main.js` part 3.
+Where: `src/components/Carousel.tsx` (slides and thumbs via `src/data/site.ts`), `src/styles/site.css` section 4.
 
-### 5.4 The NGS timeline (`index.html` section 2)
+### 5.4 The NGS timeline (`Timeline.tsx`)
 
 The studio itself, told as a **timeline**: the fools box → four dated entries → the gallery
 finale → the "what's next" coda, strung on one continuous cyan line, all inside `.wrap`.
@@ -276,11 +297,12 @@ ever extends past the wrap.
     `assets/moment-01…86.jpg` frames, one visible at a time (`.moment-on`), each capped to
     the frame (never cropped or upscaled, so different shapes read as the same size). The
     frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder
-    (edit its `EXCLUDE` list to drop more); the cycle runs in main.js (`MOMENT_MS`) and
-    honours reduced motion by keeping the first frame static. The cycle also waits for
-    its pictures: an unloaded frame would paint an empty box, so main.js only starts
-    flipping once every frame is fetched and decoded (it forces the fetches as the
-    reader approaches the section). Until then the first frame sits still, exactly like
+    (edit its `EXCLUDE` list to drop more, then paste its printed `<img>` lines into
+    `MOMENTS` in `src/data/site.ts`); the cycle runs in `src/components/MomentsEntry.tsx`
+    (`MOMENT_MS`) and honours reduced motion by keeping the first frame static. The cycle
+    also waits for its pictures: an unloaded frame would paint an empty box, so the cycle
+    only starts flipping once every frame is fetched and decoded (it forces the fetches as
+    the reader approaches the section). Until then the first frame sits still, exactly like
     reduced motion. The frame's fixed height
     means the cycle can never reflow the bands.
   - **october 2026** (centre): the gallery finale — `.ngs-gallery` (`#gallery`), a centred
@@ -295,17 +317,19 @@ ever extends past the wrap.
     flow edges — nothing to hand-tune.
 
 **Add a timeline entry:** copy one "snake svg + date + tail svg + `.ngs-entry`" group in
-`index.html` section 2, alternating `--left`/`--right` (or `--centre`); pick the date's
+`src/components/Timeline.tsx`, alternating `--left`/`--right` (or `--centre`); pick the date's
 modifier to match the side the line lands on, and extend a snake's path if you need a new
-landing x (keep the date's `margin-left` equal to it).
+landing x (keep the date's `margin-left` equal to it). DOM order there is load-bearing:
+connector, date, tail, entry, in that order.
 
-Where: `index.html` section 2, `style.css` section 5.
+Where: `src/components/Timeline.tsx` (entries), `src/components/MomentsEntry.tsx` (the
+september cycle), `src/styles/site.css` section 5.
 
-### 5.5 Help us test + the playtest modal (`index.html`, the `#gallery` block)
+### 5.5 Help us test + the playtest modal (`GallerySection.tsx` + `TestDialog.tsx`)
 
 Below the carousel, styled exactly like the NGS page content: the heading "help us *test*"
-(the span in cyan), the caption "we've just sort of 'released' an open beta for Gallery, so
-play the shit out of it and fill this thing out:", then a "questionnaire ↗" button reusing
+(the span in cyan), the caption "we need people to play it and fill this thing out:", then a
+"questionnaire ↗" button reusing
 the nav button's `.nav-money` class (its hover rule was un-scoped from the nav for this). The
 button opens the questionnaire (`#test`), a native `<dialog>` in the money modal's exact style —
 same box, title ("we need you to *fill* this out", "fill" cyan), lede, and corner ×. Inside,
@@ -314,8 +338,9 @@ inside a fixed-height `.test-form`, so the header and the × stay visible while 
 scrolls. The "send it" button is a deliberate no-op (`type="button"`, no handler): responses
 will be wired to somewhere real later. Closes the same three ways as the money modal.
 
-Where: `index.html` (the `#gallery` block and `#test`), `style.css` sections 5 (`.help-test`) and 7
-(`dialog#test`, `.test-form`, `.test-q`), `main.js` part 2.
+Where: `src/components/GallerySection.tsx` (the section) and `src/components/TestDialog.tsx`
+(the dialog, questions from `src/data/site.ts`), `src/styles/site.css` sections 5
+(`.help-test`) and 7 (`dialog#test`, `.test-form`, `.test-q`).
 
 ### 5.6 The money modal
 
@@ -327,10 +352,10 @@ rich as hell," / "we'd like several million euros please" — with "rich as hell
 million euros" in cyan (`.money-hot`), then "donation link coming soon. You can still mail us
 cash or other valuables" (14px, muted). Closing is a small × in the dialog's top-right corner
 (`.money-close`, grey, cyan on hover — it overrides the shared dialog-button rule). It closes
-on the ×, Escape, or a click on the dimmed background (the shared `closeOnOutsideClick` helper
-in `main.js`).
+on the ×, Escape, or a click on the dimmed background (the shared outside-click helper in
+`src/hooks/useDialog.ts`).
 
-Where: `index.html`, `style.css` section 7, `main.js` part 1.
+Where: `src/components/MoneyDialog.tsx`, `src/styles/site.css` section 7.
 
 ### 5.7 Footer
 
@@ -340,7 +365,7 @@ make the middle truly centred however wide the sides are), and the contact addre
 (`contact@newgamestudio.com`, a `mailto:` link, muted, cyan on hover) at the right edge. On
 phones they stack centred: logo, then credit, then address.
 
-Where: `index.html`, `style.css` section 6.
+Where: `src/components/SiteFooter.tsx`, `src/styles/site.css` section 6.
 
 ### 5.8 Image preview dialog
 
@@ -349,7 +374,8 @@ on the focused carousel). Shows the picture full size with its `data-title` capt
 with the Close button, Escape, or a click outside the box. While it is open the strip's drift
 pauses.
 
-Where: `index.html`, `style.css` section 7, `main.js` part 4.
+Where: `src/components/PreviewDialog.tsx` (opened by `src/components/Carousel.tsx`),
+`src/styles/site.css` section 7.
 
 ---
 
@@ -357,7 +383,7 @@ Where: `index.html`, `style.css` section 7, `main.js` part 4.
 
 ### Colours
 
-Defined once as variables in the `:root` block at the top of `style.css`:
+Defined once as variables in the `:root` block at the top of `src/styles/site.css`:
 
 | Variable | Use |
 | --- | --- |
@@ -399,52 +425,55 @@ scrolling still works).
 
 ## 7. Common tasks
 
-**Change any text.** Edit `index.html`. Sections are numbered and commented.
+**Change any text.** Edit the component that renders it under `src/components/` — the
+timeline and its entries live in `Timeline.tsx`, the game card in `GallerySection.tsx`, the
+modals in `MoneyDialog.tsx`/`TestDialog.tsx`, the header and footer in `SiteHeader.tsx`/
+`SiteFooter.tsx`.
 
-**Add a carousel image.** Drop the file in `assets/`. In `index.html`, inside the block marked
-`SLIDES`, copy one `<div class="slide">` block and change `src`, `alt` and `data-title`.
-The loop and the thumbnails pick it up automatically.
+**Add a carousel image.** Drop the file in `public/assets/` and add one entry to `SLIDES` in
+`src/data/site.ts` (`src`, `width`, `height`, `alt`, and the `title` caption). The width and
+height are load-bearing — the strip measures from the attributes before any pixels arrive —
+so put the real natural size in. The loop, the thumbnails and the preview pick it up
+automatically.
 
-**Change the Play Gallery link.** Edit the `href` on the `play-gallery` button in `index.html`'s
-`#gallery` block.
+**Change the Play Gallery link.** Edit the `href` on the `play-gallery` anchor in
+`src/components/GallerySection.tsx`.
 
 **Re-bake the Gallery title.** The wordmark is generated, never hand-edited: edit the
 `fillText` call in `tools/bake-title-ink.html`, run `python3 tools/bake-title-ink.py`
 (it needs the machine-local headless Chrome the path at its top points to, plus network for
-the font), and it overwrites `assets/gallery-title-ink.svg` and prints the CSS sizing
+the font), and it overwrites `public/assets/gallery-title-ink.svg` and prints the CSS sizing
 numbers — paste those into `.game-title img` and the img's `width`/`height` attributes in
 `index.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
 links if those changed too).
 
 **Make the donation link real.** The money modal's "donation link coming soon" sentence lives
-in the money dialog in `index.html`. Replace the sentence with a link (or point it
+in `src/components/MoneyDialog.tsx`. Replace the sentence with a link (or point it
 somewhere new).
 
 **Tune the carousel.** `AUTO_SCROLL_PX_PER_S` (the drift speed) and `SWIPE_DISTANCE_PX`
-(click threshold) sit at the top of `main.js`; the chevron buttons' size, inset and colours
-are the `.strip-arrow` rules in `style.css` section 4.
+(click threshold) sit at the top of `src/components/Carousel.tsx`; the chevron buttons'
+size, inset and colours are the `.strip-arrow` rules in `src/styles/site.css` section 4.
 
-**Wire up the questionnaire.** The playtest form's sixteen questions live in the `#test`
-dialog in `index.html` (one `label.test-q` per question, `name="q01"`…`q16`). The
-"send it" button is a `type="button"` no-op; when a destination exists, give the form a
-handler in `main.js` part 2 (or a real `action`) and flip the button to
-`type="submit"`.
+**Wire up the questionnaire.** The playtest form's sixteen questions live in `TEST_QUESTIONS`
+in `src/data/site.ts` (`name="q01"`…`q16`). The "send it" button is a `type="button"` no-op
+in `src/components/TestDialog.tsx`; when a destination exists, give the form a handler there
+(or a real `action`) and flip the button to `type="submit"`.
 
-**Add a contact channel.** The footer's address is the `.footer-mail` link in `index.html`;
-change the `href` and text.
+**Add a contact channel.** The footer's address is the `.footer-mail` link in
+`src/components/SiteFooter.tsx`; change the `href` and text.
 
 ---
 
 ## 8. Checklist before pushing
 
-1. Serve the site locally and load the page: the nav's "gallery" link scrolls to the game,
-   "give us money" opens the modal and it closes from the corner ×,
-   Escape and a click outside, the strip drifts and loops, hover pauses it, the chevrons
-   step one picture at a time, the thumbnails centre their picture, and a short click on a
-   picture (or its label) opens the preview. The "questionnaire" button opens the
-   playtest modal and its × closes it.
-2. Resize the window down to phone width. Confirm everything stacks, the nav wraps onto its
+1. `npm run typecheck` — catches type slips before the build does.
+2. `npm run build && npm run preview`, then load the page: the nav's "gallery" link scrolls
+   to the game, "give us money" opens the modal and it closes from the corner ×, Escape and
+   a click outside, the strip drifts and loops, hover pauses it, the chevrons step one
+   picture at a time, the thumbnails centre their picture, and a short click on a picture
+   (or its label) opens the preview. The "questionnaire" button opens the playtest modal
+   and its × closes it.
+3. Resize the window down to phone width. Confirm everything stacks, the nav wraps onto its
    own row, and nothing is clipped or scrolls sideways.
-3. If you touched a script, run `node --check` on it to catch syntax slips.
-4. If you changed `style.css` or `main.js`, bump the `?v=` on both links.
-5. Commit and push. GitHub Pages redeploys on its own.
+4. Commit and push; CI typechecks and builds the same tree.

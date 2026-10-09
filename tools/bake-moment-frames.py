@@ -16,7 +16,7 @@ import subprocess
 import sys
 
 SRC = os.path.expanduser("~/Desktop/ngswebslideshow")
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "public", "assets")
 MAX_DIM = 600          # sips -Z: bounding box for the longest side
 QUALITY = 85           # JPEG q, the site's screenshot quality
 

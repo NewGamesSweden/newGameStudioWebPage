@@ -183,7 +183,9 @@ nav a:hover { color: var(--cyan); }
   content: "";
   position: absolute;
   inset: -24px;
-  background: url("assets/menu-backdrop.jpg") center / cover no-repeat;
+  /* /assets/… because the built CSS no longer sits at the site root — the
+     old relative form resolved against style.css living next to index.html. */
+  background: url("/assets/menu-backdrop.jpg") center / cover no-repeat;
   filter: blur(6px);
   z-index: -1;
 }

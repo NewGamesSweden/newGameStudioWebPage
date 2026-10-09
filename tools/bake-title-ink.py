@@ -14,7 +14,7 @@ import base64, json, os, socket, struct, subprocess, sys, time, urllib.request
 CHROME = os.path.expanduser("~/Library/Caches/ms-playwright/chromium_headless_shell-1243/"
                             "chrome-headless-shell-mac-arm64/chrome-headless-shell")
 PAGE = os.path.abspath(os.path.join(os.path.dirname(__file__), "bake-title-ink.html"))
-OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "assets", "gallery-title-ink.svg"))
+OUT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "public", "assets", "gallery-title-ink.svg"))
 PORT = 9369
 
 

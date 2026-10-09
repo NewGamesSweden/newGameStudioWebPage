@@ -1,0 +1,60 @@
+# Production site block for newgamestudio.com.
+#
+# This file is the single source of truth for the site's Caddy config.
+# /etc/caddy/Caddyfile imports it by absolute path:
+#
+#     import /var/www/newgamestudio.consigliereonline.org/deploy/Caddyfile
+#
+# DO NOT copy this file over /etc/caddy/Caddyfile. It is one site block, not a
+# full config: that file also holds the gallery.newgamestudio.com site and the
+# global options block. Overwriting it takes those sites down.
+#
+# The two lines to touch when first setting this up are marked "EDIT" below:
+# the site address and the checkout root.
+#
+# The site is one true page (the built index.html). There is deliberately no
+# SPA fallback: an unknown path 404s, truthfully.
+
+# EDIT: the site address, if this is not the domain it lands on.
+newgamestudio.com {
+	# EDIT: the checkout root on the host — the built site is in dist/ under it.
+	root * /var/www/newgamestudio.consigliereonline.org/dist
+	encode zstd gzip
+
+	# Access log goes to stdout, which systemd captures into the journal
+	# (journalctl -u caddy). Deliberately not a file under /var/log/caddy —
+	# see the gallery site block for the full story (validate provisions the
+	# log module as root and the reload then fails). journald handles rotation.
+	log {
+		output stdout
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Content-Security-Policy "frame-ancestors 'none'"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	# Content-hashed JS/CSS bundles: cache forever; the filename changes on
+	# every deploy, so a new build is always a fresh URL.
+	handle /assets/index-*.js {
+		header Cache-Control "public, max-age=31536000, immutable"
+		file_server
+	}
+	handle /assets/index-*.css {
+		header Cache-Control "public, max-age=31536000, immutable"
+		file_server
+	}
+
+	# Everything else — index.html and the images under /assets/*.jpg/png/svg,
+	# whose names are stable but whose contents are re-bakeable — must
+	# revalidate so visitors pick up a new build immediately.
+	handle {
+		header Cache-Control "no-cache"
+		file_server
+	}
+}

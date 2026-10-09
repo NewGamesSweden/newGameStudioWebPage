@@ -1,56 +1,56 @@
 # NewGameStudio website
 
-A small static website, one page: the studio hero, a dated studio timeline, and the Gallery game at the end of it — all on `index.html`. "give us money" in the nav opens a donation modal, and the "gallery" link scrolls down to the game. Plain HTML, CSS and JavaScript. No build step, no packages, no server needed.
+A small website, one page: the studio hero, a dated studio timeline, and the Gallery game at the end of it. "give us money" in the nav opens a donation modal, and the "gallery" link scrolls down to the game. TypeScript React, built with Vite — the deployable artefact is a static `dist/` folder, no server needed.
 
 ## Files
 
 | File | What it is |
 | --- | --- |
-| `index.html` | The whole site: the hero, the fools intro (title, caption, roster), the july–october studio timeline, and the Gallery game finale with its carousel and help-us-test section. GitHub Pages serves this at `/`. |
-| `style.css` | All the styling. Colours are at the top. Phone and tablet rules are at the bottom. |
-| `main.js` | The money modal, the playtest questionnaire modal, the filmstrip carousel and the enlarge dialog, the header-brand fade over the hero. Settings are at the top. |
-| `assets/` | All images, including `gallery-title-ink.svg` — the baked Gallery title wordmark — and the baked `moment-*.jpg` frames of the september moments section. |
+| `index.html` | The Vite entry: head metadata, `#root`, and the boot script tag. |
+| `src/` | The app: `main.tsx` boots it, `App.tsx` is the page shell, `components/` one component per section, `data/site.ts` the content tables, `styles/site.css` all the styling. |
+| `public/assets/` | All images, copied verbatim into the build — including `gallery-title-ink.svg`, the baked Gallery title wordmark, and the baked `moment-*.jpg` frames of the september moments section. |
 | `tools/` | One-off build tools (not shipped): `bake-title-ink.py` regenerates the Gallery title wordmark; `bake-moment-frames.py` rebuilds the september moments frames from the source screenshots folder. |
+| `deploy/Caddyfile` | The production Caddy site block. The two lines marked EDIT (site address, checkout root) are the only setup decisions. |
+| `.github/workflows/ci.yml` | CI: typecheck + build on every push. |
 | `SITE-GUIDE.md` | The long guide: every section, how it works, how to change it. |
 | `NewGameStudio.code-workspace` | Shortcut for opening the folder in VS Code. Optional. |
 
-## View it locally
+## Run it locally
 
-Run a small web server in the folder and open http://127.0.0.1:8080:
-
-```powershell
-py -m http.server 8080 --bind 127.0.0.1
+```bash
+npm install    # once
+npm run dev    # dev server with hot reload; prints its URL
 ```
 
-Double-clicking `index.html` also works — every feature runs straight from disk.
+Check the production build:
 
-## Host it on GitHub Pages
+```bash
+npm run build    # typechecks, then bundles into dist/
+npm run preview  # serves dist/ locally
+```
 
-1. Create a GitHub repository and push this folder to it. `index.html` must be at the root of the repository.
-2. On GitHub, open the repository, then **Settings**, then **Pages**.
-3. Under **Build and deployment**, choose **Deploy from a branch**, pick your branch (usually `main`) and the `/ (root)` folder. Save.
-4. After a minute or two the site is live at `https://<your-username>.github.io/<repository-name>/`.
+## Deploy
 
-Every push to that branch updates the live site.
+`npm run build` produces `dist/` — static files only. Caddy on the studio's server is the intended host: `deploy/Caddyfile` is the site block, imported by the host's `/etc/caddy/Caddyfile`; the deploy procedure (pull → `npm ci` → `npm run build` → reload Caddy) follows the same pattern as the Gallery site. Our devops setup owns the actual wiring.
 
 ## Common edits
 
-**Change text.** Open `index.html`. The file is split into numbered sections with comments (Header, NGS timeline, Gallery, Footer, and so on).
+**Change text.** Find the component under `src/components/` that renders it — the timeline and its entries in `Timeline.tsx`, the game card in `GallerySection.tsx`, the modals, header and footer each in their own file.
 
-**Change colours.** Open `style.css`. The colours are variables in the `:root` block at the top.
+**Change colours.** Open `src/styles/site.css`. The colours are variables in the `:root` block at the top.
 
-**Add or remove a carousel image.** Put the image in `assets/`. In `index.html`, find the block marked `SLIDES` and copy one `<div class="slide">` block. Change the `src`, the `alt` text and the `data-title` caption. The strip loops through the list forever and the thumbnails update automatically; the first slide in the list is where it starts.
+**Add or remove a carousel image.** Put the image in `public/assets/` and add one entry to `SLIDES` in `src/data/site.ts` (with its real `width`/`height` — the strip measures from the attributes before any pixels arrive). The strip loops through the list forever; thumbnails, captions and the preview update automatically.
 
-**Change the Play Gallery link.** It points at https://gallery.newgamestudio.com/ in the Gallery section of `index.html`.
+**Change the Play Gallery link.** It points at https://gallery.newgamestudio.com/ in `src/components/GallerySection.tsx`.
 
-**Change the Gallery title.** The blackletter wordmark with its ink outline is a baked SVG (`assets/gallery-title-ink.svg`), generated by `tools/bake-title-ink.py` — edit the text there, re-run the tool, never draw it live. See `SITE-GUIDE.md` section 5.2.
+**Change the Gallery title.** The blackletter wordmark with its ink outline is a baked SVG (`public/assets/gallery-title-ink.svg`), generated by `tools/bake-title-ink.py` — edit the text there, re-run the tool, never draw it live. See `SITE-GUIDE.md` section 5.2.
 
-**Rebuild or reorder the september moments.** The frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder (edit the `EXCLUDE` list there to drop more). Re-run the tool, then paste its printed `<img>` list over the old one in the september figure in `index.html`. The cycle speed is `MOMENT_MS` at the top of its block in `main.js`.
+**Rebuild or reorder the september moments.** The frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder (edit the `EXCLUDE` list there to drop more). Re-run the tool, then paste its printed `<img>` list over the old one in `MOMENTS` in `src/data/site.ts`. The cycle speed is `MOMENT_MS` at the top of `src/components/MomentsEntry.tsx`.
 
-**Add the donation link.** The money modal's "donation link coming soon" sentence lives in the money dialog in `index.html`. When a real URL exists, replace the sentence with a link.
+**Add the donation link.** The money modal's "donation link coming soon" sentence lives in `src/components/MoneyDialog.tsx`. When a real URL exists, replace the sentence with a link.
 
 ## Notes
 
 - Fonts load from Google Fonts. Offline, the browser falls back to a system font.
-- The layout adapts to phones (700px and below) and tablets (1000px and below). Those rules are in section 9 of `style.css`.
+- The layout adapts to phones (700px and below) and tablets (1000px and below). Those rules are in section 9 of `src/styles/site.css`.
 - Visitors who have "reduce motion" turned on get no animations and the carousel does not drift on its own.
