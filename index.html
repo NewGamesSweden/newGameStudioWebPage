@@ -6,7 +6,7 @@
   <title>NewGameStudio</title>
   <meta name="description" content="We're Daniel, Ahmed and Micky. Three friends making games, chasing ideas, and occasionally remembering the word scope.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='10' fill='%230b1422'/%3E%3Ctext x='20' y='29' text-anchor='middle' font-family='Arial' font-weight='900' font-size='28' fill='%235ee7e0'%3EN%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="style.css?v=28">
+  <link rel="stylesheet" href="style.css?v=29">
 </head>
 <body>
 
@@ -27,6 +27,7 @@
     </div>
     <nav aria-label="Main navigation">
       <a href="#gallery">gallery</a>
+      <a href="#upcoming">upcoming</a>
       <button type="button" class="nav-money" id="open-money">give us money <span aria-hidden="true">↗</span></button>
     </nav>
   </div>
@@ -45,8 +46,9 @@
            under it. Snake 203 + date ~33 + tail 28 keeps every band on the
            same 264px rhythm. All x values are wrap-relative %, and the one
            contract is: a date's margin-left must equal its snake's landing
-           x — 37.5% july, 62.5% august, 37.5% the following moment, 62.5%
-           september, 50% october; change them together. The line grows out of
+           x — 37.5% july, 62.5% august, 37.5% the following moment (no date:
+           the line runs straight through), 62.5% september, 50% october,
+           50% what's next; change them together. The line grows out of
            the fools box's funnel tip, then snakes down to each entry. Each
            entry's content block is explicitly half the wrap — twice the old
            quarter — offset by a quarter-column, so the block stays centred on
@@ -74,8 +76,8 @@
           <h1 class="ngs-logo">New<span>Game</span>Studio</h1>
         </div>
         <h2 id="fools-heading" class="fools-title">three <span>fools</span> making games</h2>
-        <p class="fools-caption">Daniel approached Ahmed and Micky and expressed how he had always wanted to make games. Turns out, Ahmed and Micky also always wanted to make games. So now they’re making games</p>
-        <p class="fools-caption">We’ve naturally fallen into a fast iteration way of working. Sometimes this is really helpful, and sometimes it isn’t. Either way, we believe in try-before-you-buy. If someone has an idea, an implementation is made and a discussion is had. The discussion is usually:</p>
+        <p class="fools-caption">At Daniel’s 33rd birthday gathering (damn), we started chatting about indie game ideas and the personal projects we each had worked on. We realized we had all the tools and knowledge to start making games together. So now we’re making games together</p>
+        <p class="fools-caption">We’ve naturally fallen into a fast iteration way of working. Sometimes this is really helpful, and sometimes it isn’t. Either way, we believe in try-before-you-buy. If someone has an idea, an example is produced and a discussion is had. The discussion is usually:</p>
         <p class="fools-caption">“why are you even showing this to me? Just IMPLEMENT”</p>
         <ul class="fools-list">
           <li class="fool">
@@ -102,7 +104,7 @@
         </ul>
       </div>
 
-      <!-- july 2026: the blood pact. Heading + photo on the left. -->
+      <!-- july 2026: We begin with Gallery. Heading + caption + photo on the left. -->
       <svg class="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <path d="M50 0 V42 Q50 50 48.7 50 H38.8 Q37.5 50 37.5 58 V100" vector-effect="non-scaling-stroke"/>
       </svg>
@@ -112,7 +114,8 @@
       </svg>
       <div class="ngs-entry ngs-entry--left">
         <div class="ngs-block">
-          <h2 class="fools-title">the <span>blood pact</span> is signed. We begin with <span class="gallery-word">Gallery</span></h2>
+          <h2 class="fools-title">We begin with <span class="gallery-word">Gallery</span></h2>
+          <p class="fools-caption">Daniel had a list of game ideas and Gallery stood out as a potential first game. A good way to see if we can work together without destroying our friendship</p>
           <img class="ngs-photo" src="assets/fools-banner.jpg" alt="The three of us around the studio table" width="1041" height="508">
         </div>
       </div>
@@ -127,23 +130,26 @@
       </svg>
       <div class="ngs-entry ngs-entry--right">
         <div class="ngs-block">
-          <h2 class="fools-title">“I think by <span>early October</span> we should be able to post it somewhere”</h2>
+          <h2 class="fools-title">“let’s post it by <span>early October</span>”</h2>
           <img class="ngs-photo" src="assets/open-beta.jpg" alt="two thumbs up at the desk during the open-beta grind" width="1041" height="508">
         </div>
       </div>
 
-      <!-- the following moment 2026: no words, just the picture. -->
+      <!-- the following moment: no date, no words — two pictures side by
+           side; the line runs straight through where the date was. -->
       <svg class="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <path d="M62.5 0 V42 Q62.5 50 61.2 50 H38.8 Q37.5 50 37.5 58 V100" vector-effect="non-scaling-stroke"/>
       </svg>
-      <p class="ngs-date ngs-date--left">the following moment 2026</p>
-      <svg class="ngs-connector ngs-connector--tail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <svg class="ngs-connector ngs-connector--tail ngs-connector--thru" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <path d="M37.5 0 V100" vector-effect="non-scaling-stroke"/>
       </svg>
       <div class="ngs-entry ngs-entry--left">
-        <figure class="ngs-block ngs-sept">
-          <img src="assets/september-lantern.jpg" alt="a green lantern glowing on the desk" width="250" height="314" loading="lazy">
-        </figure>
+        <div class="ngs-block">
+          <figure class="ngs-sept">
+            <img src="assets/daniel-selfie.jpg" alt="Daniel squinting at the camera" width="864" height="976" loading="lazy">
+            <img src="assets/september-lantern.jpg" alt="a green lantern glowing on the desk" width="250" height="314" loading="lazy">
+          </figure>
+        </div>
       </div>
 
       <!-- september 2026: no words, just the moments. The figure is a
@@ -354,6 +360,27 @@
           <button type="button" class="nav-money" id="open-test">questionnaire <span aria-hidden="true">↗</span></button>
         </div>
       </div>
+
+      <!-- what's next: no date — the line runs straight down from the gallery. -->
+      <svg class="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M50 0 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <svg class="ngs-connector ngs-connector--tail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M50 0 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <div class="ngs-entry ngs-entry--centre" id="upcoming">
+        <div class="ngs-block">
+          <h2 class="fools-title">what’s <span>next</span> for us</h2>
+          <p class="fools-caption">two thirds of our team are going to Korea for a few weeks to find ourselves or something (sorry Ahmed)</p>
+          <p class="fools-caption">when we get back, we’ll be refining Gallery and continuing the process on a new single player game we’re working on. Probably some game jams too, so stay tuned</p>
+        </div>
+      </div>
+
+      <!-- the line runs on past the last section and out of the story — and
+           gives the upcoming anchor enough page below it to clear the header -->
+      <svg class="ngs-connector ngs-connector--runout" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M50 0 V100" vector-effect="non-scaling-stroke"/>
+      </svg>
 
     </div>
   </section>

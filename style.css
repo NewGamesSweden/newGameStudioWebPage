@@ -357,6 +357,8 @@ nav a:hover { color: var(--cyan); }
 .ngs-connector { display: block; width: 100%; pointer-events: none; }
 .ngs-connector--snake { height: 203px; }
 .ngs-connector--tail  { height: 28px; }
+.ngs-connector--thru  { height: 61px; }  /* the following moment: runs straight through where its date was (33px date band + 28px tail) */
+.ngs-connector--runout { height: 340px; } /* the line trails off past the last section; also the scroll room its nav anchor needs */
 .ngs-connector path {
   stroke: var(--cyan);
   stroke-width: 2;
@@ -384,6 +386,7 @@ nav a:hover { color: var(--cyan); }
 .ngs-block { width: 50%; text-align: center; }
 .ngs-entry--left  .ngs-block { margin-left: 12.5%; }
 .ngs-entry--right .ngs-block { margin-left: 37.5%; }
+.ngs-entry--centre .ngs-block { margin-left: 25%; }   /* 50% landing: half + a quarter */
 .ngs-block .fools-title { margin-top: 0; }
 .ngs-photo {
   display: block;
@@ -424,17 +427,25 @@ nav a:hover { color: var(--cyan); }
 }
 .fools-intro .fools-title   { margin: 0 auto 12px; text-align: center; } /* auto: the box is wider than the 820px title */
 .fools-intro .fools-caption { margin: 0 auto 8px; } /* centred 700px column, like the list below it */
-.fools-intro .fools-caption + .fools-caption { margin-top: 26px; } /* one line of air between the caption, the iteration paragraph and the quote */
+.fools-caption + .fools-caption { margin-top: 26px; } /* one line of air between caption paragraphs, anywhere they stack */
 .fools-intro .fools-caption:last-of-type { margin-bottom: 32px; } /* extra breath before the list */
 
-/* september: no words, just the picture at roughly native size. */
-.ngs-sept { margin: 0; }
+/* the following moment: two pictures touching, one rounded frame around the
+   pair — the seam stays square because only the figure rounds. Sized by
+   aspect-ratio so the pair scales on phones instead of overflowing. */
+.ngs-sept {
+  margin: 0 auto;
+  display: flex;
+  width: min(520px, 100%);
+  border-radius: 10px;
+  overflow: hidden;
+}
 .ngs-sept img {
   display: block;
-  max-height: 300px;
-  width: auto;
-  margin: 0 auto;
-  border-radius: 10px;
+  width: 50%;
+  aspect-ratio: 260 / 300;
+  object-fit: cover;   /* cropped to fit the shared box */
+  height: auto;
 }
 
 /* september moments: one fixed-height frame; every image capped to the same
@@ -664,7 +675,8 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .ngs-date--centre { transform: none; margin: 24px 0 12px; margin-left: 0; }
   .ngs-block { width: 100%; }
   .ngs-entry--left .ngs-block,
-  .ngs-entry--right .ngs-block { margin-left: 0; }
+  .ngs-entry--right .ngs-block,
+  .ngs-entry--centre .ngs-block { margin-left: 0; }
   .ngs-gallery { max-width: 100%; }
   .ngs-gallery .help-test { text-align: left; margin-top: 40px; }
   .fools-intro { max-width: 100%; padding: 84px 4px 0; margin-bottom: 0; }

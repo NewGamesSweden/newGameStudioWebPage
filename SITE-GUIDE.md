@@ -95,10 +95,12 @@ The section numbers below match the comments in the HTML files.
 
 Sticky bar with the wordmark and the navigation: "gallery" (an anchor to `#gallery` at the
 end of the timeline — it smooth-scrolls there, and `scroll-padding-top` keeps the heading
-clear of the sticky bar), and "give us money ↗" — a bordered `<button>` that opens the
-money modal (section 5.6), not a link. The site is one page, so there is no home item and
+clear of the sticky bar), "upcoming" (the same kind of anchor, to the `#upcoming`
+"what's next for us" section after the gallery), and "give us money ↗" — a bordered
+`<button>` that opens the money modal (section 5.6), not a link. The site is one page, so
+there is no home item and
 no active-page dot; the wordmark is the way home. On phones the nav wraps to a
-second row under the logo; both items stay visible.
+second row under the logo; all three items stay visible.
 
 **The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a link to
 `index.html` — the wordmark is the way home.
@@ -198,12 +200,14 @@ Where: `index.html` (the `#gallery` block), `style.css` section 4, `main.js` par
 
 ### 5.4 The NGS timeline (`index.html` section 2)
 
-The studio itself, told as a **timeline**: the fools box → five dated entries → the gallery
-finale, strung on one continuous cyan line, all inside `.wrap`. The line grows out of the
+The studio itself, told as a **timeline**: the fools box → four dated entries → the gallery
+finale → the "what's next" coda, strung on one continuous cyan line, all inside `.wrap`.
+The line grows out of the
 **fools box** — a date section's content without the date, surrounded by the line itself:
 the tilted wordmark in the box's top-left corner, the heading "three *fools* making games"
-("fools" cyan), the third-person caption, the iteration paragraph ("we've naturally fallen
-into a fast iteration way of working…") with the quoted "Just IMPLEMENT" line on its own,
+("fools" cyan), the birthday-gathering caption (how the three met), the iteration paragraph
+("we've naturally fallen into a fast iteration way of working…") with the quoted
+"Just IMPLEMENT" line on its own,
 and the
 **fools list** (three names, round avatar portrait and grey one-liner each; the rows keep
 their own left alignment inside the centred 700px content column). Every entry's content block is
@@ -237,11 +241,15 @@ ever extends past the wrap.
   shapes: the `--snake` (203px: down, a curved turn, down into an entry — landing at 37.5%
   (left entries) or 62.5% (right entries) of the wrap, or back to 50% for the finale), and
   the `--tail` (28px vertical that continues below
-  the date to the entry's top). Corners are quadratic arcs with per-axis radii (1.3 x-units,
+  the date to the entry's top), plus two straight specials: the `--thru` (61px — the
+  following moment's tail running through where its date was, date band + tail so the
+  rhythm holds) and the `--runout` (340px trailing off after the last section — and the
+  scroll room that lets the `#upcoming` nav anchor clear the sticky header). Corners are
+  quadratic arcs with per-axis radii (1.3 x-units,
   8 y-units ≈ a 16px corner) because the stretched viewBox scales x and y differently. The
   stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
-- **The dates.** Small grey lowercase labels ("july 2026", "august 2026", "the following
-  moment 2026", "september 2026", "october 2026") that sit ON the line:
+- **The dates.** Small grey lowercase labels ("july 2026", "august 2026", "september 2026",
+  "october 2026") that sit ON the line:
   `width: max-content; transform: translateX(-50%)`
   with `margin-left` equal to the snake's landing x — **37.5% (`--left`), 62.5%
   (`--right`) or 50% (`--centre`); change them together.** Each band totals the 264px
@@ -251,16 +259,19 @@ ever extends past the wrap.
   `margin-left: 12.5%` (`--left` entries) or `37.5%` (`--right` entries) so its centre sits
   on the line's landing. On phones the block goes full width and the offset resets to 0.
   Entries:
-  - **july 2026** (left): the heading "the *blood pact* is signed. We begin with *Gallery*"
-    ("blood pact" cyan, "Gallery" in `.gallery-word` — UnifrakturCook 700, the wordmark's own
-    blackletter, at 1em of the title) with the group photo under it
-    (`assets/fools-banner.jpg`).
-  - **august 2026** (right): the quotation ""I think by *early October* we should be able
-    to post it somewhere"" ("early October" cyan) with the thumbs-up photo under it
+  - **july 2026** (left): the heading "We begin with *Gallery*" ("Gallery" in
+    `.gallery-word` — UnifrakturCook 700, the wordmark's own
+    blackletter, at 1em of the title), a caption under it ("Daniel had a list of game
+    ideas…"), then the group photo (`assets/fools-banner.jpg`).
+  - **august 2026** (right): the quotation ""let's post it by *early October*""
+    ("early October" cyan) with the thumbs-up photo under it
     (`assets/open-beta.jpg`).
-  - **the following moment 2026** (left): no words — just the lantern picture
-    (`assets/september-lantern.jpg`), capped at 300px tall so the section matches the
-    others.
+  - **the following moment** (left): no date, no words — two pictures touching side by
+    side (`.ngs-sept`, a flex pair in one rounded frame; the seam stays square because
+    only the figure rounds): Daniel's selfie (`assets/daniel-selfie.jpg`) and the lantern
+    (`assets/september-lantern.jpg`), each cropped to a 260×300 box by `object-fit`.
+    The line runs straight through where the date was — the tail gets a `--thru`
+    modifier (61px = the date band + tail) so the rhythm doesn't move.
   - **september 2026** (right): no words either — the **moments frame** (`.ngs-moment`): a
     fixed-height 300px box (260 on phones) that cycles quickly through the baked
     `assets/moment-01…86.jpg` frames, one visible at a time (`.moment-on`), each capped to
@@ -276,6 +287,10 @@ ever extends past the wrap.
   - **october 2026** (centre): the gallery finale — `.ngs-gallery` (`#gallery`), a centred
     860px column holding the whole game: the card, the carousel and help-us-test (5.2, 5.3,
     5.5).
+  - **what's next for us** (centre, undated, `#upcoming` — the nav's "upcoming" anchor):
+    after the gallery the line drops straight down (a plain `M50 0 V100` snake + tail, no
+    bends) into a centred block (`--centre`, `margin-left: 25%`) with the heading
+    "what's *next* for us" and two captions — Korea, then what's coming when they're back.
   - Photos sit in-flow under their headings (`.ngs-photo`, `height: auto`), so each row's
     height is whatever its content needs and the bands above and below land on the entry's
     flow edges — nothing to hand-tune.
