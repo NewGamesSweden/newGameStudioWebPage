@@ -358,7 +358,6 @@ nav a:hover { color: var(--cyan); }
 .ngs-connector--snake { height: 203px; }
 .ngs-connector--tail  { height: 28px; }
 .ngs-connector--thru  { height: 61px; }  /* the following moment: runs straight through where its date was (33px date band + 28px tail) */
-.ngs-connector--runout { height: 340px; } /* the line trails off past the last section; also the scroll room its nav anchor needs */
 .ngs-connector path {
   stroke: var(--cyan);
   stroke-width: 2;

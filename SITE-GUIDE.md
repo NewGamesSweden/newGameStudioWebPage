@@ -241,10 +241,9 @@ ever extends past the wrap.
   shapes: the `--snake` (203px: down, a curved turn, down into an entry — landing at 37.5%
   (left entries) or 62.5% (right entries) of the wrap, or back to 50% for the finale), and
   the `--tail` (28px vertical that continues below
-  the date to the entry's top), plus two straight specials: the `--thru` (61px — the
+  the date to the entry's top), plus one straight special: the `--thru` (61px — the
   following moment's tail running through where its date was, date band + tail so the
-  rhythm holds) and the `--runout` (340px trailing off after the last section — and the
-  scroll room that lets the `#upcoming` nav anchor clear the sticky header). Corners are
+  rhythm holds). Corners are
   quadratic arcs with per-axis radii (1.3 x-units,
   8 y-units ≈ a 16px corner) because the stretched viewBox scales x and y differently. The
   stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
