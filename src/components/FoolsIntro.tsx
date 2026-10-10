@@ -1,4 +1,5 @@
 import { FOOLS } from "../data/site";
+import { WordmarkText } from "./Wordmark";
 
 /* The fools: the intro, boxed in the same cyan line the timeline is
    drawn with. The surround svg is absolutely positioned over the box and
@@ -12,7 +13,7 @@ export default function FoolsIntro() {
         <path d="M74.5 2 H97.8 Q99 2 99 4 V86 Q99 88 97.8 88 H56 Q50 88 50 100 M1 16 V86 Q1 88 2.2 88 H44 Q50 88 50 100" vectorEffect="non-scaling-stroke" />
       </svg>
       <div className="ngs-hero">
-        <h1 className="ngs-logo">New<span>Game</span>Studio</h1>
+        <h1 className="ngs-logo"><span className="wordmark"><WordmarkText /></span></h1>
       </div>
       <h2 id="fools-heading" className="fools-title">three <span>fools</span> making games</h2>
       <p className="fools-caption">At Daniel’s 33rd birthday gathering (damn), we started chatting about indie game ideas and the personal projects we each had worked on. We realized we had all the tools and knowledge to start making games together. So now we’re making games together</p>
