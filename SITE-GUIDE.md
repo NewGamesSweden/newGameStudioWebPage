@@ -66,7 +66,8 @@ main deploys it: `.github/workflows/deploy.yml` typechecks and builds on GitHub,
 symlink goes back to the previous release and the run fails. The five newest releases stay
 on the server. To roll back, run the Deploy workflow by hand with an older commit in `ref`.
 `deploy/Caddyfile` is the site's Caddy block (it also redirects `www.` to the bare domain);
-`.github/workflows/ci.yml` typechecks and builds every pull request.
+`.github/workflows/ci.yml` typechecks and builds every pull request. The server, the
+secrets, the domain and what to do when a deploy fails: `README.md`, "Deploy and server".
 
 ```powershell
 git add -A
