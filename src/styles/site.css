@@ -428,7 +428,7 @@ nav a:hover { color: var(--accent); }
   position: relative;
   max-width: 960px;           /* min(960px, the wrap): centred, so x=50% still meets the connectors */
   margin: 0 auto 48px;
-  padding: 128px 40px 88px;   /* top clears the tilted hero; bottom clears the edge */
+  padding: 128px 40px 112px;  /* top clears the tilted hero; bottom gives the list air (the 48px margin below is the funnel contract — padding, not margin) */
 }
 .ngs-surround {
   position: absolute;
@@ -489,7 +489,7 @@ nav a:hover { color: var(--accent); }
 
 /* october: the whole Gallery game, one comfortable column, dead centre. */
 .ngs-gallery { max-width: 860px; margin: 0 auto; }
-.ngs-gallery .help-test { text-align: center; margin-top: 56px; }
+.ngs-gallery .help-test { text-align: center; margin-top: 56px; padding-bottom: 24px; } /* breath between the button and the line that grows out of here */
 
 /* The wordmark's own blackletter, one word of it, in the july heading —
    1em of the title's size (blackletter reads small, tune here). */
@@ -525,8 +525,8 @@ nav a:hover { color: var(--accent); }
 
 .fool-avatar {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   object-fit: cover;
   display: block;

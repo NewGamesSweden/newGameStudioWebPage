@@ -141,9 +141,9 @@ export const MOMENTS: Moment[] = [
 ];
 
 export const FOOLS: Fool[] = [
-  { name: "Daniel", img: "assets/avatar-daniel.jpg", width: 248, height: 264, line: "leads art direction and has also become de-facto PM. Allergic to cats and almost everything else" },
-  { name: "Ahmed", img: "assets/avatar-ahmed.jpg", width: 218, height: 232, line: "leads DevOps and infra. Please DDoS us to keep him on his toes" },
-  { name: "Micky", img: "assets/avatar-micky.jpg", width: 98, height: 116, line: "leads software development. Not allergic to cats or basically anything else" },
+  { name: "Daniel", img: "assets/avatar-daniel.jpg", width: 248, height: 264, line: "unable to take a day off. Allergic to everything" },
+  { name: "Ahmed", img: "assets/avatar-ahmed.jpg", width: 218, height: 232, line: "tried keto a few times, was depressed each time, will probably try again" },
+  { name: "Micky", img: "assets/avatar-micky.jpg", width: 98, height: 116, line: "offering all our code and data to Z.ai, becoming more chinese every day" },
 ];
 
 export const TEST_QUESTIONS: TestQuestion[] = [
