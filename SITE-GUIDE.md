@@ -60,10 +60,13 @@ npm run preview # serves dist/ locally
 ### Publish
 
 The repository is `NewGamesSweden/newGameStudioWebPage` on GitHub, branch `main`. Pushing
-main is the deploy signal: on the server, the operator pulls, runs `npm ci && npm run build`,
-and Caddy serves the resulting `dist/`. `deploy/Caddyfile` is the site's Caddy block (the
-two lines marked EDIT are the address and the checkout root — the devops setup owns the
-rest); `.github/workflows/ci.yml` typechecks and builds every push.
+main deploys it: `.github/workflows/deploy.yml` typechecks and builds on GitHub, uploads
+`dist/` and `deploy/` to the studio's server as a new folder under `releases/`, points the
+`current` symlink at it, then validates and reloads Caddy. If Caddy rejects the config, the
+symlink goes back to the previous release and the run fails. The five newest releases stay
+on the server. To roll back, run the Deploy workflow by hand with an older commit in `ref`.
+`deploy/Caddyfile` is the site's Caddy block (it also redirects `www.` to the bare domain);
+`.github/workflows/ci.yml` typechecks and builds every pull request.
 
 ```powershell
 git add -A
@@ -89,6 +92,7 @@ git push
 | `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2); `bake-moment-frames.py` rebuilds the september moments frames. |
 | `deploy/Caddyfile` | The production Caddy site block (one page, security headers, immutable caching for the hashed bundles). |
 | `.github/workflows/ci.yml` | CI: typecheck + build on every push. |
+| `.github/workflows/deploy.yml` | Deploy: every push to `main` goes live (section 2). |
 | `README.md` | Short getting-started guide. |
 | `NewGameStudio.code-workspace` | VS Code workspace shortcut. Optional. |
 
