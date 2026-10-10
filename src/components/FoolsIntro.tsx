@@ -16,7 +16,7 @@ export default function FoolsIntro() {
         <h1 className="ngs-logo"><span className="wordmark"><WordmarkText /></span></h1>
       </div>
       <h2 id="fools-heading" className="fools-title">three <span>fools</span> making games</h2>
-      <p className="fools-caption">At Daniel’s 33rd birthday gathering (damn), we started chatting about indie game ideas and the personal projects we each had worked on. We realized we had all the tools and knowledge to start making games together. So now we’re making games together</p>
+      <p className="fools-caption">At Daniel’s 33rd birthday gathering (damn), we started chatting about indie game ideas and the personal projects we each had worked on. We realised we had a similar vision, so now we’re making games together</p>
       <p className="fools-caption">We’ve naturally fallen into a fast iteration way of working. Sometimes this is really helpful, and sometimes it isn’t. Either way, we believe in try-before-you-buy. If someone has an idea, an example is produced and a discussion is had. The discussion is usually:</p>
       <p className="fools-caption">“why are you even showing this to me? Just IMPLEMENT”</p>
       <ul className="fools-list">

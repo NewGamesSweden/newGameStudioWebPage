@@ -143,7 +143,7 @@ export const MOMENTS: Moment[] = [
 export const FOOLS: Fool[] = [
   { name: "Daniel", img: "assets/avatar-daniel.jpg", width: 248, height: 264, line: "unable to take a day off. Allergic to everything" },
   { name: "Ahmed", img: "assets/avatar-ahmed.jpg", width: 218, height: 232, line: "tried keto a few times, was depressed each time, will probably try again" },
-  { name: "Micky", img: "assets/avatar-micky.jpg", width: 98, height: 116, line: "offering all our code and data to Z.ai, becoming more chinese every day" },
+  { name: "Micky", img: "assets/avatar-micky.jpg", width: 98, height: 116, line: "has never tried keto, not allergic to anything, will not eat cauliflower" },
 ];
 
 export const TEST_QUESTIONS: TestQuestion[] = [
