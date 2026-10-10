@@ -24,13 +24,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=UnifrakturCook:wght@700&display=swap');
 
 :root {
-  --bg: #151409;       /* page background — earth olive, near-black */
-  --panel: #201f13;    /* buttons and the preview dialog */
+  --bg: #1a110b;       /* page background — deep coffee, near-black */
+  --panel: #271a10;    /* buttons and the preview dialog */
   --ink: #f2f0e8;      /* main text */
   --muted: #a8a494;    /* secondary text */
   --accent: #7fd88a;   /* accent 1: links, highlights */
   --orange: #ff9b65;   /* accent 2: focus rings */
-  --line: #3a3926;     /* borders */
+  --line: #403122;     /* borders */
 }
 
 
@@ -113,7 +113,7 @@ h2 {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: #151409ef;
+  background: #1a110bef;
   backdrop-filter: blur(18px);
   box-shadow: 0 4px 22px #0a08051f;
 }
@@ -141,7 +141,7 @@ nav a:hover { color: var(--accent); }
 .nav-money {
   background: none;
   color: var(--ink);
-  border: 1px solid #5f5a46;
+  border: 1px solid #5f5140;
   padding: 9px 16px;
   border-radius: 5px;
 }
@@ -326,7 +326,7 @@ nav a:hover { color: var(--accent); }
   overflow-x: auto;
   padding: 4px 0 10px;
   scrollbar-width: thin;
-  scrollbar-color: #4a4636 transparent;
+  scrollbar-color: #4a3c2c transparent;
 }
 .thumb {
   flex: 0 0 84px;
@@ -334,7 +334,7 @@ nav a:hover { color: var(--accent); }
   border: 2px solid transparent;
   overflow: hidden;
   padding: 0;
-  background: #26241a;
+  background: #2a2013;
   opacity: 0.55;
   transition: opacity 0.2s, border-color 0.2s;
 }
@@ -520,7 +520,7 @@ nav a:hover { color: var(--accent); }
   align-items: flex-start;
   gap: 16px;
   padding: 14px 0;
-  border-bottom: 1px solid #423f2c; /* same row rule the old name list used */
+  border-bottom: 1px solid #423324; /* same row rule the old name list used */
 }
 
 .fool-avatar {
@@ -577,7 +577,7 @@ dialog {
   border-radius: 10px;
   padding: 18px;
 }
-dialog::backdrop { background: #0a0906dd; }
+dialog::backdrop { background: #0b0705dd; }
 dialog img {
   width: 100%;
   height: auto;
