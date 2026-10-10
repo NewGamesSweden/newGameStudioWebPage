@@ -1,0 +1,102 @@
+name: Deploy
+
+# Every push to main goes live. The site is built here on the runner, never on
+# the server: the server is shared with the Gallery game, whose own client build
+# already uses most of its memory, and a concurrency group cannot span two
+# repositories.
+#
+# On the server each deploy is unpacked into releases/<time>-<sha>/ and the `current`
+# symlink is swapped to it in one rename, so visitors never see a half-written
+# site. Caddy serves current/dist and imports current/deploy/Caddyfile.
+#
+# Rollback: Actions -> Deploy -> Run workflow, with an older commit SHA in `ref`.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit, tag or branch to deploy. Empty deploys the selected branch.
+        required: false
+        type: string
+
+concurrency:
+  group: deploy-site
+  cancel-in-progress: false
+
+env:
+  SITE_PATH: /var/www/newgamestudio.consigliereonline.org
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm run build
+
+      - name: Configure SSH
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SERVER_SSH_KEY" > ~/.ssh/site_server
+          chmod 600 ~/.ssh/site_server
+          ssh-keyscan -p "${SERVER_PORT:-22}" -H "$SERVER_HOST" >> ~/.ssh/known_hosts
+
+      - name: Upload and switch
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          set -euo pipefail
+          release="$(date -u +%Y%m%d-%H%M%S)-$(git rev-parse --short=12 HEAD)"
+          tar -czf site.tgz dist deploy
+          scp -i ~/.ssh/site_server -P "${SERVER_PORT:-22}" site.tgz \
+            "$SERVER_USER@$SERVER_HOST:$SITE_PATH/incoming.tgz"
+          ssh -i ~/.ssh/site_server -p "${SERVER_PORT:-22}" "$SERVER_USER@$SERVER_HOST" \
+            'bash -s' -- "$SITE_PATH" "$release" <<'SCRIPT'
+          set -euo pipefail
+          SITE_PATH="$1"
+          RELEASE="$2"
+
+          cd "$SITE_PATH"
+          release="releases/$RELEASE"
+          mkdir -p "$release"
+          tar -xzf incoming.tgz -C "$release"
+          rm incoming.tgz
+
+          previous=$(readlink current || true)
+          ln -sfn "$release" current.next
+          mv -T current.next current
+
+          # Validation covers every site on the host. If this block breaks it,
+          # point `current` back so the next Gallery deploy does not fail on it.
+          if ! sudo /usr/bin/caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile; then
+            if [ -n "$previous" ]; then
+              ln -sfn "$previous" current.next
+              mv -T current.next current
+            fi
+            exit 1
+          fi
+          sudo /usr/bin/systemctl reload caddy
+
+          # Keep the five newest releases for a quick rollback.
+          ls -1dt releases/*/ | tail -n +6 | xargs -r rm -rf
+          SCRIPT

@@ -10,8 +10,9 @@ A small website, one page: the studio hero, a dated studio timeline, and the Gal
 | `src/` | The app: `main.tsx` boots it, `App.tsx` is the page shell, `components/` one component per section, `data/site.ts` the content tables, `styles/site.css` all the styling. |
 | `public/assets/` | All images, copied verbatim into the build — including `gallery-title-ink.svg`, the baked Gallery title wordmark, and the baked `moment-*.jpg` frames of the september moments section. |
 | `tools/` | One-off build tools (not shipped): `bake-title-ink.py` regenerates the Gallery title wordmark; `bake-moment-frames.py` rebuilds the september moments frames from the source screenshots folder. |
-| `deploy/Caddyfile` | The production Caddy site block. The two lines marked EDIT (site address, checkout root) are the only setup decisions. |
+| `deploy/Caddyfile` | The production Caddy site block, imported by the server's `/etc/caddy/Caddyfile`. |
 | `.github/workflows/ci.yml` | CI: typecheck + build on every push. |
+| `.github/workflows/deploy.yml` | Deploy: every push to `main` goes live. |
 | `SITE-GUIDE.md` | The long guide: every section, how it works, how to change it. |
 | `NewGameStudio.code-workspace` | Shortcut for opening the folder in VS Code. Optional. |
 
@@ -31,7 +32,7 @@ npm run preview  # serves dist/ locally
 
 ## Deploy
 
-`npm run build` produces `dist/` — static files only. Caddy on the studio's server is the intended host: `deploy/Caddyfile` is the site block, imported by the host's `/etc/caddy/Caddyfile`; the deploy procedure (pull → `npm ci` → `npm run build` → reload Caddy) follows the same pattern as the Gallery site. Our devops setup owns the actual wiring.
+Every push to `main` goes live. `.github/workflows/deploy.yml` builds the site on GitHub, uploads `dist/` and `deploy/` to the studio's server and reloads Caddy; nobody needs a login on the server. To roll back, open Actions → Deploy → Run workflow and put an older commit in `ref`. Details in `SITE-GUIDE.md` section 2.
 
 ## Common edits
 

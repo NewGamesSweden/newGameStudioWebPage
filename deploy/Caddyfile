@@ -3,22 +3,20 @@
 # This file is the single source of truth for the site's Caddy config.
 # /etc/caddy/Caddyfile imports it by absolute path:
 #
-#     import /var/www/newgamestudio.consigliereonline.org/deploy/Caddyfile
+#     import /var/www/newgamestudio.consigliereonline.org/current/deploy/Caddyfile
 #
 # DO NOT copy this file over /etc/caddy/Caddyfile. It is one site block, not a
 # full config: that file also holds the gallery.newgamestudio.com site and the
 # global options block. Overwriting it takes those sites down.
 #
-# The two lines to touch when first setting this up are marked "EDIT" below:
-# the site address and the checkout root.
+# `current` is the symlink .github/workflows/deploy.yml swaps to each new
+# release, so this block and the built site always come from the same deploy.
 #
 # The site is one true page (the built index.html). There is deliberately no
 # SPA fallback: an unknown path 404s, truthfully.
 
-# EDIT: the site address, if this is not the domain it lands on.
 newgamestudio.com {
-	# EDIT: the checkout root on the host — the built site is in dist/ under it.
-	root * /var/www/newgamestudio.consigliereonline.org/dist
+	root * /var/www/newgamestudio.consigliereonline.org/current/dist
 	encode zstd gzip
 
 	# Access log goes to stdout, which systemd captures into the journal
@@ -57,4 +55,8 @@ newgamestudio.com {
 		header Cache-Control "no-cache"
 		file_server
 	}
+}
+
+www.newgamestudio.com {
+	redir https://newgamestudio.com{uri} permanent
 }
