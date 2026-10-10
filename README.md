@@ -30,9 +30,93 @@ npm run build    # typechecks, then bundles into dist/
 npm run preview  # serves dist/ locally
 ```
 
-## Deploy
+## Deploy and server
 
-Every push to `main` goes live. `.github/workflows/deploy.yml` builds the site on GitHub, uploads `dist/` and `deploy/` to the studio's server and reloads Caddy; nobody needs a login on the server. To roll back, open Actions → Deploy → Run workflow and put an older commit in `ref`. Details in `SITE-GUIDE.md` section 2.
+Every push to `main` goes live (the deploy job took 23 seconds on its first successful run). Nobody needs a login on the server for that: GitHub Actions does the whole deploy.
+
+### How a deploy works
+
+`.github/workflows/deploy.yml`, on every push to `main`:
+
+1. Installs, typechecks and builds the site on GitHub's machine (`npm ci`, `npm run typecheck`, `npm run build`).
+2. Packs `dist/` (the built site) and `deploy/` (the Caddy block) and copies them to the server over SSH.
+3. Unpacks them into a new folder, `releases/<date>-<time>-<commit>/`.
+4. Points the `current` link at that folder in one step, so visitors never see a half-copied site.
+5. Asks Caddy to check the whole server config (`caddy validate`). If it passes, Caddy reloads. If it fails, `current` goes back to the previous release and the run turns red.
+6. Deletes all but the five newest releases.
+
+The build runs on GitHub, not on the server, because the server's memory is already taken up by the Gallery game's own builds.
+
+### Roll back or redeploy
+
+- **Roll back:** Actions → Deploy → Run workflow, put an older commit SHA (or a tag) in `ref`, and run it.
+- **Redeploy the current `main`:** the same, with `ref` left empty.
+
+### The server
+
+One server hosts this site, the Gallery game (production and staging) and consigliereonline.org. The site files live here:
+
+```
+/var/www/newgamestudio.consigliereonline.org/
+├── current -> releases/<the live release>
+└── releases/
+    └── <date>-<time>-<commit>/
+        ├── dist/      the built site, which Caddy serves
+        └── deploy/    the Caddy block, which Caddy imports
+```
+
+- Deploys log in as the `dev` user. `dev` may run exactly two commands as root without a password: `caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile` and `systemctl reload caddy`.
+- `/etc/caddy/Caddyfile` (root-owned, holds every site on the server) contains this line **exactly once**:
+  ```
+  import /var/www/newgamestudio.consigliereonline.org/current/deploy/Caddyfile
+  ```
+  If the line is there twice, every validate fails with `ambiguous site definition: newgamestudio.com`, and that blocks Gallery's deploys too. Never copy `deploy/Caddyfile` over `/etc/caddy/Caddyfile`: that would take every other site down.
+- Shell access to the server is by SSH key only. Ask the server admin to add your public key. Any SSH client works (OpenSSH on Linux, macOS or Windows, or PuTTY).
+
+### GitHub secrets
+
+Settings → Secrets and variables → Actions on this repository:
+
+| Secret | Value |
+| --- | --- |
+| `SERVER_HOST` | The server's address. |
+| `SERVER_PORT` | `22` |
+| `SERVER_USER` | `dev` |
+| `SERVER_SSH_KEY` | The private half of a key made only for this repository. Its public half is the line ending in `newgamestudio-site-deploy` in `/home/dev/.ssh/authorized_keys` on the server. |
+
+To replace the key: make a new one (`ssh-keygen -t ed25519 -N '' -C newgamestudio-site-deploy -f site_deploy`), put the private half in `SERVER_SSH_KEY`, swap the public line in `authorized_keys`, then delete both local files. GitHub never shows a secret again after it is saved.
+
+The repository is public. Never commit a key, a password or the server's address.
+
+### Domain and Cloudflare
+
+- The domain is registered at GoDaddy. Its DNS is on Cloudflare, in the same zone as `gallery.newgamestudio.com`.
+- DNS records: `newgamestudio.com` is an `A` record to the server, Proxied. `www` is a `CNAME` to `newgamestudio.com`, Proxied. There must be no other `A` record on `newgamestudio.com`: GoDaddy's default parking addresses were removed, and if one comes back, half the visitors land on a parked page.
+- Cloudflare SSL mode is Full (strict): Cloudflare only talks to the server over HTTPS with a valid certificate.
+- Caddy gets and renews the certificates from Let's Encrypt by itself. `www.newgamestudio.com` only redirects to `newgamestudio.com` (the last block in `deploy/Caddyfile`).
+- GitHub Pages is off for this repository. Keep it off: it would publish the unbuilt source at a second address.
+
+### Change something
+
+| To change | Edit | Goes live |
+| --- | --- | --- |
+| Page content or styling | `src/`, `public/` | on push to `main` |
+| Headers, caching, redirects | `deploy/Caddyfile` | on push to `main`, after Caddy validates it |
+| Deploy steps, number of releases kept | `.github/workflows/deploy.yml` | from the next push |
+| Server address, user or key | the GitHub secrets above | from the next deploy |
+| Domain records | the Cloudflare dashboard | within a minute |
+
+### When something breaks
+
+- **The deploy run is red at "Upload and switch".** Open the run log. A Caddy error there (for example `ambiguous site definition`) means the config did not pass; the previous release is still live. Fix `deploy/Caddyfile` or the server's `/etc/caddy/Caddyfile`, then rerun.
+- **Cloudflare error 525** (SSL handshake failed): Caddy has no certificate for the name yet. This happens after a DNS change. Check the log, then force a fresh try:
+  ```bash
+  journalctl -u caddy --since -60min --no-pager | grep -i newgamestudio.com | tail -8
+  sudo caddy reload --config /etc/caddy/Caddyfile --adapter caddyfile --force
+  ```
+  In that log, `tls-alpn-01 ... Cannot negotiate ALPN protocol` is normal behind Cloudflare and can be ignored. The certificate comes through the `http-01` challenge.
+- **Cloudflare error 526**: a certificate exists but is invalid or expired. Check the same log.
+- **A GoDaddy parked page shows:** an extra `A` record is back on `newgamestudio.com` in Cloudflare. Delete it.
 
 ## Common edits
 
