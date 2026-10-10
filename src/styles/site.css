@@ -385,6 +385,9 @@ nav a:hover { color: var(--accent); }
   fill: none;
   stroke-linejoin: round;
 }
+/* Phones redraw every connector as its __straight twin: the meander hides and
+   a plain M50 0 V100 centre line runs instead (see the phone media query). */
+.ngs-connector__straight { display: none; }
 
 /* The date sits ON the line: centred on its snake's landing x. */
 .ngs-date {
@@ -685,21 +688,24 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .strip-arrow--right { right: 10px; }
   .thumb { flex-basis: 64px; height: 44px; }
 
-  /* NGS: the lines hide (no second column to jog across) but the dates stay
-     as plain labels above their entries; every block goes full width */
+  /* NGS: the lines run straight down the centre (the snakes' jogs need two
+     columns); every date sits on the line, centred; every block goes full width */
   .ngs { padding: 40px 0 44px; }
-  .ngs-connector { display: none; }
+  .ngs-connector__meander { display: none; }
+  .ngs-connector__straight { display: block; }
+  /* every date sits on the centre line like desktop's centre dates —
+     width: max-content + translateX(-50%) come from the base .ngs-date rule */
   .ngs-date,
   .ngs-date--left,
   .ngs-date--right,
-  .ngs-date--centre { transform: none; margin: 24px 0 12px; margin-left: 0; }
+  .ngs-date--centre { margin-left: 50%; }
   .ngs-block { width: 100%; }
   .ngs-entry--left .ngs-block,
   .ngs-entry--right .ngs-block,
   .ngs-entry--centre .ngs-block { margin-left: 0; }
   .ngs-gallery { max-width: 100%; }
-  .ngs-gallery .help-test { text-align: left; margin-top: 40px; }
-  .fools-intro { max-width: 100%; padding: 84px 4px 0; margin-bottom: 0; }
+  .ngs-gallery .help-test { text-align: center; margin-top: 40px; }
+  .fools-intro { max-width: 100%; padding: 84px 4px 0; margin-bottom: 48px; }
   .ngs-surround { display: none; } /* every line hides here; the box is a line too */
   .ngs-hero { top: 0; }
   .fools-intro .fools-title { margin-top: 8px; } /* the small hero is the only gap above */

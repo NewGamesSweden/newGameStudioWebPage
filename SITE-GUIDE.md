@@ -250,7 +250,8 @@ ever extends past the wrap.
   left edge at 16%) clear the wordmark at every width; when the font clamp caps, the text
   run fills ~71% of the box. The section's 120px top padding keeps the tilted hero clear of
   the sticky header.
-  On phones the surround hides (like every line) and the smaller hero stays tilted.
+  On phones the surround stays hidden while the connectors run as straight centre lines,
+  and the smaller hero stays tilted.
 - **The fools box.** `.fools-intro` is `min(960px, the wrap)`, centred — so its x=50% still
   lines up with every connector's 50% — while the captions/list stay a centred 700px column.
   The **surround** (`.ngs-surround`) is an absolutely positioned svg in the connectors'
@@ -272,14 +273,16 @@ ever extends past the wrap.
   rhythm holds). Corners are
   quadratic arcs with per-axis radii (1.3 x-units,
   8 y-units ≈ a 16px corner) because the stretched viewBox scales x and y differently. The
-  stroke is 2px cyan via `vector-effect: non-scaling-stroke`.
+  stroke is 2px cyan via `vector-effect: non-scaling-stroke`. Every connector also carries
+  a hidden straight twin path (`M50 0 V100`): on phones the meander hides and the twin
+  runs instead — one straight line down the centre of the screen.
 - **The dates.** Small grey lowercase labels ("july 2026", "august 2026", "september 2026",
   "october 2026") that sit ON the line:
   `width: max-content; transform: translateX(-50%)`
   with `margin-left` equal to the snake's landing x — **37.5% (`--left`), 62.5%
   (`--right`) or 50% (`--centre`); change them together.** Each band totals the 264px
-  rhythm: 203 snake + ~33 date + 28 tail. On phones the svgs hide and the dates stay as
-  plain left-aligned labels above their entries.
+  rhythm: 203 snake + ~33 date + 28 tail. On phones every connector runs straight down
+  the centre and every date sits on it, centred on screen (`margin-left: 50%`).
 - **The entries.** Each holds one `.ngs-block`: half the wrap wide, centred text, offset by
   `margin-left: 12.5%` (`--left` entries) or `37.5%` (`--right` entries) so its centre sits
   on the line's landing. On phones the block goes full width and the offset resets to 0.
@@ -418,7 +421,7 @@ One scale: 8, 16, 24, 32, 40, 56, 64px. Things that belong together sit 8 to 32p
 | --- | --- |
 | Desktop | Content is limited to a 1280px column. |
 | 1000px and below (tablet) | Tighter page margins, smaller Gallery title, shorter carousel strip |
-| 700px and below (phone) | Everything stacks: the timeline entries go full width, the Gallery card (copy, then button), the carousel. The header tagline hides; the nav wraps to a second row under the logo, all three items visible. |
+| 700px and below (phone) | Everything stacks: the timeline lines run straight down the centre with the dates centred on them, the entries go full width, the Gallery card (copy, then button), the carousel. The header tagline hides; the nav wraps to a second row under the logo, all three items visible. |
 
 ### Reduced motion
 

@@ -11,12 +11,17 @@ import MomentsEntry from "./MomentsEntry";
    62.5% september, 50% october, 50% what's next; change them together.
    The line grows out of the fools box's funnel tip, then snakes down to
    each entry. The DOM order here is load-bearing — connectors, date, tail,
-   entry, in that order, or the rhythm breaks. */
+   entry, in that order, or the rhythm breaks. Phones swap every meander for
+   the STRAIGHT twin via CSS (.ngs-connector__straight), where every landing
+   is 50% and every date's margin-left matches it. */
+
+const STRAIGHT = "M50 0 V100"; // phone: every band straight down the centre
 
 function Snake({ d }: { d: string }) {
   return (
     <svg className="ngs-connector ngs-connector--snake" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <path d={d} vectorEffect="non-scaling-stroke" />
+      <path className="ngs-connector__meander" d={d} vectorEffect="non-scaling-stroke" />
+      <path className="ngs-connector__straight" d={STRAIGHT} vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
@@ -24,7 +29,8 @@ function Snake({ d }: { d: string }) {
 function Tail({ d, thru = false }: { d: string; thru?: boolean }) {
   return (
     <svg className={thru ? "ngs-connector ngs-connector--tail ngs-connector--thru" : "ngs-connector ngs-connector--tail"} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <path d={d} vectorEffect="non-scaling-stroke" />
+      <path className="ngs-connector__meander" d={d} vectorEffect="non-scaling-stroke" />
+      <path className="ngs-connector__straight" d={STRAIGHT} vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
