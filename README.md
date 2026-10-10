@@ -38,7 +38,7 @@ Every push to `main` goes live (the deploy job took 23 seconds on its first succ
 
 `.github/workflows/deploy.yml`, on every push to `main`:
 
-1. Installs, typechecks and builds the site on GitHub's machine (`npm ci`, `npm run typecheck`, `npm run build`).
+1. Installs, typechecks and builds the site on GitHub's machine (`npm ci`, `npm run build`).
 2. Packs `dist/` (the built site) and `deploy/` (the Caddy block) and copies them to the server over SSH.
 3. Unpacks them into a new folder, `releases/<date>-<time>-<commit>/`.
 4. Points the `current` link at that folder in one step, so visitors never see a half-copied site.
