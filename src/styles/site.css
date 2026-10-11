@@ -579,6 +579,13 @@ dialog {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 18px;
+  /* A dialog taller than the viewport used to be clipped with no way to
+     reach it — cap it and let it scroll internally instead; overscroll
+     keeps a scroll at its edge from chaining to the page behind. */
+  max-height: calc(100vh - 24px);  /* fallback first… */
+  max-height: calc(100dvh - 24px); /* …dvh wins where supported (mobile URL-bar safe) */
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 dialog::backdrop { background: #070503dd; }
 dialog img {
@@ -668,17 +675,26 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   html { scroll-padding-top: 100px; }
   .wrap { width: calc(100% - 36px); }
 
-  /* Header: logo and links can wrap onto two rows if needed */
+  /* Header: one line at every phone width — wordmark left, buttons hard
+     right. Everything scales continuously with the viewport (no second
+     regime, no wrap fallback); flex-end + the wordmark's margin-right:auto
+     reads exactly like the base space-between on one line, and would
+     right-align the nav row even if a wrap ever happened. */
+  .site-header .wrap { width: calc(100% - 24px); } /* a hair more room than the page's 36px gutter */
   .nav {
     height: auto;
     min-height: 78px;
-    flex-wrap: wrap;
-    gap: 4px 15px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: clamp(8px, 2.4vw, 12px);
     padding: 12px 0;
   }
-  .brand { font-size: 20px; }
-  .brand-tag { display: none; } /* the wrapped nav needs the room more */
-  nav { gap: 16px; font-size: 13px; }
+  .site-header .logo-wrap { margin-right: auto; }
+  .site-header .brand { font-size: clamp(14px, 4.5vw, 18px); } /* footer keeps its own 15px brand */
+  .brand-tag { display: none; } /* the one-line nav needs the room more */
+  nav { flex-shrink: 0; gap: clamp(6px, 2.2vw, 10px); font-size: clamp(11px, 3.2vw, 12px); white-space: nowrap; }
+  .site-header nav .nav-money span { display: none; } /* ↗ off in the bar only; the page's questionnaire button keeps it */
+  .site-header .nav-money { padding: 8px 10px; }
 
   /* Gallery: the card stacks (copy, then the play button under it) */
   .gallery-feature { flex-direction: column; align-items: flex-start; gap: 20px; padding: 32px 20px; }
@@ -707,15 +723,40 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .ngs-gallery .help-test { text-align: center; margin-top: 40px; }
   .fools-intro { max-width: 100%; padding: 84px 4px 0; margin-bottom: 48px; }
   .ngs-surround { display: none; } /* every line hides here; the box is a line too */
-  .ngs-hero { top: 0; }
+  /* the tilted hero centres itself: the box spans the intro, the wordmark
+     shrink-wraps inside it, and the -4° tilt pivots on its own top-centre */
+  .ngs-hero {
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    transform-origin: 50% 0; /* tilt in place instead of about the old top-left */
+  }
   .fools-intro .fools-title { margin-top: 8px; } /* the small hero is the only gap above */
   .ngs-moment { height: 260px; }
   .fools-title { margin-top: 24px; }
 
-  /* Footer */
-  footer { display: flex; flex-wrap: wrap; padding-bottom: 25px; }
+  /* Dialogs: the shared money/questionnaire box gives 80px of a ~345px
+     dialog to side padding on phones — cut the sides down. The form cap
+     keeps the whole dialog inside short screens so the corner × can't
+     scroll away (see the base dialog rule's max-height). */
+  dialog#money,
+  dialog#test { padding: 28px 18px 22px; }
+  dialog#test .test-form { max-height: min(48vh, 420px); }
+
+  /* Footer: wordmark centred on top, then the email, then made-with-love
+     + copyright (the base grid-column rules go inert under flex) */
+  footer { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; padding-bottom: 25px; }
+  footer .logo-wrap { order: 1; width: 100%; justify-content: center; }
+  footer .footer-mail { order: 2; width: 100%; text-align: center; }
   footer p { order: 3; width: 100%; margin: 0; text-align: center; }
-  footer .footer-mail { order: 4; width: 100%; text-align: center; }
+}
+
+/* Very narrow phones: a 16px header gutter (vs the page's 36px) is the last
+   ~20px that lets one line hold down to 320px without sub-11px text */
+@media (max-width: 355px) {
+  .site-header .wrap { width: calc(100% - 16px); }
 }
 
 

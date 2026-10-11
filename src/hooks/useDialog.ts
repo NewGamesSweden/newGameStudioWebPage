@@ -15,6 +15,16 @@ export function useDialog(open: boolean, onClose: () => void) {
     if (!open && dlg.open) dlg.close();
   }, [open]);
 
+  /* showModal() blocks clicks behind the dialog but not scrolling — lock the
+     page for as long as any dialog is open. Save/restore keeps it balanced
+     under StrictMode's double effects and across stacked dialogs. */
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previous; };
+  }, [open]);
+
   useEffect(() => {
     const dlg = ref.current;
     if (!dlg) return;
