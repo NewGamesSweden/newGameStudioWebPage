@@ -128,8 +128,10 @@ clear of the sticky bar), "upcoming" (the same kind of anchor, to the `#upcoming
 `<button>` that opens the money modal (section 5.6), not a link, and last, at the top right,
 the language picker (section 5.9). The site is one page, so
 there is no home item and
-no active-page dot; the wordmark is the way home. On phones the nav wraps to a
-second row under the logo; all three items stay visible.
+no active-page dot; the wordmark is the way home. On phones the bar has two rows, both
+centred: the wordmark on top, the nav and the picker under it. The wordmark's row keeps its
+space while the brand is faded out at the hero, so the nav never moves. If a phone's text
+setting makes the nav row too wide, it wraps rather than running off the screen.
 
 **The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a plain
 link to the site root — the wordmark is the way home.
@@ -424,8 +426,8 @@ languages, because it would crowd CJK glyphs, and Korean wraps between words
 
 **Add a language.** Copy `src/i18n/en.ts` to `<code>.ts`, translate every string, and add
 one line to `LANGS` in `src/i18n/index.ts` with its `<html lang>` code, the picker's short
-code and its own name. Check the header at 701 to 860px and at 320px. The bar must stay one
-line. Spanish and Japanese are the longest today.
+code and its own name. Check the header at 701 to 860px (the bar must stay one line) and at
+320px (the phone's nav row should stay one line). Spanish and Japanese are the longest today.
 
 ---
 
@@ -464,7 +466,7 @@ One scale: 8, 16, 24, 32, 40, 56, 64px. Things that belong together sit 8 to 32p
 | Desktop | Content is limited to a 1280px column. |
 | 1000px and below (tablet) | Tighter page margins, smaller Gallery title, shorter carousel strip |
 | 860px and below | The header tagline hides, so the bar fits on one line next to the language picker. |
-| 700px and below (phone) | Everything stacks: the timeline lines run straight down the centre with the dates centred on them, the entries go full width, the Gallery card (copy, then button), the carousel. The header tagline hides; the nav wraps to a second row under the logo, all three items visible. |
+| 700px and below (phone) | Everything stacks: the timeline lines run straight down the centre with the dates centred on them, the entries go full width, the Gallery card (copy, then button), the carousel. The header becomes two centred rows: the wordmark, then the nav and the language picker. |
 
 ### Reduced motion
 

@@ -724,30 +724,34 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
 
 /* Phone */
 @media (max-width: 700px) {
-  html { scroll-padding-top: 100px; }
+  html { scroll-padding-top: 124px; } /* the two-row header is ~100px */
   .wrap { width: calc(100% - 36px); }
 
-  /* Header: one line at every phone width — wordmark left, buttons hard
-     right. Everything scales continuously with the viewport (no second
-     regime, no wrap fallback); flex-end + the wordmark's margin-right:auto
-     reads exactly like the base space-between on one line, and would
-     right-align the nav row even if a wrap ever happened. */
+  /* Header: two rows — the wordmark centred on top, the nav centred under
+     it. (One line squeezed everything, and overflowed on real phones with
+     a larger text setting.) The wordmark's row keeps its space while the
+     brand fades out at the hero, so nothing shifts when it fades back in.
+     The nav row wraps instead of clipping if the text is scaled up further. */
   .site-header .wrap { width: calc(100% - 24px); } /* a hair more room than the page's 36px gutter */
   .nav {
     height: auto;
-    min-height: 78px;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-    gap: clamp(8px, 2.4vw, 12px);
-    padding: 12px 0;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 0 12px;
   }
-  .site-header .logo-wrap { margin-right: auto; }
-  .site-header .brand { font-size: clamp(14px, 4.5vw, 18px); } /* footer keeps its own 15px brand */
-  .brand-tag { display: none; } /* the one-line nav needs the room more */
-  nav { flex-shrink: 0; gap: clamp(6px, 2.2vw, 10px); font-size: clamp(11px, 3.2vw, 12px); white-space: nowrap; }
+  .site-header .brand { font-size: 20px; padding: 4px 0; } /* footer keeps its own 15px brand */
+  .brand-tag { display: none; }
+  nav {
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px clamp(10px, 3.4vw, 18px);
+    font-size: clamp(12px, 3.6vw, 14px);
+    white-space: nowrap;
+  }
   .site-header nav .nav-money span { display: none; } /* ↗ off in the bar only; the page's questionnaire button keeps it */
-  .site-header .nav-money { padding: 8px 10px; }
-  .lang-select { padding: 8px; gap: 4px; }
+  .site-header .nav-money { padding: 7px 12px; }
+  .lang-select { padding: 7px 10px; gap: 5px; }
   .lang-select svg { width: 13px; height: 13px; }
 
   /* Gallery: the card stacks (copy, then the play button under it) */
@@ -805,12 +809,6 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   footer .logo-wrap { order: 1; width: 100%; justify-content: center; }
   footer .footer-mail { order: 2; width: 100%; text-align: center; }
   footer p { order: 3; width: 100%; margin: 0; text-align: center; }
-}
-
-/* Very narrow phones: a 16px header gutter (vs the page's 36px) is the last
-   ~20px that lets one line hold down to 320px without sub-11px text */
-@media (max-width: 355px) {
-  .site-header .wrap { width: calc(100% - 16px); }
 }
 
 
