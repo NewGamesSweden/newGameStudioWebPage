@@ -378,7 +378,7 @@ Where: `src/components/MoneyDialog.tsx`, `src/styles/site.css` section 7.
 Three parts on one grid row: the wordmark at the left edge, the credit dead-centre
 ("made with love by daniel, ahmed & micky." with the year under it — `1fr auto 1fr` columns
 make the middle truly centred however wide the sides are), and the contact address
-(`contact@newgamestudio.com`, a `mailto:` link, muted, cyan on hover) at the right edge. On
+(`contact.newgamestudio@gmail.com`, a `mailto:` link, muted, cyan on hover) at the right edge. On
 phones they stack centred: logo, then credit, then address.
 
 Where: `src/components/SiteFooter.tsx`, `src/styles/site.css` section 6.
