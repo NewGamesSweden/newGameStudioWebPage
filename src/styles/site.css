@@ -159,9 +159,10 @@ nav a:hover { color: var(--accent); }
 /* The language picker (src/components/LanguageSelect.tsx), last in the nav:
    the money button's border around a globe and the current language's code.
    The real <select> covers the whole face at opacity 0, so any click on the
-   face opens the native list; the face takes the hover colour and the focus
-   ring for it. color-scheme + panel colours keep the opened list dark where
-   the browser draws it from the select's own styles. */
+   face opens the native list; the face turns accent on hover and on keyboard
+   focus (no ring: phones show focus-visible on a tapped select). color-scheme
+   + panel colours keep the opened list dark where the browser draws it from
+   the select's own styles. */
 .lang-select {
   position: relative;
   display: inline-flex;
@@ -172,8 +173,8 @@ nav a:hover { color: var(--accent); }
   border-radius: 5px;
   color: var(--ink);
 }
-.lang-select:hover { color: var(--accent); }
-.lang-select:has(select:focus-visible) { outline: 3px solid var(--orange); outline-offset: 6px; }
+.lang-select:hover,
+.lang-select:has(select:focus-visible) { color: var(--accent); }
 .lang-select svg {
   width: 15px;
   height: 15px;
@@ -724,22 +725,37 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
 
 /* Phone */
 @media (max-width: 700px) {
-  html { scroll-padding-top: 124px; } /* the two-row header is ~100px */
+  html { scroll-padding-top: 124px; } /* the header is ~100px once the hero is out of view */
   .wrap { width: calc(100% - 36px); }
 
-  /* Header: two rows — the wordmark centred on top, the nav centred under
-     it. (One line squeezed everything, and overflowed on real phones with
-     a larger text setting.) The wordmark's row keeps its space while the
-     brand fades out at the hero, so nothing shifts when it fades back in.
+  /* Header: the nav centred, and — once the page hero has scrolled away —
+     the wordmark centred in a row above it. (One line squeezed everything,
+     and overflowed on real phones with a larger text setting.) While the
+     hero is on screen the wordmark row collapses to nothing, so the bar is
+     just the nav. The row is a fixed 36px + 6px gap, and the header's
+     margin-bottom gives back exactly those 42px, so the page under the bar
+     never moves when the row opens: the bar grows over the content, and the
+     hero observer can't flip-flop. Height, margin and margin-bottom share
+     one transition, so their sum stays constant all the way through.
      The nav row wraps instead of clipping if the text is scaled up further. */
   .site-header .wrap { width: calc(100% - 24px); } /* a hair more room than the page's 36px gutter */
+  .site-header { margin-bottom: -42px; transition: margin-bottom .25s ease; }
+  .site-header.at-hero { margin-bottom: 0; }
   .nav {
     height: auto;
     flex-direction: column;
-    gap: 6px;
+    gap: 0;
     padding: 10px 0 12px;
   }
-  .site-header .brand { font-size: 20px; padding: 4px 0; } /* footer keeps its own 15px brand */
+  .site-header .logo-wrap {
+    height: 36px;
+    margin-bottom: 6px;
+    align-items: center;
+    overflow: hidden;
+    transition: height .25s ease, margin-bottom .25s ease, opacity .25s ease, visibility .25s ease;
+  }
+  .site-header.at-hero .logo-wrap { height: 0; margin-bottom: 0; }
+  .site-header .brand { height: 100%; padding: 0; font-size: 20px; line-height: 1.2; } /* footer keeps its own 15px brand */
   .brand-tag { display: none; }
   nav {
     max-width: 100%;
