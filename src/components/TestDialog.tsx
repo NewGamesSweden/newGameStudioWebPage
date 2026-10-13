@@ -1,5 +1,7 @@
 import { useDialog } from "../hooks/useDialog";
 import { TEST_QUESTIONS } from "../data/site";
+import { t } from "../i18n";
+import { rich } from "../i18n/rich";
 
 interface Props {
   open: boolean;
@@ -15,17 +17,17 @@ export default function TestDialog({ open, onClose }: Props) {
 
   return (
     <dialog id="test" aria-labelledby="test-title" ref={ref}>
-      <button type="button" className="money-close" aria-label="Close" onClick={onClose}>×</button>
-      <h2 id="test-title" className="money-title">we need you to <span className="money-hot">fill</span> this out</h2>
-      <p className="money-lede">you don’t have to be nice, we’ve lost all emotional response due to AI psychosis</p>
+      <button type="button" className="money-close" aria-label={t.close} onClick={onClose}>×</button>
+      <h2 id="test-title" className="money-title">{rich(t.test.title, "money-hot")}</h2>
+      <p className="money-lede">{t.test.lede}</p>
       <form className="test-form">
-        {TEST_QUESTIONS.map(question => (
-          <label className="test-q" key={question.name}>
-            <span>{question.label}</span>
-            <textarea name={question.name} rows={3} />
+        {TEST_QUESTIONS.map(name => (
+          <label className="test-q" key={name}>
+            <span>{t.questions[name]}</span>
+            <textarea name={name} rows={3} />
           </label>
         ))}
-        <button type="button" className="test-send">send it</button>
+        <button type="button" className="test-send">{t.test.send}</button>
       </form>
     </dialog>
   );

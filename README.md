@@ -1,13 +1,13 @@
 # NewGameStudio website
 
-A small website, one page: the studio hero, a dated studio timeline, and the Gallery game at the end of it. "give us money" in the nav opens a donation modal, and the "gallery" link scrolls down to the game. TypeScript React, built with Vite — the deployable artefact is a static `dist/` folder, no server needed.
+A small website, one page: the studio hero, a dated studio timeline, and the Gallery game at the end of it. "give us money" in the nav opens a donation modal, the "gallery" link scrolls down to the game, and the picker at the top right switches the language (English, Japanese, Chinese, Spanish, Korean). TypeScript React, built with Vite — the deployable artefact is a static `dist/` folder, no server needed.
 
 ## Files
 
 | File | What it is |
 | --- | --- |
 | `index.html` | The Vite entry: head metadata, `#root`, and the boot script tag. |
-| `src/` | The app: `main.tsx` boots it, `App.tsx` is the page shell, `components/` one component per section, `data/site.ts` the content tables, `styles/site.css` all the styling. |
+| `src/` | The app: `main.tsx` boots it, `App.tsx` is the page shell, `components/` one component per section, `i18n/` every word on the page in each language, `data/site.ts` the image tables, `styles/site.css` all the styling. |
 | `public/assets/` | All images, copied verbatim into the build — including `gallery-title-ink.svg`, the baked Gallery title wordmark, and the baked `moment-*.jpg` frames of the september moments section. |
 | `tools/` | One-off build tools (not shipped): `bake-title-ink.py` regenerates the Gallery title wordmark; `bake-moment-frames.py` rebuilds the september moments frames from the source screenshots folder. |
 | `deploy/Caddyfile` | The production Caddy site block, imported by the server's `/etc/caddy/Caddyfile`. |
@@ -120,11 +120,11 @@ The repository is public. Never commit a key, a password or the server's address
 
 ## Common edits
 
-**Change text.** Find the component under `src/components/` that renders it — the timeline and its entries in `Timeline.tsx`, the game card in `GallerySection.tsx`, the modals, header and footer each in their own file.
+**Change text.** All the words live in `src/i18n/`, one file per language (`en.ts`, `ja.ts`, `zh.ts`, `es.ts`, `ko.ts`). Change the same key in every language file. `[brackets]` mark the green accent words and `\n` a line break. `npm run typecheck` fails if a language is missing a string.
 
 **Change colours.** Open `src/styles/site.css`. The colours are variables in the `:root` block at the top.
 
-**Add or remove a carousel image.** Put the image in `public/assets/` and add one entry to `SLIDES` in `src/data/site.ts` (with its real `width`/`height` — the strip measures from the attributes before any pixels arrive). The strip loops through the list forever; thumbnails, captions and the preview update automatically.
+**Add or remove a carousel image.** Put the image in `public/assets/` and add one entry to `SLIDES` in `src/data/site.ts` (an `id` and its real `width`/`height` — the strip measures from the attributes before any pixels arrive), then add that `id` with its caption and alt text to `slides` in every `src/i18n/` file. The strip loops through the list forever; thumbnails, captions and the preview update automatically.
 
 **Change the Play Gallery link.** It points at https://gallery.newgamestudio.com/ in `src/components/GallerySection.tsx`.
 
@@ -132,10 +132,12 @@ The repository is public. Never commit a key, a password or the server's address
 
 **Rebuild or reorder the september moments.** The frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder (edit the `EXCLUDE` list there to drop more). Re-run the tool, then paste its printed `<img>` list over the old one in `MOMENTS` in `src/data/site.ts`. The cycle speed is `MOMENT_MS` at the top of `src/components/MomentsEntry.tsx`.
 
-**Add the donation link.** The money modal's "donation link coming soon" sentence lives in `src/components/MoneyDialog.tsx`. When a real URL exists, replace the sentence with a link.
+**Add the donation link.** The money modal's "donation link coming soon" sentence is `money.note` in each `src/i18n/` file, rendered by `src/components/MoneyDialog.tsx`. When a real URL exists, replace the sentence with a link there.
+
+**Add a language.** Copy `src/i18n/en.ts` to a new file, translate it, and add one line to `LANGS` in `src/i18n/index.ts`. See `SITE-GUIDE.md` section 5.9.
 
 ## Notes
 
-- Fonts load from Google Fonts. Offline, the browser falls back to a system font.
+- Fonts load from Google Fonts. Offline, the browser falls back to a system font. Japanese, Chinese and Korean always use the system font: the web fonts have no CJK characters.
 - The layout adapts to phones (700px and below) and tablets (1000px and below). Those rules are in section 9 of `src/styles/site.css`.
 - Visitors who have "reduce motion" turned on get no animations and the carousel does not drift on its own.

@@ -1,3 +1,5 @@
+import { t } from "../i18n";
+import { rich } from "../i18n/rich";
 import FoolsIntro from "./FoolsIntro";
 import GallerySection from "./GallerySection";
 import MomentsEntry from "./MomentsEntry";
@@ -55,24 +57,24 @@ export default function Timeline({ onOpenTest }: Props) {
 
       {/* july 2026: We begin with Gallery. Heading + caption + photo on the left. */}
       <Snake d={d.july} />
-      <p className="ngs-date ngs-date--left">july 2026</p>
+      <p className="ngs-date ngs-date--left">{t.timeline.july}</p>
       <Tail d="M37.5 0 V100" />
       <div className="ngs-entry ngs-entry--left">
         <div className="ngs-block">
-          <h2 className="fools-title">We begin with <span className="gallery-word">Gallery</span></h2>
-          <p className="fools-caption">Daniel had a list of game ideas and Gallery stood out as a potential first game. A good way to see if we can work together without destroying our friendship</p>
-          <img className="ngs-photo" src="assets/fools-banner.jpg" alt="The three of us around the studio table" width={1041} height={508} />
+          <h2 className="fools-title">{rich(t.timeline.beginTitle, "gallery-word")}</h2>
+          <p className="fools-caption">{t.timeline.beginCaption}</p>
+          <img className="ngs-photo" src="assets/fools-banner.jpg" alt={t.timeline.beginPhotoAlt} width={1041} height={508} />
         </div>
       </div>
 
       {/* august 2026: the deadline. Heading + photo on the right. */}
       <Snake d={d.august} />
-      <p className="ngs-date ngs-date--right">august 2026</p>
+      <p className="ngs-date ngs-date--right">{t.timeline.august}</p>
       <Tail d="M62.5 0 V100" />
       <div className="ngs-entry ngs-entry--right">
         <div className="ngs-block">
-          <h2 className="fools-title">“let’s post it by <span>early October</span>”</h2>
-          <img className="ngs-photo" src="assets/open-beta.jpg" alt="two thumbs up at the desk during the open-beta grind" width={1041} height={508} />
+          <h2 className="fools-title">{rich(t.timeline.deadlineTitle)}</h2>
+          <img className="ngs-photo" src="assets/open-beta.jpg" alt={t.timeline.deadlinePhotoAlt} width={1041} height={508} />
         </div>
       </div>
 
@@ -83,8 +85,8 @@ export default function Timeline({ onOpenTest }: Props) {
       <div className="ngs-entry ngs-entry--left">
         <div className="ngs-block">
           <figure className="ngs-sept">
-            <img src="assets/daniel-selfie.jpg" alt="Daniel squinting at the camera" width={864} height={976} loading="lazy" />
-            <img src="assets/september-lantern.jpg" alt="a green lantern glowing on the desk" width={250} height={314} loading="lazy" />
+            <img src="assets/daniel-selfie.jpg" alt={t.timeline.selfieAlt} width={864} height={976} loading="lazy" />
+            <img src="assets/september-lantern.jpg" alt={t.timeline.lanternAlt} width={250} height={314} loading="lazy" />
           </figure>
         </div>
       </div>
@@ -93,14 +95,14 @@ export default function Timeline({ onOpenTest }: Props) {
           tools/bake-moment-frames.py — re-run that tool to rebuild or
           reorder them, then paste its output into src/data/site.ts. */}
       <Snake d={d.september} />
-      <p className="ngs-date ngs-date--right">september 2026</p>
+      <p className="ngs-date ngs-date--right">{t.timeline.september}</p>
       <Tail d="M62.5 0 V100" />
       <MomentsEntry />
 
       {/* october 2026: back to the centre. The whole Gallery game lives at
            the end of the timeline — the nav's gallery link scrolls here. */}
       <Snake d={d.october} />
-      <p className="ngs-date ngs-date--centre">october 2026</p>
+      <p className="ngs-date ngs-date--centre">{t.timeline.october}</p>
       <Tail d="M50 0 V100" />
       <GallerySection onOpenTest={onOpenTest} />
 
@@ -109,9 +111,8 @@ export default function Timeline({ onOpenTest }: Props) {
       <Tail d="M50 0 V100" />
       <div className="ngs-entry ngs-entry--centre" id="upcoming">
         <div className="ngs-block">
-          <h2 className="fools-title">what’s <span>next</span> for us</h2>
-          <p className="fools-caption">two thirds of our team are going to Korea for a few weeks to find ourselves or something (sorry Ahmed)</p>
-          <p className="fools-caption">when we get back, we’ll be refining Gallery and continuing the process on a new single player game we’re working on. Probably some game jams too, so stay tuned</p>
+          <h2 className="fools-title">{rich(t.timeline.nextTitle)}</h2>
+          {t.timeline.nextCaptions.map(caption => <p className="fools-caption" key={caption}>{caption}</p>)}
         </div>
       </div>
     </>

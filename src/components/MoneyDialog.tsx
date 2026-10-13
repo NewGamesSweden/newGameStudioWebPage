@@ -1,4 +1,6 @@
 import { useDialog } from "../hooks/useDialog";
+import { t } from "../i18n";
+import { rich } from "../i18n/rich";
 
 interface Props {
   open: boolean;
@@ -10,10 +12,10 @@ export default function MoneyDialog({ open, onClose }: Props) {
 
   return (
     <dialog id="money" aria-labelledby="money-title" ref={ref}>
-      <h2 id="money-title" className="money-title">Gallery is free</h2>
-      <p className="money-lede">but if you’re <span className="money-hot">rich as hell</span>,<br />we’d like <span className="money-hot">several million euros</span> please</p>
-      <p className="money-note">donation link coming soon. You can still mail us cash or other valuables</p>
-      <button type="button" className="money-close" aria-label="Close" onClick={onClose}>×</button>
+      <h2 id="money-title" className="money-title">{t.money.title}</h2>
+      <p className="money-lede">{rich(t.money.lede, "money-hot")}</p>
+      <p className="money-note">{t.money.note}</p>
+      <button type="button" className="money-close" aria-label={t.close} onClick={onClose}>×</button>
     </dialog>
   );
 }

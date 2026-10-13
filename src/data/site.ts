@@ -2,14 +2,17 @@
    index.html (the extraction is mechanical — keep it that way when re-running
    tools/bake-moment-frames.py: its printed <img> lines paste straight into
    MOMENTS). Widths/heights are load-bearing: the carousel measures its strip
-   from the slide imgs' attributes before any pixels arrive. */
+   from the slide imgs' attributes before any pixels arrive.
+
+   The words live in src/i18n/, one file per language: slides, fools and
+   questions are keyed here by id/name, and every language file must carry
+   the same keys (the Messages type enforces it). */
 
 export interface Slide {
+  id: string;
   src: string;
   width: number;
   height: number;
-  alt: string;
-  title: string;
 }
 
 export interface Moment {
@@ -23,33 +26,29 @@ export interface Fool {
   img: string;
   width: number;
   height: number;
-  line: string;
 }
 
-export interface TestQuestion {
-  name: string;
-  label: string;
-}
+export const SLIDES = [
+  { id: "game-faker", src: "assets/game-faker.png", width: 1068, height: 1074 },
+  { id: "game-printer", src: "assets/game-printer.png", width: 1072, height: 1254 },
+  { id: "game-night", src: "assets/game-night.png", width: 3012, height: 1606 },
+  { id: "game-day", src: "assets/game-day.png", width: 3006, height: 1604 },
+  { id: "game-rules", src: "assets/game-rules.png", width: 3006, height: 1602 },
+  { id: "study-menu", src: "assets/study-menu.jpg", width: 1920, height: 1080 },
+  { id: "study-lobby", src: "assets/study-lobby.jpg", width: 1920, height: 1080 },
+  { id: "study-game", src: "assets/study-game.jpg", width: 1920, height: 1080 },
+  { id: "menu-july", src: "assets/menu-july.png", width: 2048, height: 1011 },
+  { id: "prop-august", src: "assets/prop-august.png", width: 327, height: 307 },
+  { id: "jar-august", src: "assets/jar-august.png", width: 253, height: 264 },
+  { id: "gallery", src: "assets/gallery.png", width: 2048, height: 1090 },
+  { id: "frame-september", src: "assets/frame-september.png", width: 265, height: 297 },
+  { id: "paint-september", src: "assets/paint-september.png", width: 2048, height: 1331 },
+  { id: "playtest-september", src: "assets/playtest-september.jpg", width: 1153, height: 2048 },
+  { id: "game-september", src: "assets/game-september.png", width: 2047, height: 1090 },
+  { id: "browser-september", src: "assets/browser-september.png", width: 654, height: 448 },
+] as const satisfies readonly Slide[];
 
-export const SLIDES: Slide[] = [
-  { src: "assets/game-faker.png", width: 1068, height: 1074, alt: "Gallery in game: the easel canvas reads 'you are the faker'", title: "In game · You are the faker" },
-  { src: "assets/game-printer.png", width: 1072, height: 1254, alt: "Gallery in game: the easel canvas reads 'the word is printer'", title: "In game · The word is printer" },
-  { src: "assets/game-night.png", width: 3012, height: 1606, alt: "Gallery in game at night: player signs, a painted smiley on the shared canvas, and the word sign", title: "In game · Night round" },
-  { src: "assets/game-day.png", width: 3006, height: 1604, alt: "Gallery in game by day: the word sign reveals 'mango'", title: "In game · Day round" },
-  { src: "assets/game-rules.png", width: 3006, height: 1602, alt: "Gallery's open rule book showing the welcome and how-to-play pages", title: "In game · The rule book" },
-  { src: "assets/study-menu.jpg", width: 1920, height: 1080, alt: "Concept artwork arranging an easel, scroll, and artist desk", title: "Main menu · Layout study" },
-  { src: "assets/study-lobby.jpg", width: 1920, height: 1080, alt: "Gallery lobby concept with an easel, parchment, and hanging player signs", title: "Lobby · Layout study" },
-  { src: "assets/study-game.jpg", width: 1920, height: 1080, alt: "Gallery in-game layout study with artist and information poles", title: "In game · Layout study" },
-  { src: "assets/menu-july.png", width: 2048, height: 1011, alt: "Early Gallery menu with a stone wall, practice canvas, and how-to-play instructions", title: "20 Jul · An early menu" },
-  { src: "assets/prop-august.png", width: 327, height: 307, alt: "An early angular low-poly prop model", title: "13 Aug · Building the props" },
-  { src: "assets/jar-august.png", width: 253, height: 264, alt: "A low-poly transparent jar model in development", title: "20 Aug · A jar takes shape" },
-  { src: "assets/gallery.png", width: 2048, height: 1090, alt: "Gallery gameplay with coloured drawings, artist list, and hidden-role information", title: "30 Aug · On the shared canvas" },
-  { src: "assets/frame-september.png", width: 265, height: 297, alt: "A decorative picture-frame corner being modelled in 3D", title: "04 Sep · One more detail" },
-  { src: "assets/paint-september.png", width: 2048, height: 1331, alt: "A coloured cylindrical prop being edited in the 3D modelling workspace", title: "05 Sep · Back to the workbench" },
-  { src: "assets/playtest-september.jpg", width: 1153, height: 2048, alt: "A photograph of Gallery running on a laptop with a shared drawing and innocent role", title: "06 Sep · A game in progress" },
-  { src: "assets/game-september.png", width: 2047, height: 1090, alt: "Gallery gameplay with an easel, mountain scenery, and the faker role", title: "10 Sep · Into the outdoors" },
-  { src: "assets/browser-september.png", width: 654, height: 448, alt: "Gallery in a browser window with a scroll menu and low-poly landscape", title: "11 Sep · Another browser iteration" },
-];
+export type SlideId = (typeof SLIDES)[number]["id"];
 
 export const MOMENTS: Moment[] = [
   { src: "assets/moment-01.jpg", width: 600, height: 471 },
@@ -140,27 +139,19 @@ export const MOMENTS: Moment[] = [
   { src: "assets/moment-86.jpg", width: 487, height: 600 },
 ];
 
-export const FOOLS: Fool[] = [
-  { name: "Daniel", img: "assets/avatar-daniel.jpg", width: 248, height: 264, line: "unable to take a day off. Allergic to everything" },
-  { name: "Ahmed", img: "assets/avatar-ahmed.jpg", width: 218, height: 232, line: "tried keto a few times, was depressed each time, will probably try again" },
-  { name: "Micky", img: "assets/avatar-micky.jpg", width: 98, height: 116, line: "has never tried keto, not allergic to anything, will not eat cauliflower" },
-];
+export const FOOLS = [
+  { name: "Daniel", img: "assets/avatar-daniel.jpg", width: 248, height: 264 },
+  { name: "Ahmed", img: "assets/avatar-ahmed.jpg", width: 218, height: 232 },
+  { name: "Micky", img: "assets/avatar-micky.jpg", width: 98, height: 116 },
+] as const satisfies readonly Fool[];
 
-export const TEST_QUESTIONS: TestQuestion[] = [
-  { name: "q01", label: "What did you think the goal of the game was, and what were you trying to accomplish while playing?" },
-  { name: "q02", label: "Was there ever a point where you didn’t know what to do or how something worked? What happened?" },
-  { name: "q03", label: "What was the most fun part of the game, and why?" },
-  { name: "q04", label: "What was the least fun part of the game, and why?" },
-  { name: "q05", label: "What was the most satisfying or rewarding moment? What caused that feeling?" },
-  { name: "q06", label: "What was the most frustrating or annoying moment? What caused it?" },
-  { name: "q07", label: "Were there any moments where you felt bored or the game became repetitive?" },
-  { name: "q08", label: "Did anything behave differently from what you expected?" },
-  { name: "q09", label: "Was there anything you wanted to do but couldn’t?" },
-  { name: "q10", label: "Did you ever feel lost, stuck, or unsure how to progress? What caused it?" },
-  { name: "q11", label: "Was anything about the controls or interface awkward or unintuitive?" },
-  { name: "q12", label: "Did you discover any strategies, behaviors, or ways of playing that you think the game may not have intended?" },
-  { name: "q13", label: "If you could change one thing about the game, what would you change?" },
-  { name: "q14", label: "Who do you think would enjoy this game?" },
-  { name: "q15", label: "Is there anything you expected from the game that it didn’t provide?" },
-  { name: "q16", label: "Is there anything else you’d like us to know?" },
-];
+export type FoolName = (typeof FOOLS)[number]["name"];
+
+// The playtest form's field names, in display order; each language file
+// carries the question text for every name.
+export const TEST_QUESTIONS = [
+  "q01", "q02", "q03", "q04", "q05", "q06", "q07", "q08",
+  "q09", "q10", "q11", "q12", "q13", "q14", "q15", "q16",
+] as const;
+
+export type QuestionName = (typeof TEST_QUESTIONS)[number];

@@ -1,3 +1,5 @@
+import { t } from "../i18n";
+import { rich } from "../i18n/rich";
 import Carousel from "./Carousel";
 
 interface Props {
@@ -19,9 +21,9 @@ export default function GallerySection({ onOpenTest }: Props) {
           <h2 id="games-heading" className="game-title">
             <img src="assets/gallery-title-ink.svg?v=6" alt="Gallery" width={343} height={128} />
           </h2>
-          <p className="game-description">a drawing deduction game for the browser. Now in beta</p>
+          <p className="game-description">{t.gallery.description}</p>
         </div>
-        <a className="button play-gallery" href="https://gallery.newgamestudio.com/" target="_blank" rel="noopener noreferrer">Play for free <span aria-hidden="true">↗</span></a>
+        <a className="button play-gallery" href="https://gallery.newgamestudio.com/" target="_blank" rel="noopener noreferrer">{t.gallery.play} <span aria-hidden="true">↗</span></a>
       </article>
 
       {/* Development images: the Carousel component. Help us test: opens
@@ -29,10 +31,10 @@ export default function GallerySection({ onOpenTest }: Props) {
       <Carousel />
 
       <div className="help-test">
-        <h2 className="fools-title">help us <span>test</span></h2>
-        <p className="fools-caption">we need people to play it and fill this thing out:</p>
+        <h2 className="fools-title">{rich(t.gallery.helpTitle)}</h2>
+        <p className="fools-caption">{t.gallery.helpCaption}</p>
         <button type="button" className="nav-money" id="open-test" onClick={onOpenTest}>
-          questionnaire <span aria-hidden="true">↗</span>
+          {t.gallery.questionnaire} <span aria-hidden="true">↗</span>
         </button>
       </div>
     </div>

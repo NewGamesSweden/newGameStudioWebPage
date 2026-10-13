@@ -1,5 +1,6 @@
 import { useDialog } from "../hooks/useDialog";
 import { SLIDES } from "../data/site";
+import { t } from "../i18n";
 
 interface Props {
   index: number | null; // which slide to enlarge; null = closed (defaults show)
@@ -19,9 +20,9 @@ export default function PreviewDialog({ index, onClose }: Props) {
 
   return (
     <dialog id="preview" ref={ref}>
-      <button id="close-preview" type="button" aria-label="Close image preview" onClick={onClose}>Close ×</button>
-      <img src={slide.src} alt={slide.alt} />
-      <p id="preview-caption">{index !== null ? slide.title : "Gallery, from development to game"}</p>
+      <button id="close-preview" type="button" aria-label={t.preview.closeLabel} onClick={onClose}>{t.preview.close} ×</button>
+      <img src={slide.src} alt={t.slides[slide.id].alt} />
+      <p id="preview-caption">{index !== null ? t.slides[slide.id].title : t.preview.defaultCaption}</p>
     </dialog>
   );
 }

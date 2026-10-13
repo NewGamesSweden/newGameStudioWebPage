@@ -1,9 +1,11 @@
 import type { MouseEvent } from "react";
+import { t } from "../i18n";
+import LanguageSelect from "./LanguageSelect";
 import { WordmarkText } from "./Wordmark";
 
 /* The fixed site bar: logo (hidden while the hero behind it is on screen —
    App toggles at-hero from the same IntersectionObserver main.js used),
-   anchor nav and the money button. */
+   anchor nav, the money button and the language picker. */
 
 interface Props {
   atHero: boolean;
@@ -29,14 +31,15 @@ export default function SiteHeader({ atHero, onOpenMoney }: Props) {
           <a className="brand" href="index.html">
             <span className="wordmark"><WordmarkText /></span>
           </a>
-          <span className="brand-tag">three fools making games</span>
+          <span className="brand-tag">{t.header.tagline}</span>
         </div>
-        <nav aria-label="Main navigation">
-          <a href="#gallery" onClick={e => goAnchor(e, "gallery")}>gallery</a>
-          <a href="#upcoming" onClick={e => goAnchor(e, "upcoming")}>upcoming</a>
+        <nav aria-label={t.header.nav}>
+          <a href="#gallery" onClick={e => goAnchor(e, "gallery")}>{t.header.gallery}</a>
+          <a href="#upcoming" onClick={e => goAnchor(e, "upcoming")}>{t.header.upcoming}</a>
           <button type="button" className="nav-money" id="open-money" onClick={onOpenMoney}>
-            give us money <span aria-hidden="true">↗</span>
+            {t.header.money} <span aria-hidden="true">↗</span>
           </button>
+          <LanguageSelect />
         </nav>
       </div>
     </header>

@@ -1,0 +1,122 @@
+import type { Messages } from "./types";
+
+/* Spanish (neutral, tú). */
+
+const es: Messages = {
+  meta: {
+    description: "Somos Daniel, Ahmed y Micky. Tres amigos que hacen juegos, persiguen ideas y, de vez en cuando, se acuerdan de la palabra “alcance”.",
+  },
+  header: {
+    tagline: "tres tontos haciendo juegos",
+    nav: "Navegación principal",
+    gallery: "galería",
+    upcoming: "lo próximo",
+    money: "danos dinero",
+    language: "Idioma / Language",
+  },
+  intro: {
+    title: "tres [tontos] haciendo juegos",
+    captions: [
+      "En la fiesta del 33.º cumpleaños de Daniel (uf), empezamos a hablar de ideas para juegos indie y de los proyectos personales en los que cada uno había trabajado. Nos dimos cuenta de que teníamos una visión parecida, así que ahora hacemos juegos juntos",
+      "Sin buscarlo, acabamos trabajando a base de iteraciones rápidas. A veces ayuda muchísimo y a veces no. En cualquier caso, creemos en probar antes de comprar. Si alguien tiene una idea, se hace un ejemplo y se discute. La discusión suele ser:",
+      "“¿para qué me enseñas esto? IMPLEMÉNTALO y ya”",
+    ],
+  },
+  fools: {
+    Daniel: "incapaz de tomarse un día libre. Alérgico a todo",
+    Ahmed: "probó la dieta keto varias veces, se deprimió cada vez, probablemente vuelva a intentarlo",
+    Micky: "nunca ha probado la keto, no es alérgico a nada, no come coliflor",
+  },
+  timeline: {
+    july: "julio 2026",
+    august: "agosto 2026",
+    september: "septiembre 2026",
+    october: "octubre 2026",
+    beginTitle: "Empezamos con [Gallery]",
+    beginCaption: "Daniel tenía una lista de ideas para juegos y Gallery destacó como posible primer juego. Una buena forma de ver si podemos trabajar juntos sin destruir nuestra amistad",
+    beginPhotoAlt: "Los tres alrededor de la mesa del estudio",
+    deadlineTitle: "“publiquémoslo a [principios de octubre]”",
+    deadlinePhotoAlt: "dos pulgares arriba en el escritorio durante el sprint final de la beta abierta",
+    selfieAlt: "Daniel entrecerrando los ojos ante la cámara",
+    lanternAlt: "un farol verde brillando sobre el escritorio",
+    momentsLabel: "septiembre, en momentos",
+    nextTitle: "lo [próximo] para nosotros",
+    nextCaptions: [
+      "dos tercios del equipo nos vamos a Corea unas semanas a encontrarnos a nosotros mismos o algo así (lo siento, Ahmed)",
+      "cuando volvamos, seguiremos puliendo Gallery y avanzando con un nuevo juego para un jugador en el que estamos trabajando. Seguramente también alguna game jam, así que atentos",
+    ],
+  },
+  gallery: {
+    description: "un juego de dibujo y deducción para el navegador. Ya en beta",
+    play: "Juega gratis",
+    helpTitle: "ayúdanos a [probarlo]",
+    helpCaption: "necesitamos gente que lo juegue y rellene esto:",
+    questionnaire: "cuestionario",
+  },
+  carousel: {
+    label: "Gallery, capturas y desarrollo",
+    back: "Desplazar hacia atrás",
+    forward: "Desplazar hacia delante",
+    thumbnails: "Elige una imagen",
+    show: title => `Mostrar ${title}`,
+    position: (n, total) => `${n} de ${total}`,
+  },
+  slides: {
+    "game-faker": { alt: "Gallery en partida: el lienzo del caballete dice “eres el impostor”", title: "En partida · Eres el impostor" },
+    "game-printer": { alt: "Gallery en partida: el lienzo del caballete dice “la palabra es impresora”", title: "En partida · La palabra es impresora" },
+    "game-night": { alt: "Gallery en partida de noche: carteles de jugadores, una cara sonriente pintada en el lienzo compartido y el cartel de la palabra", title: "En partida · Ronda nocturna" },
+    "game-day": { alt: "Gallery en partida de día: el cartel de la palabra revela “mango”", title: "En partida · Ronda diurna" },
+    "game-rules": { alt: "El libro de reglas de Gallery, abierto por las páginas de bienvenida y de cómo jugar", title: "En partida · El libro de reglas" },
+    "study-menu": { alt: "Arte conceptual con un caballete, un pergamino y un escritorio de artista", title: "Menú principal · Estudio de diseño" },
+    "study-lobby": { alt: "Concepto del lobby de Gallery con un caballete, un pergamino y carteles de jugadores colgados", title: "Lobby · Estudio de diseño" },
+    "study-game": { alt: "Estudio de diseño de Gallery en partida, con el artista y postes de información", title: "En partida · Estudio de diseño" },
+    "menu-july": { alt: "Uno de los primeros menús de Gallery, con un muro de piedra, un lienzo de práctica e instrucciones de cómo jugar", title: "20 jul · Un menú temprano" },
+    "prop-august": { alt: "Uno de los primeros modelos de atrezo, anguloso y low-poly", title: "13 ago · Construyendo el atrezo" },
+    "jar-august": { alt: "Un modelo de tarro transparente low-poly en desarrollo", title: "20 ago · Un tarro toma forma" },
+    "gallery": { alt: "Partida de Gallery con dibujos de colores, la lista de artistas e información de roles ocultos", title: "30 ago · En el lienzo compartido" },
+    "frame-september": { alt: "La esquina de un marco decorativo modelándose en 3D", title: "04 sep · Un detalle más" },
+    "paint-september": { alt: "Un objeto cilíndrico de colores editándose en el espacio de modelado 3D", title: "05 sep · De vuelta al taller" },
+    "playtest-september": { alt: "Una foto de Gallery funcionando en un portátil, con un dibujo compartido y el rol de inocente", title: "06 sep · Una partida en curso" },
+    "game-september": { alt: "Partida de Gallery con un caballete, un paisaje de montaña y el rol de impostor", title: "10 sep · Al aire libre" },
+    "browser-september": { alt: "Gallery en una ventana del navegador, con un menú de pergamino y un paisaje low-poly", title: "11 sep · Otra iteración en el navegador" },
+  },
+  preview: {
+    close: "Cerrar",
+    closeLabel: "Cerrar la vista previa",
+    defaultCaption: "Gallery, del desarrollo al juego",
+  },
+  close: "Cerrar",
+  money: {
+    title: "Gallery es gratis",
+    lede: "pero si eres [asquerosamente rico],\nnos vendrían bien [varios millones de euros], por favor",
+    note: "el enlace de donaciones llegará pronto. Mientras tanto, puedes enviarnos efectivo u otros objetos de valor por correo",
+  },
+  test: {
+    title: "necesitamos que [rellenes] esto",
+    lede: "no hace falta que seas amable, hemos perdido toda respuesta emocional por la psicosis de la IA",
+    send: "enviar",
+  },
+  questions: {
+    q01: "¿Cuál creíste que era el objetivo del juego y qué intentabas conseguir mientras jugabas?",
+    q02: "¿Hubo algún momento en el que no supieras qué hacer o cómo funcionaba algo? ¿Qué pasó?",
+    q03: "¿Cuál fue la parte más divertida del juego y por qué?",
+    q04: "¿Cuál fue la parte menos divertida del juego y por qué?",
+    q05: "¿Cuál fue el momento más satisfactorio o gratificante? ¿Qué provocó esa sensación?",
+    q06: "¿Cuál fue el momento más frustrante o molesto? ¿Qué lo causó?",
+    q07: "¿Hubo momentos en los que te aburriste o el juego se volvió repetitivo?",
+    q08: "¿Algo se comportó de forma distinta a lo que esperabas?",
+    q09: "¿Hubo algo que quisieras hacer y no pudieras?",
+    q10: "¿En algún momento te sentiste perdido, atascado o sin saber cómo avanzar? ¿Qué lo causó?",
+    q11: "¿Hubo algo en los controles o la interfaz que te resultara incómodo o poco intuitivo?",
+    q12: "¿Descubriste estrategias, comportamientos o formas de jugar que creas que el juego no tenía previstas?",
+    q13: "Si pudieras cambiar una sola cosa del juego, ¿qué cambiarías?",
+    q14: "¿Quién crees que disfrutaría de este juego?",
+    q15: "¿Hay algo que esperabas del juego y que no te ofreció?",
+    q16: "¿Hay algo más que quieras contarnos?",
+  },
+  footer: {
+    madeBy: "hecho con amor por tres tontos",
+  },
+};
+
+export default es;

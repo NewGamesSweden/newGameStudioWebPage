@@ -18,7 +18,8 @@ A small static website for NewGameStudio, the studio run by Daniel, Ahmed and Mi
 page: the studio hero, a dated timeline of the studio's story (july → october 2026), and the
 first game (Gallery) at the end of it with its development carousel and a help-us-test
 section. "give us money" in the nav opens a donation modal; the nav's "gallery" link scrolls
-down to the game; its questionnaire button opens a playtest modal.
+down to the game; its questionnaire button opens a playtest modal. The page is in five
+languages (English, Japanese, Chinese, Spanish, Korean), picked at the top right (5.9).
 
 Technical shape:
 
@@ -31,8 +32,8 @@ Technical shape:
 - The old `main.js` behaviour now lives in React components under `src/components/` and one
   shared dialog hook (`src/hooks/useDialog.ts`); the carousel and the moments cycle are
   imperative ports — same rAF loop, same observers, same timings.
-- Data tables (the 17 slides, the 86 moments, the fools, the questionnaire's questions) live
-  in `src/data/site.ts`.
+- Data tables (the 17 slides, the 86 moments, the fools, the questionnaire's field names) live
+  in `src/data/site.ts`; every word on the page lives in `src/i18n/`, one file per language.
 - Fonts come from Google Fonts and fall back to system fonts offline.
 - Hosted as static files. Caddy on the studio's server is the intended host (`deploy/`); any
   static host works.
@@ -84,10 +85,11 @@ git push
 | `index.html` | The Vite entry point: head metadata, the `#root` div, and the script tag that boots `src/main.tsx`. |
 | `src/main.tsx` | Boot: mounts `<App />` in StrictMode and imports the stylesheet. |
 | `src/App.tsx` | The page shell: header, timeline section, footer, the two modal states, and the header brand-fade observer. |
-| `src/components/` | One component per site section: `SiteHeader`, `FoolsIntro`, `Timeline`, `MomentsEntry`, `GallerySection`, `Carousel`, `PreviewDialog`, `MoneyDialog`, `TestDialog`, `SiteFooter`. |
+| `src/components/` | One component per site section: `SiteHeader`, `LanguageSelect`, `FoolsIntro`, `Timeline`, `MomentsEntry`, `GallerySection`, `Carousel`, `PreviewDialog`, `MoneyDialog`, `TestDialog`, `SiteFooter`. |
+| `src/i18n/` | The words, per language (section 5.9): `en.ts`, `ja.ts`, `zh.ts`, `es.ts`, `ko.ts`, the `Messages` type they all implement (`types.ts`), the language choice (`index.ts`) and the `[accent]` markup helper (`rich.tsx`). |
 | `src/hooks/useDialog.ts` | Shared native `<dialog>` wiring: showModal/close from a prop, outside-click close. |
 | `src/lib/media.ts` | The `prefers-reduced-motion` media query, shared by the carousel and the moments cycle. |
-| `src/data/site.ts` | The data tables: 17 slides, 86 moments, 3 fools, 16 questionnaire questions. |
+| `src/data/site.ts` | The data tables: 17 slides, 86 moments, 3 fools, 16 questionnaire field names. Their words are in `src/i18n/`. |
 | `src/styles/site.css` | All styling, in numbered sections — the old stylesheet, copied verbatim. Colours and fonts at the top, screen-size rules near the bottom. |
 | `public/assets/` | Every image on the site, copied verbatim into the build: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, seventeen carousel images, 86 moment frames. |
 | `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2); `bake-moment-frames.py` rebuilds the september moments frames. |
@@ -123,7 +125,8 @@ Sticky bar with the wordmark and the navigation: "gallery" (an anchor to `#galle
 end of the timeline — it smooth-scrolls there, and `scroll-padding-top` keeps the heading
 clear of the sticky bar), "upcoming" (the same kind of anchor, to the `#upcoming`
 "what's next for us" section after the gallery), and "give us money ↗" — a bordered
-`<button>` that opens the money modal (section 5.6), not a link. The site is one page, so
+`<button>` that opens the money modal (section 5.6), not a link, and last, at the top right,
+the language picker (section 5.9). The site is one page, so
 there is no home item and
 no active-page dot; the wordmark is the way home. On phones the nav wraps to a
 second row under the logo; all three items stay visible.
@@ -131,7 +134,8 @@ second row under the logo; all three items stay visible.
 **The logo is the way home.** The wordmark ("NewGameStudio", "Game" in cyan) is a plain
 link to the site root — the wordmark is the way home.
 Beside it sits the studio's one-liner, "three fools making games",
-in the small secondary style (`--muted`, 14px); hidden on phones.
+in the small secondary style (`--muted`, 14px); hidden at 860px and below (the bar has no
+room for it next to the picker).
 
 **The brand yields to the hero.** While the page hero (the tilted wordmark) is on screen,
 the header's own wordmark and one-liner fade out — the same words twice on one screen
@@ -385,6 +389,44 @@ pauses.
 Where: `src/components/PreviewDialog.tsx` (opened by `src/components/Carousel.tsx`),
 `src/styles/site.css` section 7.
 
+### 5.9 Languages (`src/i18n/`, `LanguageSelect.tsx`)
+
+The page speaks English, Japanese, Chinese (Simplified), Spanish and Korean.
+
+**The picker.** The last item in the nav, top right: a globe and the current language's code
+(`EN`, `JA`, `ZH`, `ES`, `KO`) inside the money button's border. A native `<select>` lies over
+the whole face at opacity 0, so a click anywhere on it opens the browser's own list, with each
+language written in its own script. Keyboard, screen readers and phone pickers work with no
+extra code. The face shows the hover colour and the orange focus ring for the hidden select.
+
+**Choosing reloads the page.** Picking a language stores it in `localStorage` (`ngs-lang`)
+and reloads. The language is decided once, at boot, in `src/i18n/index.ts`: the stored pick,
+else the first browser language the site has (by primary subtag, so `zh-TW` gets Chinese and
+`es-MX` Spanish), else English. Components just read `t` from that module. Nothing
+re-renders on a switch, so the carousel's cloned slides never hold old captions.
+`main.tsx` sets `<html lang>` (`en`, `ja`, `zh-CN`, `es`, `ko`) and the meta description
+before the first render. `index.html` itself stays English.
+
+**The words.** One file per language. Each implements the `Messages` interface in
+`src/i18n/types.ts`, and slides, fools and questions are keyed by the ids and names in
+`src/data/site.ts`, so a missing or misspelt key fails `npm run typecheck`. Accent words are
+marked `[like this]` and line breaks `\n`; `rich()` in `src/i18n/rich.tsx` turns them into the
+`<span>` and `<br>` each heading needs, wherever the language's word order puts them. Brand
+names (NewGameStudio, Gallery), people's names, the © line and the email address are never
+translated. The translations were machine-written from the English copy: have a native
+speaker read them before relying on them.
+
+**CJK type.** Space Grotesk and DM Sans have no Japanese, Chinese or Korean glyphs, so those
+characters use the system's sans-serif. The `lang` on `<html>` makes the browser choose the
+right font for each language. The headings' negative letter-spacing is reset to 0 in those
+languages, because it would crowd CJK glyphs, and Korean wraps between words
+(`word-break: keep-all`). See the rules under `.sr-only` in `src/styles/site.css` section 2.
+
+**Add a language.** Copy `src/i18n/en.ts` to `<code>.ts`, translate every string, and add
+one line to `LANGS` in `src/i18n/index.ts` with its `<html lang>` code, the picker's short
+code and its own name. Check the header at 701 to 860px and at 320px. The bar must stay one
+line. Spanish and Japanese are the longest today.
+
 ---
 
 ## 6. Design system
@@ -421,6 +463,7 @@ One scale: 8, 16, 24, 32, 40, 56, 64px. Things that belong together sit 8 to 32p
 | --- | --- |
 | Desktop | Content is limited to a 1280px column. |
 | 1000px and below (tablet) | Tighter page margins, smaller Gallery title, shorter carousel strip |
+| 860px and below | The header tagline hides, so the bar fits on one line next to the language picker. |
 | 700px and below (phone) | Everything stacks: the timeline lines run straight down the centre with the dates centred on them, the entries go full width, the Gallery card (copy, then button), the carousel. The header tagline hides; the nav wraps to a second row under the logo, all three items visible. |
 
 ### Reduced motion
@@ -433,13 +476,13 @@ scrolling still works).
 
 ## 7. Common tasks
 
-**Change any text.** Edit the component that renders it under `src/components/` — the
-timeline and its entries live in `Timeline.tsx`, the game card in `GallerySection.tsx`, the
-modals in `MoneyDialog.tsx`/`TestDialog.tsx`, the header and footer in `SiteHeader.tsx`/
-`SiteFooter.tsx`.
+**Change any text.** Edit it in `src/i18n/`, once per language file (`en.ts`, `ja.ts`,
+`zh.ts`, `es.ts`, `ko.ts`). The keys follow the page: `header`, `intro`, `timeline`,
+`gallery`, `money`, `test`, `questions`, `footer`. Section 5.9 has the `[accent]` syntax.
 
 **Add a carousel image.** Drop the file in `public/assets/` and add one entry to `SLIDES` in
-`src/data/site.ts` (`src`, `width`, `height`, `alt`, and the `title` caption). The width and
+`src/data/site.ts` (`id`, `src`, `width`, `height`), then that `id`'s `alt` and `title`
+caption under `slides` in every `src/i18n/` file. The width and
 height are load-bearing — the strip measures from the attributes before any pixels arrive —
 so put the real natural size in. The loop, the thumbnails and the preview pick it up
 automatically.
@@ -455,16 +498,17 @@ numbers — paste those into `.game-title img` and the img's `width`/`height` at
 `index.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
 links if those changed too).
 
-**Make the donation link real.** The money modal's "donation link coming soon" sentence lives
-in `src/components/MoneyDialog.tsx`. Replace the sentence with a link (or point it
-somewhere new).
+**Make the donation link real.** The money modal's "donation link coming soon" sentence is
+`money.note` in each `src/i18n/` file, rendered by `src/components/MoneyDialog.tsx`. Replace
+the sentence with a link there (or point it somewhere new).
 
 **Tune the carousel.** `AUTO_SCROLL_PX_PER_S` (the drift speed) and `SWIPE_DISTANCE_PX`
 (click threshold) sit at the top of `src/components/Carousel.tsx`; the chevron buttons'
 size, inset and colours are the `.strip-arrow` rules in `src/styles/site.css` section 4.
 
-**Wire up the questionnaire.** The playtest form's sixteen questions live in `TEST_QUESTIONS`
-in `src/data/site.ts` (`name="q01"`…`q16`). The "send it" button is a `type="button"` no-op
+**Wire up the questionnaire.** The playtest form's sixteen field names live in `TEST_QUESTIONS`
+in `src/data/site.ts` (`name="q01"`…`q16`), the question text under `questions` in each
+`src/i18n/` file. The "send it" button is a `type="button"` no-op
 in `src/components/TestDialog.tsx`; when a destination exists, give the form a handler there
 (or a real `action`) and flip the button to `type="submit"`.
 
@@ -481,7 +525,7 @@ in `src/components/TestDialog.tsx`; when a destination exists, give the form a h
    a click outside, the strip drifts and loops, hover pauses it, the chevrons step one
    picture at a time, the thumbnails centre their picture, and a short click on a picture
    (or its label) opens the preview. The "questionnaire" button opens the playtest modal
-   and its × closes it.
+   and its × closes it. Pick each language at the top right: the page reloads in it.
 3. Resize the window down to phone width. Confirm everything stacks, the nav wraps onto its
    own row, and nothing is clipped or scrolls sideways.
 4. Commit and push; CI typechecks and builds the same tree.

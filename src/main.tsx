@@ -2,6 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/site.css";
 import App from "./App";
+import { applyDocumentLanguage } from "./i18n";
+
+applyDocumentLanguage();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

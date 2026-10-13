@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { SLIDES } from "../data/site";
+import { t } from "../i18n";
 import { reducedMotion } from "../lib/media";
 import PreviewDialog from "./PreviewDialog";
 
@@ -267,7 +268,7 @@ export default function Carousel() {
       className="carousel"
       role="region"
       aria-roledescription="carousel"
-      aria-label="Gallery, screenshots and development"
+      aria-label={t.carousel.label}
       tabIndex={0}
       ref={carouselRef}
     >
@@ -280,35 +281,35 @@ export default function Carousel() {
           {SLIDES.map((slide, index) => (
             <div
               className="slide"
-              data-title={slide.title}
+              data-title={t.slides[slide.id].title}
               role="group"
               aria-roledescription="slide"
-              aria-label={`${index + 1} of ${SLIDES.length}`}
+              aria-label={t.carousel.position(index + 1, SLIDES.length)}
               key={slide.src}
               ref={el => { if (el) slideRefs.current[index] = el; }}
             >
-              <img src={slide.src} width={slide.width} height={slide.height} alt={slide.alt} loading="lazy" draggable={false} />
+              <img src={slide.src} width={slide.width} height={slide.height} alt={t.slides[slide.id].alt} loading="lazy" draggable={false} />
             </div>
           ))}
         </div>
 
         {/* The whole fading area at each end is the button. */}
-        <button className="strip-arrow strip-arrow--left" type="button" aria-label="Scroll back" onClick={() => apiRef.current?.step(-1)}>
+        <button className="strip-arrow strip-arrow--left" type="button" aria-label={t.carousel.back} onClick={() => apiRef.current?.step(-1)}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-        <button className="strip-arrow strip-arrow--right" type="button" aria-label="Scroll forward" onClick={() => apiRef.current?.step(1)}>
+        <button className="strip-arrow strip-arrow--right" type="button" aria-label={t.carousel.forward} onClick={() => apiRef.current?.step(1)}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
       </div>
 
       {/* Thumbnail rail: one button per slide; aria-current follows the
           picture in view (set from the drift loop, like main.js did). */}
-      <div className="thumbnails" aria-label="Choose an image">
+      <div className="thumbnails" aria-label={t.carousel.thumbnails}>
         {SLIDES.map((slide, index) => (
           <button
             type="button"
             className="thumb"
-            aria-label={`Show ${slide.title}`}
+            aria-label={t.carousel.show(t.slides[slide.id].title)}
             key={slide.src}
             onClick={() => apiRef.current?.thumbTo(index)}
             ref={el => { if (el) thumbRefs.current[index] = el; }}

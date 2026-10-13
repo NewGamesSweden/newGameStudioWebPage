@@ -106,6 +106,14 @@ h2 {
   white-space: nowrap;
 }
 
+/* Japanese, Chinese and Korean (src/i18n/): neither web font has CJK glyphs,
+   so those fall back to the system's sans-serif — <html lang> picks the right
+   one per language. The headings' negative tracking is tuned for Latin and
+   crowds CJK glyphs together, so those headings set solid. Korean wraps
+   between words (keep-all), the way its spaced text is meant to break. */
+:root:is(:lang(ja), :lang(zh), :lang(ko)) :is(.fools-title, .money-title) { letter-spacing: 0; }
+:root:lang(ko) { word-break: keep-all; }
+
 
 /* 3. HEADER AND NAVIGATION ========================================== */
 
@@ -147,6 +155,43 @@ nav a:hover { color: var(--accent); }
 }
 .nav-money:hover { color: var(--accent); }
 .nav-money span { margin-left: 18px; }
+
+/* The language picker (src/components/LanguageSelect.tsx), last in the nav:
+   the money button's border around a globe and the current language's code.
+   The real <select> covers the whole face at opacity 0, so any click on the
+   face opens the native list; the face takes the hover colour and the focus
+   ring for it. color-scheme + panel colours keep the opened list dark where
+   the browser draws it from the select's own styles. */
+.lang-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: 1px solid #42392c;
+  border-radius: 5px;
+  color: var(--ink);
+}
+.lang-select:hover { color: var(--accent); }
+.lang-select:has(select:focus-visible) { outline: 3px solid var(--orange); outline-offset: 6px; }
+.lang-select svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+.lang-select select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font: inherit;
+  color-scheme: dark;
+  background: var(--panel);
+  color: var(--ink);
+}
 
 /* The wordmark is the way home (all pages link their logo to index.html),
    with the studio's one-liner beside it in the small secondary style.
@@ -670,6 +715,13 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   .strip { height: 320px; }
 }
 
+/* Narrow tablet: the desktop bar (wordmark + tagline, three nav items and
+   the language picker, 34px apart) stops fitting on one line below ~825px in
+   the longest languages (es, ja) — the tagline goes, as it does on phones. */
+@media (max-width: 860px) {
+  .brand-tag { display: none; }
+}
+
 /* Phone */
 @media (max-width: 700px) {
   html { scroll-padding-top: 100px; }
@@ -695,6 +747,8 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   nav { flex-shrink: 0; gap: clamp(6px, 2.2vw, 10px); font-size: clamp(11px, 3.2vw, 12px); white-space: nowrap; }
   .site-header nav .nav-money span { display: none; } /* ↗ off in the bar only; the page's questionnaire button keeps it */
   .site-header .nav-money { padding: 8px 10px; }
+  .lang-select { padding: 8px; gap: 4px; }
+  .lang-select svg { width: 13px; height: 13px; }
 
   /* Gallery: the card stacks (copy, then the play button under it) */
   .gallery-feature { flex-direction: column; align-items: flex-start; gap: 20px; padding: 32px 20px; }

@@ -1,0 +1,122 @@
+import type { Messages } from "./types";
+
+/* Chinese (Simplified). */
+
+const zh: Messages = {
+  meta: {
+    description: "我们是Daniel、Ahmed和Micky。三个朋友一起做游戏、追逐点子，偶尔还会想起“控制范围”这回事。",
+  },
+  header: {
+    tagline: "三个做游戏的傻瓜",
+    nav: "主导航",
+    gallery: "画廊",
+    upcoming: "接下来",
+    money: "给我们钱",
+    language: "语言 / Language",
+  },
+  intro: {
+    title: "三个做游戏的[傻瓜]",
+    captions: [
+      "在Daniel的33岁生日聚会上（该死），我们聊起了独立游戏的点子，以及各自做过的个人项目。我们发现彼此的愿景很相似，于是现在一起做游戏",
+      "我们很自然地形成了快速迭代的工作方式。有时这很有帮助，有时则不然。无论如何，我们相信“先试再说”。只要有人有想法，就先做个样例，然后大家讨论。讨论通常是这样的：",
+      "“你干嘛还拿给我看？直接实现啊”",
+    ],
+  },
+  fools: {
+    Daniel: "一天假都休不了。对什么都过敏",
+    Ahmed: "试过几次生酮饮食，每次都很抑郁，大概还会再试",
+    Micky: "从没试过生酮，什么都不过敏，不吃花椰菜",
+  },
+  timeline: {
+    july: "2026年7月",
+    august: "2026年8月",
+    september: "2026年9月",
+    october: "2026年10月",
+    beginTitle: "从[Gallery]开始",
+    beginCaption: "Daniel有一份游戏点子清单，Gallery从中脱颖而出，成为第一款游戏的候选。这也是检验我们能否一起工作、又不毁掉友谊的好办法",
+    beginPhotoAlt: "我们三个围坐在工作室的桌旁",
+    deadlineTitle: "“[十月初]就发布吧”",
+    deadlinePhotoAlt: "公测冲刺期间，在桌前竖起两个大拇指",
+    selfieAlt: "Daniel对着镜头眯眼",
+    lanternAlt: "桌上发着绿光的灯笼",
+    momentsLabel: "九月的片段",
+    nextTitle: "我们的[下一步]",
+    nextCaptions: [
+      "团队的三分之二要去韩国待几周，去寻找自我之类的（抱歉了Ahmed）",
+      "回来之后，我们会继续打磨Gallery，同时推进正在开发的一款新单人游戏。大概还会参加一些Game Jam，敬请期待",
+    ],
+  },
+  gallery: {
+    description: "一款在浏览器里玩的绘画推理游戏。现已开放测试",
+    play: "免费游玩",
+    helpTitle: "帮我们[测试]",
+    helpCaption: "我们需要有人来玩，然后填写这份问卷：",
+    questionnaire: "问卷",
+  },
+  carousel: {
+    label: "Gallery，截图与开发过程",
+    back: "向后滚动",
+    forward: "向前滚动",
+    thumbnails: "选择图片",
+    show: title => `显示：${title}`,
+    position: (n, total) => `第${n}张，共${total}张`,
+  },
+  slides: {
+    "game-faker": { alt: "游戏中的Gallery：画架上的画布写着“你是冒牌货”", title: "游戏中 · 你是冒牌货" },
+    "game-printer": { alt: "游戏中的Gallery：画架上的画布写着“词语是打印机”", title: "游戏中 · 词语是打印机" },
+    "game-night": { alt: "夜晚的Gallery：玩家标牌、共享画布上画的笑脸和词语标牌", title: "游戏中 · 夜晚回合" },
+    "game-day": { alt: "白天的Gallery：词语标牌揭晓了“芒果”", title: "游戏中 · 白天回合" },
+    "game-rules": { alt: "翻开的Gallery规则书，显示欢迎页和玩法页", title: "游戏中 · 规则书" },
+    "study-menu": { alt: "布置了画架、卷轴和画家书桌的概念图", title: "主菜单 · 布局草图" },
+    "study-lobby": { alt: "Gallery大厅概念图，有画架、羊皮纸和悬挂的玩家标牌", title: "大厅 · 布局草图" },
+    "study-game": { alt: "Gallery游戏内布局草图，有画家和信息柱", title: "游戏中 · 布局草图" },
+    "menu-july": { alt: "早期的Gallery菜单，有石墙、练习画布和玩法说明", title: "7月20日 · 早期菜单" },
+    "prop-august": { alt: "早期棱角分明的低多边形道具模型", title: "8月13日 · 制作道具" },
+    "jar-august": { alt: "正在制作的透明低多边形罐子模型", title: "8月20日 · 罐子成形" },
+    "gallery": { alt: "Gallery游戏画面，有彩色画作、画家列表和隐藏身份信息", title: "8月30日 · 在共享画布上" },
+    "frame-september": { alt: "正在3D建模的装饰画框一角", title: "9月4日 · 又一个细节" },
+    "paint-september": { alt: "在3D建模工作区中编辑的彩色圆柱道具", title: "9月5日 · 回到工作台" },
+    "playtest-september": { alt: "一张照片：笔记本电脑上运行着Gallery，显示共享画作和无辜者身份", title: "9月6日 · 对局进行中" },
+    "game-september": { alt: "Gallery游戏画面，有画架、山景和冒牌货身份", title: "9月10日 · 走向户外" },
+    "browser-september": { alt: "浏览器窗口中的Gallery，有卷轴菜单和低多边形风景", title: "9月11日 · 又一次浏览器迭代" },
+  },
+  preview: {
+    close: "关闭",
+    closeLabel: "关闭图片预览",
+    defaultCaption: "Gallery，从开发到游戏",
+  },
+  close: "关闭",
+  money: {
+    title: "Gallery是免费的",
+    lede: "但如果你[超级有钱]，\n请给我们[几百万欧元]",
+    note: "捐款链接即将上线。你也可以把现金或其他贵重物品寄给我们",
+  },
+  test: {
+    title: "请你[填写]这份问卷",
+    lede: "不用对我们客气，我们早就因为AI精神病失去了所有情绪反应",
+    send: "提交",
+  },
+  questions: {
+    q01: "你认为这款游戏的目标是什么？游玩时你想要达成什么？",
+    q02: "有没有某个时刻你不知道该做什么，或者不明白某样东西如何运作？发生了什么？",
+    q03: "游戏中最有趣的部分是什么？为什么？",
+    q04: "游戏中最无趣的部分是什么？为什么？",
+    q05: "最让你满足或有成就感的时刻是什么？是什么带来了这种感觉？",
+    q06: "最让你沮丧或烦躁的时刻是什么？是什么造成的？",
+    q07: "有没有哪些时刻让你感到无聊，或觉得游戏变得重复？",
+    q08: "有没有什么表现和你预期的不一样？",
+    q09: "有没有你想做却做不到的事？",
+    q10: "你是否曾感到迷茫、卡住，或不确定如何推进？是什么造成的？",
+    q11: "操作或界面有没有让你觉得别扭或不直观的地方？",
+    q12: "你是否发现了游戏可能并未预料到的策略、行为或玩法？",
+    q13: "如果你能改变游戏中的一件事，你会改什么？",
+    q14: "你觉得什么样的人会喜欢这款游戏？",
+    q15: "有没有你期待游戏提供、但它没有提供的东西？",
+    q16: "还有什么想告诉我们的吗？",
+  },
+  footer: {
+    madeBy: "三个傻瓜用爱制作",
+  },
+};
+
+export default zh;

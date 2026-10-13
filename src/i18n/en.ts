@@ -1,0 +1,123 @@
+import type { Messages } from "./types";
+
+/* English: the site's original copy, moved here verbatim from the
+   components and src/data/site.ts. */
+
+const en: Messages = {
+  meta: {
+    description: "We're Daniel, Ahmed and Micky. Three friends making games, chasing ideas, and occasionally remembering the word scope.",
+  },
+  header: {
+    tagline: "three fools making games",
+    nav: "Main navigation",
+    gallery: "gallery",
+    upcoming: "upcoming",
+    money: "give us money",
+    language: "Language",
+  },
+  intro: {
+    title: "three [fools] making games",
+    captions: [
+      "At Daniel’s 33rd birthday gathering (damn), we started chatting about indie game ideas and the personal projects we each had worked on. We realised we had a similar vision, so now we’re making games together",
+      "We’ve naturally fallen into a fast iteration way of working. Sometimes this is really helpful, and sometimes it isn’t. Either way, we believe in try-before-you-buy. If someone has an idea, an example is produced and a discussion is had. The discussion is usually:",
+      "“why are you even showing this to me? Just IMPLEMENT”",
+    ],
+  },
+  fools: {
+    Daniel: "unable to take a day off. Allergic to everything",
+    Ahmed: "tried keto a few times, was depressed each time, will probably try again",
+    Micky: "has never tried keto, not allergic to anything, will not eat cauliflower",
+  },
+  timeline: {
+    july: "july 2026",
+    august: "august 2026",
+    september: "september 2026",
+    october: "october 2026",
+    beginTitle: "We begin with [Gallery]",
+    beginCaption: "Daniel had a list of game ideas and Gallery stood out as a potential first game. A good way to see if we can work together without destroying our friendship",
+    beginPhotoAlt: "The three of us around the studio table",
+    deadlineTitle: "“let’s post it by [early October]”",
+    deadlinePhotoAlt: "two thumbs up at the desk during the open-beta grind",
+    selfieAlt: "Daniel squinting at the camera",
+    lanternAlt: "a green lantern glowing on the desk",
+    momentsLabel: "september, in moments",
+    nextTitle: "what’s [next] for us",
+    nextCaptions: [
+      "two thirds of our team are going to Korea for a few weeks to find ourselves or something (sorry Ahmed)",
+      "when we get back, we’ll be refining Gallery and continuing the process on a new single player game we’re working on. Probably some game jams too, so stay tuned",
+    ],
+  },
+  gallery: {
+    description: "a drawing deduction game for the browser. Now in beta",
+    play: "Play for free",
+    helpTitle: "help us [test]",
+    helpCaption: "we need people to play it and fill this thing out:",
+    questionnaire: "questionnaire",
+  },
+  carousel: {
+    label: "Gallery, screenshots and development",
+    back: "Scroll back",
+    forward: "Scroll forward",
+    thumbnails: "Choose an image",
+    show: title => `Show ${title}`,
+    position: (n, total) => `${n} of ${total}`,
+  },
+  slides: {
+    "game-faker": { alt: "Gallery in game: the easel canvas reads 'you are the faker'", title: "In game · You are the faker" },
+    "game-printer": { alt: "Gallery in game: the easel canvas reads 'the word is printer'", title: "In game · The word is printer" },
+    "game-night": { alt: "Gallery in game at night: player signs, a painted smiley on the shared canvas, and the word sign", title: "In game · Night round" },
+    "game-day": { alt: "Gallery in game by day: the word sign reveals 'mango'", title: "In game · Day round" },
+    "game-rules": { alt: "Gallery's open rule book showing the welcome and how-to-play pages", title: "In game · The rule book" },
+    "study-menu": { alt: "Concept artwork arranging an easel, scroll, and artist desk", title: "Main menu · Layout study" },
+    "study-lobby": { alt: "Gallery lobby concept with an easel, parchment, and hanging player signs", title: "Lobby · Layout study" },
+    "study-game": { alt: "Gallery in-game layout study with artist and information poles", title: "In game · Layout study" },
+    "menu-july": { alt: "Early Gallery menu with a stone wall, practice canvas, and how-to-play instructions", title: "20 Jul · An early menu" },
+    "prop-august": { alt: "An early angular low-poly prop model", title: "13 Aug · Building the props" },
+    "jar-august": { alt: "A low-poly transparent jar model in development", title: "20 Aug · A jar takes shape" },
+    "gallery": { alt: "Gallery gameplay with coloured drawings, artist list, and hidden-role information", title: "30 Aug · On the shared canvas" },
+    "frame-september": { alt: "A decorative picture-frame corner being modelled in 3D", title: "04 Sep · One more detail" },
+    "paint-september": { alt: "A coloured cylindrical prop being edited in the 3D modelling workspace", title: "05 Sep · Back to the workbench" },
+    "playtest-september": { alt: "A photograph of Gallery running on a laptop with a shared drawing and innocent role", title: "06 Sep · A game in progress" },
+    "game-september": { alt: "Gallery gameplay with an easel, mountain scenery, and the faker role", title: "10 Sep · Into the outdoors" },
+    "browser-september": { alt: "Gallery in a browser window with a scroll menu and low-poly landscape", title: "11 Sep · Another browser iteration" },
+  },
+  preview: {
+    close: "Close",
+    closeLabel: "Close image preview",
+    defaultCaption: "Gallery, from development to game",
+  },
+  close: "Close",
+  money: {
+    title: "Gallery is free",
+    lede: "but if you’re [rich as hell],\nwe’d like [several million euros] please",
+    note: "donation link coming soon. You can still mail us cash or other valuables",
+  },
+  test: {
+    title: "we need you to [fill] this out",
+    lede: "you don’t have to be nice, we’ve lost all emotional response due to AI psychosis",
+    send: "send it",
+  },
+  questions: {
+    q01: "What did you think the goal of the game was, and what were you trying to accomplish while playing?",
+    q02: "Was there ever a point where you didn’t know what to do or how something worked? What happened?",
+    q03: "What was the most fun part of the game, and why?",
+    q04: "What was the least fun part of the game, and why?",
+    q05: "What was the most satisfying or rewarding moment? What caused that feeling?",
+    q06: "What was the most frustrating or annoying moment? What caused it?",
+    q07: "Were there any moments where you felt bored or the game became repetitive?",
+    q08: "Did anything behave differently from what you expected?",
+    q09: "Was there anything you wanted to do but couldn’t?",
+    q10: "Did you ever feel lost, stuck, or unsure how to progress? What caused it?",
+    q11: "Was anything about the controls or interface awkward or unintuitive?",
+    q12: "Did you discover any strategies, behaviors, or ways of playing that you think the game may not have intended?",
+    q13: "If you could change one thing about the game, what would you change?",
+    q14: "Who do you think would enjoy this game?",
+    q15: "Is there anything you expected from the game that it didn’t provide?",
+    q16: "Is there anything else you’d like us to know?",
+  },
+  footer: {
+    madeBy: "made with love by three fools",
+  },
+};
+
+export default en;

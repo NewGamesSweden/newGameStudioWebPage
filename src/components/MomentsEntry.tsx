@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { MOMENTS } from "../data/site";
+import { t } from "../i18n";
 import { reducedMotion } from "../lib/media";
 
 /* september 2026: no words, just the moments. The figure is a fixed-height
@@ -47,7 +48,7 @@ export default function MomentsEntry() {
 
   return (
     <div className="ngs-entry ngs-entry--right">
-      <figure className="ngs-block ngs-moment" aria-label="september, in moments" ref={figRef}>
+      <figure className="ngs-block ngs-moment" aria-label={t.timeline.momentsLabel} ref={figRef}>
         {MOMENTS.map((moment, i) => (
           <img
             key={moment.src}
