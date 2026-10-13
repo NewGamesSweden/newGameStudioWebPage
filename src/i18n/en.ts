@@ -96,6 +96,12 @@ const en: Messages = {
     title: "we need you to [fill] this out",
     lede: "you don’t have to be nice, we’ve lost all emotional response due to AI psychosis",
     send: "send it",
+    sending: "sending…",
+    thanks: "got it, thank you! We read every single answer",
+    failed: "that didn’t go through. Try again, or email us at",
+    empty: "answer at least one question first",
+    forbidden: "plain text only, please. Leave out",
+    invalid: "fix the marked answer first",
   },
   questions: {
     q01: "What did you think the goal of the game was, and what were you trying to accomplish while playing?",

@@ -349,14 +349,39 @@ Below the carousel, styled exactly like the NGS page content: the heading "help 
 the nav button's `.nav-money` class (its hover rule was un-scoped from the nav for this). The
 button opens the questionnaire (`#test`), a native `<dialog>` in the money modal's exact style —
 same box, title ("we need you to *fill* this out", "fill" cyan), lede, and corner ×. Inside,
-sixteen open questions (`label.test-q` with a muted question line and a textarea each) scroll
+sixteen open questions (`.test-q`, a muted question label and a textarea each) scroll
 inside a fixed-height `.test-form`, so the header and the × stay visible while the list
-scrolls. The "send it" button is a deliberate no-op (`type="button"`, no handler): responses
-will be wired to somewhere real later. Closes the same three ways as the money modal.
+scrolls. Closes the same three ways as the money modal.
 
-Where: `src/components/GallerySection.tsx` (the section) and `src/components/TestDialog.tsx`
-(the dialog, questions from `src/data/site.ts`), `src/styles/site.css` sections 5
-(`.help-test`) and 7 (`dialog#test`, `.test-form`, `.test-q`).
+**Sending.** "send it" emails the answers to `CONTACT_EMAIL` (`src/data/site.ts`, the same
+address as the footer) through FormSubmit (formsubmit.co), a free form-to-email service: the
+site has no server of its own, so the browser posts JSON to
+`https://formsubmit.co/ajax/<address>` and FormSubmit sends the mail. No account or key. The
+mail's subject is "Gallery playtest answers (<language>)". It holds one table row per question,
+labelled with the English question whatever language the player used. Blank answers show as "—".
+
+- **First-time activation.** The first submission from the live site makes FormSubmit email
+  the inbox an "Activate Form" link. Nothing is delivered until someone clicks it, and until
+  then the player sees the send-failed message. After activation FormSubmit also offers a
+  random alias to use in the URL instead of the address.
+- **Checks before sending.** Each answer is capped at 2000 characters by the textarea's
+  `maxLength`, and a muted counter shows from 1800. Answers may not contain the code
+  characters `< > { } [ ] \` and backticks, or control characters other than tab and newline.
+  Round brackets and CJK quote marks are fine. A flagged answer gets an orange border and a
+  note naming the characters, and send focuses it instead of sending. At least one answer
+  must be filled in. These checks run in the browser only: they keep honest answers clean,
+  but anyone can post to FormSubmit directly. The real safety is that the answers arrive as
+  an email, and Gmail runs no scripts.
+- **Spam.** A hidden honeypot field (`_honey`), off-screen and out of the tab order. If it is
+  filled in, the form shows the thank-you and sends nothing.
+- **After sending.** A thank-you replaces the form. Closing the dialog resets it for the
+  next player. If the send fails, the answers stay and a note offers a retry or the address
+  as a `mailto:` link.
+
+Where: `src/components/GallerySection.tsx` (the section), `src/components/TestDialog.tsx`
+(the dialog and its checks), `src/lib/playtest.ts` (the 2000 cap, the character rule and
+the FormSubmit call), questions from `src/data/site.ts`, `src/styles/site.css` sections 5
+(`.help-test`) and 7 (`dialog#test`, `.test-form`, `.test-q`, `.test-note`, `.test-status`).
 
 ### 5.6 The money modal
 
@@ -511,14 +536,15 @@ the sentence with a link there (or point it somewhere new).
 (click threshold) sit at the top of `src/components/Carousel.tsx`; the chevron buttons'
 size, inset and colours are the `.strip-arrow` rules in `src/styles/site.css` section 4.
 
-**Wire up the questionnaire.** The playtest form's sixteen field names live in `TEST_QUESTIONS`
-in `src/data/site.ts` (`name="q01"`…`q16`), the question text under `questions` in each
-`src/i18n/` file. The "send it" button is a `type="button"` no-op
-in `src/components/TestDialog.tsx`; when a destination exists, give the form a handler there
-(or a real `action`) and flip the button to `type="submit"`.
+**Change the questionnaire.** The sixteen field names live in `TEST_QUESTIONS` in
+`src/data/site.ts` (`q01`…`q16`), the question text under `questions` in each `src/i18n/`
+file. The 2000-character cap, the blocked characters and the FormSubmit call are in
+`src/lib/playtest.ts`. To use another form-to-email service, change `ENDPOINT` and the
+fields in `sendAnswers` there (section 5.5).
 
-**Add a contact channel.** The footer's address is the `.footer-mail` link in
-`src/components/SiteFooter.tsx`; change the `href` and text.
+**Change the contact address.** `CONTACT_EMAIL` in `src/data/site.ts` is both the footer's
+`mailto:` link and where playtest answers are sent. A new address needs FormSubmit's
+one-time activation again (section 5.5).
 
 ---
 

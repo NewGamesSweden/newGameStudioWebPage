@@ -72,6 +72,12 @@ export interface Messages {
     title: string;                       // [accent]
     lede: string;
     send: string;
+    sending: string;   // the send button while the mail goes out
+    thanks: string;    // replaces the form once it's sent
+    failed: string;    // followed by the studio's address as a mailto link
+    empty: string;     // send pressed with every answer blank
+    forbidden: string; // under an answer with code characters, followed by the list of them
+    invalid: string;   // send pressed while an answer is flagged
   };
   questions: Record<QuestionName, string>;
   footer: {

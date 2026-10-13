@@ -95,6 +95,12 @@ const es: Messages = {
     title: "necesitamos que [completes] esto",
     lede: "no hace falta que seas amable: la psicosis por IA nos ha dejado sin emociones",
     send: "enviar",
+    sending: "enviando…",
+    thanks: "¡recibido, gracias! Leemos todas y cada una de las respuestas",
+    failed: "no se pudo enviar. Inténtalo de nuevo o escríbenos a",
+    empty: "responde al menos una pregunta",
+    forbidden: "solo texto, por favor. No uses",
+    invalid: "corrige la respuesta marcada",
   },
   questions: {
     q01: "¿Cuál creías que era el objetivo del juego y qué intentabas conseguir mientras jugabas?",

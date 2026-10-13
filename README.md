@@ -134,6 +134,8 @@ The repository is public. Never commit a key, a password or the server's address
 
 **Add the donation link.** The money modal's "donation link coming soon" sentence is `money.note` in each `src/i18n/` file, rendered by `src/components/MoneyDialog.tsx`. When a real URL exists, replace the sentence with a link there.
 
+**The questionnaire's email.** "send it" emails the answers to `CONTACT_EMAIL` in `src/data/site.ts` through FormSubmit (formsubmit.co), because the site has no server of its own. The first submission from the live site sends that inbox an "Activate Form" link, and nothing arrives until someone clicks it. The 2000-character cap and the blocked characters are in `src/lib/playtest.ts`. See `SITE-GUIDE.md` section 5.5.
+
 **Add a language.** Copy `src/i18n/en.ts` to a new file, translate it, and add one line to `LANGS` in `src/i18n/index.ts`. See `SITE-GUIDE.md` section 5.9.
 
 ## Notes

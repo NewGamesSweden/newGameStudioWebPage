@@ -8,6 +8,9 @@
    questions are keyed here by id/name, and every language file must carry
    the same keys (the Messages type enforces it). */
 
+// The studio's inbox: the footer's mailto and where playtest answers go.
+export const CONTACT_EMAIL = "contact.newgamestudio@gmail.com";
+
 export interface Slide {
   id: string;
   src: string;

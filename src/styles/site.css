@@ -690,8 +690,9 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   overflow-y: auto;
   padding-right: 6px;           /* room for the scrollbar inside the dialog */
 }
-.test-q span { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+.test-q label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
 .test-q textarea {
+  display: block;
   width: 100%;
   background: var(--bg);
   color: var(--ink);
@@ -702,6 +703,21 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   font-size: 14px;
   resize: vertical;
 }
+/* An answer with code characters: orange border and a note naming them.
+   Near the 2000-character cap a muted counter appears under the box. */
+.test-q textarea[aria-invalid="true"] { border-color: var(--orange); }
+.test-note { margin: 6px 0 0; font-size: 12px; line-height: 1.5; }
+.test-note--error { color: var(--orange); }
+.test-note--count { color: var(--muted); text-align: right; }
+.test-note code { font: inherit; white-space: nowrap; }
+/* Under the send button: "answer something first", the send failure (with
+   the studio's address as a mailto) — announced as they appear. */
+.test-status { margin: 0; font-size: 13px; color: var(--orange); text-align: right; }
+.test-status a { color: var(--accent); }
+.test-send:disabled { opacity: 0.6; cursor: progress; }
+.test-thanks { margin: 24px 0 8px; font-size: 16px; color: var(--accent); }
+/* The honeypot: kept in the form for bots, invisible and unreachable for people. */
+.test-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 
 
 /* 8. SCREEN SIZES =================================================== */
