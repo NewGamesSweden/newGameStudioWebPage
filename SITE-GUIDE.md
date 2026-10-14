@@ -32,7 +32,7 @@ Technical shape:
 - The old `main.js` behaviour now lives in React components under `src/components/` and one
   shared dialog hook (`src/hooks/useDialog.ts`); the carousel and the moments cycle are
   imperative ports — same rAF loop, same observers, same timings.
-- Data tables (the 22 slides, the 86 moments, the fools, the questionnaire's field names) live
+- Data tables (the 22 slides, the 82 moments, the fools, the questionnaire's field names) live
   in `src/data/site.ts`; every word on the page lives in `src/i18n/`, one file per language.
 - Fonts come from Google Fonts and fall back to system fonts offline.
 - Hosted as static files. Caddy on the studio's server is the intended host (`deploy/`); any
@@ -89,9 +89,9 @@ git push
 | `src/i18n/` | The words, per language (section 5.9): `en.ts`, `ja.ts`, `zh.ts`, `es.ts`, `ko.ts`, the `Messages` type they all implement (`types.ts`), the language choice (`index.ts`) and the `[accent]` markup helper (`rich.tsx`). |
 | `src/hooks/useDialog.ts` | Shared native `<dialog>` wiring: showModal/close from a prop, outside-click close. |
 | `src/lib/media.ts` | The `prefers-reduced-motion` media query, shared by the carousel and the moments cycle. |
-| `src/data/site.ts` | The data tables: 22 slides, 86 moments, 3 fools, 16 questionnaire field names. Their words are in `src/i18n/`. |
+| `src/data/site.ts` | The data tables: 22 slides, 82 moments, 3 fools, 16 questionnaire field names. Their words are in `src/i18n/`. |
 | `src/styles/site.css` | All styling, in numbered sections — the old stylesheet, copied verbatim. Colours and fonts at the top, screen-size rules near the bottom. |
-| `public/assets/` | Every image on the site, copied verbatim into the build: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, the 22 carousel screenshots (`shot-01…22-*.webp`), 86 moment frames. |
+| `public/assets/` | Every image on the site, copied verbatim into the build: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, the 22 carousel screenshots (`shot-01…22-*.webp`), 82 moment frames. |
 | `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2); `bake-moment-frames.py` rebuilds the september moments frames. |
 | `deploy/Caddyfile` | The production Caddy site block (one page, security headers, immutable caching for the hashed bundles). |
 | `.github/workflows/ci.yml` | CI: typecheck + build on every push. |
@@ -313,7 +313,8 @@ ever extends past the wrap.
     modifier (61px = the date band + tail) so the rhythm doesn't move.
   - **september 2026** (right): no words either — the **moments frame** (`.ngs-moment`): a
     fixed-height 300px box (260 on phones) that cycles quickly through the baked
-    `assets/moment-01…86.jpg` frames, one visible at a time (`.moment-on`), each capped to
+    `assets/moment-NN.jpg` frames (82 of the 86 baked; 12, 20, 22 and 56 were removed by hand,
+    so a re-bake brings them back unless their source screenshots go in the tool's `EXCLUDE`), one visible at a time (`.moment-on`), each capped to
     the frame (never cropped or upscaled, so different shapes read as the same size). The
     frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder
     (edit its `EXCLUDE` list to drop more, then paste its printed `<img>` lines into

@@ -9,7 +9,7 @@ import { reducedMotion } from "../lib/media";
    empty box, and at 160ms a lap is ~14s of flicker while frames trickle in.
    As the reader approaches, the observer force-fetches every lazy frame
    (loading=eager), then the flip starts only after every decode settles
-   (allSettled: one broken picture must not stall the other 85). Reduced
+   (allSettled: one broken picture must not stall the rest). Reduced
    motion keeps the first frame, which ships visible in the markup. */
 
 const MOMENT_MS = 160; // how long each image is on screen
