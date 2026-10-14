@@ -32,7 +32,7 @@ Technical shape:
 - The old `main.js` behaviour now lives in React components under `src/components/` and one
   shared dialog hook (`src/hooks/useDialog.ts`); the carousel and the moments cycle are
   imperative ports — same rAF loop, same observers, same timings.
-- Data tables (the 17 slides, the 86 moments, the fools, the questionnaire's field names) live
+- Data tables (the 22 slides, the 86 moments, the fools, the questionnaire's field names) live
   in `src/data/site.ts`; every word on the page lives in `src/i18n/`, one file per language.
 - Fonts come from Google Fonts and fall back to system fonts offline.
 - Hosted as static files. Caddy on the studio's server is the intended host (`deploy/`); any
@@ -89,9 +89,9 @@ git push
 | `src/i18n/` | The words, per language (section 5.9): `en.ts`, `ja.ts`, `zh.ts`, `es.ts`, `ko.ts`, the `Messages` type they all implement (`types.ts`), the language choice (`index.ts`) and the `[accent]` markup helper (`rich.tsx`). |
 | `src/hooks/useDialog.ts` | Shared native `<dialog>` wiring: showModal/close from a prop, outside-click close. |
 | `src/lib/media.ts` | The `prefers-reduced-motion` media query, shared by the carousel and the moments cycle. |
-| `src/data/site.ts` | The data tables: 17 slides, 86 moments, 3 fools, 16 questionnaire field names. Their words are in `src/i18n/`. |
+| `src/data/site.ts` | The data tables: 22 slides, 86 moments, 3 fools, 16 questionnaire field names. Their words are in `src/i18n/`. |
 | `src/styles/site.css` | All styling, in numbered sections — the old stylesheet, copied verbatim. Colours and fonts at the top, screen-size rules near the bottom. |
-| `public/assets/` | Every image on the site, copied verbatim into the build: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, seventeen carousel images, 86 moment frames. |
+| `public/assets/` | Every image on the site, copied verbatim into the build: the main-menu backdrop behind the Gallery card, the baked `gallery-title-ink.svg` wordmark, the fools banner, the open-beta photo, the september lantern shot, three avatar portraits, the 22 carousel screenshots (`shot-01…22-*.webp`), 86 moment frames. |
 | `tools/` | One-off build tools, never shipped with the site. `bake-title-ink.html` + `bake-title-ink.py` regenerate the Gallery title's ink-outlined wordmark (see section 5.2); `bake-moment-frames.py` rebuilds the september moments frames. |
 | `deploy/Caddyfile` | The production Caddy site block (one page, security headers, immutable caching for the hashed bundles). |
 | `.github/workflows/ci.yml` | CI: typecheck + build on every push. |
@@ -193,8 +193,11 @@ Where: `src/components/GallerySection.tsx`, `src/styles/site.css` section 4, `to
 
 ### 5.3 The development carousel (`Carousel.tsx`)
 
-An endless filmstrip: all seventeen images in one row — the latest in-game screenshots first,
-then development studies and older builds — one slide-gap below the card. The strip's viewport
+An endless filmstrip: all 22 screenshots in one row, one slide-gap below the card. In order:
+the menus and the rule book, a four-player round (the word was segway, the drawing became a
+bicycle), an eight-player round (the faker steals the win with "freight train"), an airship
+result, and the night menu again. Each is a 1600×900 WebP (`public/assets/shot-NN-<id>.webp`),
+converted from 1920×1080 captures at quality 82, about 45 KB each. The strip's viewport
 (`.slide-stage`) is painted the page background colour, so the gaps between pictures read as
 the page showing through rather than a lighter panel.
 
@@ -515,7 +518,8 @@ scrolling still works).
 caption under `slides` in every `src/i18n/` file. The width and
 height are load-bearing — the strip measures from the attributes before any pixels arrive —
 so put the real natural size in. The loop, the thumbnails and the preview pick it up
-automatically.
+automatically. Shrink big captures first: a 1920×1080 PNG of 0.6 MB becomes a 1600×900 WebP of
+about 45 KB at quality 82, and still reads sharply in the full-size preview.
 
 **Change the Play Gallery link.** Edit the `href` on the `play-gallery` anchor in
 `src/components/GallerySection.tsx`.

@@ -12,7 +12,7 @@ interface Props {
    renders the defaults when closed and the chosen slide's data when open —
    the visible behaviour is identical. */
 
-const DEFAULTS = SLIDES.find(slide => slide.src === "assets/gallery.png")!;
+const DEFAULTS = SLIDES[0];
 
 export default function PreviewDialog({ index, onClose }: Props) {
   const ref = useDialog(index !== null, onClose);
