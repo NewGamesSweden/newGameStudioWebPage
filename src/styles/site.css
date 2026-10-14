@@ -56,7 +56,7 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
 button, a, select { -webkit-tap-highlight-color: transparent; }
 
-a:focus-visible, button:focus-visible, textarea:focus-visible {
+a:focus-visible, button:focus-visible {
   outline: 3px solid var(--orange);
   outline-offset: 6px;
 }
@@ -703,8 +703,12 @@ dialog#test { width: min(540px, 92vw); padding: 36px 40px 28px; }
   font-size: 14px;
   resize: vertical;
 }
-/* An answer with code characters: orange border and a note naming them.
-   Near the 2000-character cap a muted counter appears under the box. */
+/* The box being typed in gets an accent border, not the site's orange focus
+   ring (a textarea is focus-visible on every click, so the ring lit up each
+   one). An answer with code characters keeps an orange border, focused or
+   not, and a note naming them. Near the 2000-character cap a muted counter
+   appears under the box. */
+.test-q textarea:focus { outline: none; border-color: var(--accent); }
 .test-q textarea[aria-invalid="true"] { border-color: var(--orange); }
 .test-note { margin: 6px 0 0; font-size: 12px; line-height: 1.5; }
 .test-note--error { color: var(--orange); }
