@@ -95,7 +95,7 @@ const en: Messages = {
   money: {
     title: "Gallery is free",
     lede: "but if you’re [rich as hell],\nwe’d like [several million euros] please",
-    note: "donation link coming soon. You can still mail us cash or other valuables",
+    note: "you can also mail us cash or other valuables",
   },
   test: {
     title: "we need you to [fill] this out",

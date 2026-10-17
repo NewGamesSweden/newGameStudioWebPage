@@ -132,7 +132,7 @@ The repository is public. Never commit a key, a password or the server's address
 
 **Rebuild or reorder the september moments.** The frames are baked by `tools/bake-moment-frames.py` from the source screenshots folder (edit the `EXCLUDE` list there to drop more). Re-run the tool, then paste its printed `<img>` list over the old one in `MOMENTS` in `src/data/site.ts`. The cycle speed is `MOMENT_MS` at the top of `src/components/MomentsEntry.tsx`.
 
-**Add the donation link.** The money modal's "donation link coming soon" sentence is `money.note` in each `src/i18n/` file, rendered by `src/components/MoneyDialog.tsx`. When a real URL exists, replace the sentence with a link there.
+**Change the donation link.** "give us money" opens a dialog whose button goes to `DONATION_URL` in `src/data/site.ts` (Buy Me a Coffee: https://buymeacoffee.com/newgamestudio). The button's label is the address itself, so changing the constant is the whole job.
 
 **The questionnaire's email.** "send it" emails the answers to `CONTACT_EMAIL` in `src/data/site.ts` through FormSubmit (formsubmit.co), because the site has no server of its own. The first submission from the live site sends that inbox an "Activate Form" link, and nothing arrives until someone clicks it. The 2000-character cap and the blocked characters are in `src/lib/playtest.ts`. See `SITE-GUIDE.md` section 5.5.
 

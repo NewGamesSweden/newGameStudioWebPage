@@ -11,6 +11,9 @@
 // The studio's inbox: the footer's mailto and where playtest answers go.
 export const CONTACT_EMAIL = "contact.newgamestudio@gmail.com";
 
+// Where "give us money" leads: the link button in the money dialog.
+export const DONATION_URL = "https://buymeacoffee.com/newgamestudio";
+
 export interface Slide {
   id: string;
   src: string;

@@ -391,11 +391,14 @@ the FormSubmit call), questions from `src/data/site.ts`, `src/styles/site.css` s
 
 The nav's "give us money ↗" is a button, not a link. Clicking it opens a small native
 `<dialog>` (`#money`) in the browser's top layer, above everything including the sticky
-header, over a dimmed backdrop. Text only, in the usual panel colours — no orange: the title
+header, over a dimmed backdrop. In the usual panel colours, no orange: the title
 "Gallery is free" (Space Grotesk, 34px), then the lede in two lines (18px) — "but if you're
 rich as hell," / "we'd like several million euros please" — with "rich as hell" and "several
-million euros" in cyan (`.money-hot`), then "donation link coming soon. You can still mail us
-cash or other valuables" (14px, muted). Closing is a small × in the dialog's top-right corner
+million euros" in cyan (`.money-hot`). Under it, the donation link: the site's accent button
+(`.button.money-link`, a size down so it fits a 320px phone) labelled with the address itself,
+"buymeacoffee.com/newgamestudio ↗", the same in every language, opening Buy Me a Coffee in a
+new tab. The address is `DONATION_URL` in `src/data/site.ts`. Then "you can also mail us cash or
+other valuables" (14px, muted). Closing is a small × in the dialog's top-right corner
 (`.money-close`, grey, cyan on hover — it overrides the shared dialog-button rule). It closes
 on the ×, Escape, or a click on the dimmed background (the shared outside-click helper in
 `src/hooks/useDialog.ts`).
@@ -533,9 +536,8 @@ numbers — paste those into `.game-title img` and the img's `width`/`height` at
 `index.html`, then bump the `?v=` on the img's `src` (and on the `style.css`/`main.js`
 links if those changed too).
 
-**Make the donation link real.** The money modal's "donation link coming soon" sentence is
-`money.note` in each `src/i18n/` file, rendered by `src/components/MoneyDialog.tsx`. Replace
-the sentence with a link there (or point it somewhere new).
+**Change the donation link.** `DONATION_URL` in `src/data/site.ts`. The money dialog's button
+shows the address without `https://` as its label, so a new URL relabels it automatically.
 
 **Tune the carousel.** `AUTO_SCROLL_PX_PER_S` (the drift speed) and `SWIPE_DISTANCE_PX`
 (click threshold) sit at the top of `src/components/Carousel.tsx`; the chevron buttons'

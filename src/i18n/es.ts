@@ -94,7 +94,7 @@ const es: Messages = {
   money: {
     title: "Gallery es gratis",
     lede: "pero si eres [asquerosamente rico],\nnos vendrían bien [varios millones de euros], por favor",
-    note: "el enlace para donar llegará pronto. Mientras tanto, siempre puedes mandarnos efectivo u otros objetos de valor por correo",
+    note: "también puedes mandarnos efectivo u otros objetos de valor por correo",
   },
   test: {
     title: "necesitamos que [completes] esto",
